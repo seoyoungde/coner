@@ -16,6 +16,10 @@ const Title = styled.h1`
   font-size: 24px;
   color: #00c4cc;
   margin-left: 17px;
+  @media (max-width: 600px) {
+    width: 78%;
+    margin: auto;
+  }
 `;
 
 export default Header;

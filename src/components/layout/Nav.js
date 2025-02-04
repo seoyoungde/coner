@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { NavLink } from "react-router-dom";
 import { RiHomeFill } from "react-icons/ri";
 import { FaSquare, FaCircle } from "react-icons/fa";
 
@@ -7,15 +8,15 @@ const Nav = () => {
   return (
     <Navbar>
       <NavbarContainer>
-        <NavItem>
+        <NavItem to="/" exact>
           <RiHomeFill />
           <p>홈</p>
         </NavItem>
-        <NavItem>
+        <NavItem to="/requests">
           <FaSquare />
           <p>내 의뢰서</p>
         </NavItem>
-        <NavItem>
+        <NavItem to="/mypage">
           <FaCircle />
           <p>마이페이지</p>
         </NavItem>
@@ -38,24 +39,24 @@ const Navbar = styled.div`
   border-radius: 30px 30px 0px 0px;
   box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.1);
 `;
+
 const NavbarContainer = styled.div`
   width: 70%;
-  display: flex;
   max-width: 500px;
+  display: flex;
   flex-direction: row;
   justify-content: space-between;
   text-align: center;
 `;
-const Nav1 = styled.div``;
-const Nav2 = styled.div``;
-const Nav3 = styled.div``;
-const NavItem = styled.div`
+
+const NavItem = styled(NavLink)`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   gap: 5px;
+  text-decoration: none;
 
   p {
     font-size: 12px;
@@ -67,12 +68,21 @@ const NavItem = styled.div`
     color: #d9d9d9;
   }
 
-  &:hover {
+  &.active {
     p {
-      color: #d9d9d9;
+      color: #00e5fd;
     }
     svg {
-      color: #d9d9d9;
+      color: #00e5fd;
+    }
+  }
+
+  &:hover {
+    p {
+      color: #00e5fd;
+    }
+    svg {
+      color: #00e5fd;
     }
   }
 `;

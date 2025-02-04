@@ -50,7 +50,7 @@ const ServicesType = () => {
 
 const TypeCards = styled.section`
   margin-top: 23px;
-
+  cursor: default;
   background-color: #ffffff;
 
   h1 {
@@ -87,9 +87,13 @@ const TypeList = styled.div`
   justify-content: space-between;
   margin: auto;
   list-style: none;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  white-space: nowrap;
 
   @media (max-width: 600px) {
     width: 78%;
+    margin-top: 17px;
   }
 `;
 
