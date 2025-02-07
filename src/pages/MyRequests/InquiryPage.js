@@ -54,7 +54,7 @@ const InquiryPage = () => {
             <>
               <CenteredContent>
                 아직 진행중인 의뢰가 없습니다
-                <RequestApplyButton>의뢰하기</RequestApplyButton>
+                {/* <RequestApplyButton>의뢰하기</RequestApplyButton> */}
               </CenteredContent>
             </>
           )

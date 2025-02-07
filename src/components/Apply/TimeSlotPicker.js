@@ -40,9 +40,10 @@ const TimeSlotButton = styled.button`
   padding: 12px;
   border-radius: 20px;
   font-size: 14px;
+  font-weight: bold;
   border: ${({ isSelected }) =>
-    isSelected ? "2px solid #00e6fd" : "1px solid #ccc"};
-  background: ${({ isSelected }) => (isSelected ? "#d0f7ff" : "white")};
-  color: ${({ isSelected }) => (isSelected ? "#00e6fd" : "#333")};
+    isSelected ? "2px solid #00e6fd" : "1px solid #d6d6d6"};
+  background: ${({ isSelected }) => (isSelected ? "#00e6fd" : "white")};
+  color: ${({ isSelected }) => (isSelected ? "white" : "#333")};
   cursor: pointer;
 `;

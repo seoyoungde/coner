@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const RequestReceived = () => {
   const navigate = useNavigate();
-  const [activeStep, setActiveStep] = useState(1); // 0: 접수 완료, 1: 기사님 배정 완료, 2: 오늘 방문
+  const [activeStep, setActiveStep] = useState(0); // 0: 접수 완료, 1: 기사님 배정 완료, 2: 오늘 방문
   const [isEditable, setIsEditable] = useState(false);
   const [isCancelPopupOpen, setIsCancelPopupOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -51,7 +51,7 @@ const RequestReceived = () => {
     }));
   };
   const handleRequestCancel = () => {
-    navigate("/inquirydashboard");
+    navigate("/");
   };
 
   return (
