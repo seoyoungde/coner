@@ -1,9 +1,20 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
-import { AiOutlineDown } from "react-icons/ai";
+
 import styled from "styled-components";
 import DaumPostcode from "react-daum-postcode";
+
+const SERVICE_AREAS = [
+  "서울 강북구",
+  "서울 광진구",
+  "서울 노원구",
+  "서울 도봉구",
+  "서울 동대문구",
+  "서울 성북구",
+  "서울 종로구",
+  "서울 중랑구",
+];
 
 const AddressForm = ({ title, description, buttonText, onSubmit }) => {
   const navigate = useNavigate();
@@ -35,12 +46,28 @@ const AddressForm = ({ title, description, buttonText, onSubmit }) => {
   };
 
   const handleAddressSelect = (data) => {
+    const selectedAddress = data.address;
+
+    const isServiceArea = SERVICE_AREAS.some((area) =>
+      selectedAddress.includes(area)
+    );
+
+    if (!isServiceArea) {
+      setPopupMessage(
+        "해당 지역은 서비스 제공이 불가능합니다. 다른 주소를 선택해주세요."
+      );
+      setIsAddressModalOpen(false);
+      return;
+    }
+
     setFormData((prev) => ({
       ...prev,
-      address: data.address,
+      address: selectedAddress,
+      detailAddress: "",
     }));
     setIsAddressModalOpen(false);
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isAddressModalOpen) return;
@@ -49,10 +76,10 @@ const AddressForm = ({ title, description, buttonText, onSubmit }) => {
       setPopupMessage("주소를 선택해주세요.");
       return;
     }
-    if (!formData.detailAddress) {
-      setPopupMessage("상세 주소를 입력해주세요.");
-      return;
-    }
+    // if (!formData.detailAddress) {
+    //   setPopupMessage("상세 주소를 입력해주세요.");
+    //   return;
+    // }
     if (!formData.name) {
       setPopupMessage("이름을 입력해주세요.");
       return;
@@ -90,12 +117,17 @@ const AddressForm = ({ title, description, buttonText, onSubmit }) => {
       <Form onSubmit={handleSubmit}>
         <Field>
           <Label>주소</Label>
-          <SearchBox onClick={() => setIsAddressModalOpen(true)}>
-            주소찾기
-          </SearchBox>
 
           <CustomSelect>
-            <Select
+            <Input
+              type="text"
+              name="address"
+              placeholder="주소를 선택해주세요"
+              style={{ border: "none" }}
+              value={formData.address}
+              readOnly
+            />
+            {/* <Select
               name="address"
               value={formData.address}
               onChange={handleChange}
@@ -109,8 +141,11 @@ const AddressForm = ({ title, description, buttonText, onSubmit }) => {
               <option value="서울시 도봉구">서울시 성북구</option>
               <option value="서울시 도봉구">서울시 종로구</option>
               <option value="서울시 도봉구">서울시 중랑구</option>
-            </Select>
-            <AiOutlineDown size={20} />
+            </Select> */}
+            <SearchBox onClick={() => setIsAddressModalOpen(true)}>
+              주소찾기
+            </SearchBox>
+            {/* <AiOutlineDown size={20} /> */}
           </CustomSelect>
           <HelperText>예시) 효자로12</HelperText>
           <Input
@@ -151,7 +186,7 @@ const AddressForm = ({ title, description, buttonText, onSubmit }) => {
           </CloseModalButton>
         </AddressModal>
       )}
-      {/* 팝업 */}
+
       {popupMessage && (
         <Popup>
           <PopupContent>
@@ -163,7 +198,15 @@ const AddressForm = ({ title, description, buttonText, onSubmit }) => {
     </Container>
   );
 };
-const SearchBox = styled.button``;
+const SearchBox = styled.button`
+  width: 100px;
+  padding: 10px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
+  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  margin-right: 10px;
+  border-radius: 8px;
+  border: none;
+`;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -223,7 +266,6 @@ const CustomSelect = styled.div`
   align-items: center;
   border: 1px solid #a5a5a5;
   border-radius: 9px;
-  background-color: #f9f9f9;
 
   svg {
     position: absolute;
@@ -290,7 +332,8 @@ const AddressModal = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;
-  padding: 20px;
+  padding: 25px;
+  width: 500px;
   border-radius: 10px;
   z-index: 1000;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);

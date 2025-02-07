@@ -21,9 +21,9 @@ export default CalendarPicker;
 const CalendarWrapper = styled.div`
   .react-calendar {
     width: 100%;
-    max-width: 350px;
     border: none;
     background: white;
     border-radius: 10px;
+    font-weight: bold;
   }
 `;

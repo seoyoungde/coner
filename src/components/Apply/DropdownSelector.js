@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { HiOutlineChevronUp, HiOutlineChevronDown } from "react-icons/hi";
 
 const DropdownSelector = ({
+  icon,
   title,
   options,
   selected,
@@ -14,7 +15,10 @@ const DropdownSelector = ({
   return (
     <Container>
       <Header onClick={() => setIsOpen(!isOpen)}>
-        <Title>{title}</Title>
+        <TitleContainer>
+          {icon && <IconWrapper>{icon}</IconWrapper>}
+          <Title>{title}</Title>
+        </TitleContainer>
         {isOpen ? <HiOutlineChevronUp /> : <HiOutlineChevronDown />}
       </Header>
       {isOpen && options && (
@@ -51,7 +55,12 @@ const Header = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
-
+const TitleContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 7px;
+`;
+const IconWrapper = styled.div``;
 const Title = styled.span`
   font-size: 17px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
