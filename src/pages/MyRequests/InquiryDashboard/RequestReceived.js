@@ -1,229 +1,501 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { useRequest } from "../../../context/context";
+import CalendarPicker from "../../../components/Apply/CalendarPicker";
+import TimeSlotPicker from "../../../components/Apply/TimeSlotPicker";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import DropdownSelector from "../../../components/Apply/DropdownSelector";
+import AdditionalDropSelected from "../../../components/Services/AdditionalDropSelected";
+import RequestDetails from "../../../components/Apply/RequestDetails";
+import { db } from "../../../firebase";
+import { GrApps, GrUserSettings, GrBookmark } from "react-icons/gr";
 
-const RequestReceived = () => {
+const RequestReceived = ({ requestData }) => {
   const navigate = useNavigate();
-  const [activeStep, setActiveStep] = useState(0); // 0: 접수 완료, 1: 기사님 배정 완료, 2: 오늘 방문
-  const [isEditable, setIsEditable] = useState(false);
+  const { updateRequestData } = useRequest();
+  const isMounted = useRef(true);
+  const [isDeleted, setIsDeleted] = useState(false);
+  const [requests, setRequests] = useState(requestData ? [requestData] : []);
+  const [editingRequestId, setEditingRequestId] = useState(null);
+  const [selectedHopeDate, setSelectedHopeDate] = useState(
+    requestData.hopeDate
+  );
+  const [selectedHopeTime, setSelectedHopeTime] = useState(
+    requestData.hopeTime
+  );
+  const [selectedBrand, setSelectedBrand] = useState(requestData.brand);
+  const [selectedService, setSelectedService] = useState(requestData.service);
+  const [selectedType, setSelectedType] = useState(requestData.aircon);
+
+  const [isServiceOpen, setIsServiceOpen] = useState(true);
   const [isCancelPopupOpen, setIsCancelPopupOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    visitDate: "2025-01-29 17:00 ~ 19:00",
-    airconType: "천장형",
-    service: "청소",
-    brand: "캐리어",
-    address: "서울시 강북구",
-    detailaddress: "fff",
-    phone: "01090395572",
-    additionalInfo: "에어컨 구매까지 원해요\nss",
-  });
-  const [originalData, setOriginalData] = useState({ ...formData });
+  const [isTypeOpen, setIsTypeOpen] = useState(true);
+  const [isBrandOpen, setIsBrandOpen] = useState(true);
+  const [cancelRequestId, setCancelRequestId] = useState(null);
+  const [additionalInfo, setAdditionalInfo] = useState(
+    requestData.detailInfo || ""
+  );
+  const [selectedDropdownOption, setSelectedDropdownOption] = useState("");
+  const [selectedairconditionerform, setSelectedAirconditionerform] =
+    useState("");
+
   const steps = [
     { label: "접수 완료", content: "접수가 완료되었습니다." },
     { label: "기사님 배정 완료", content: "기사님이 배정되었습니다." },
     { label: "오늘 방문", content: "기사님이 오늘 방문 예정입니다." },
   ];
 
-  const handleEditClick = () => {
-    setIsEditable(true);
-  };
-  const handlePopupClose = () => {
-    setIsCancelPopupOpen(false);
-  };
-
-  const handlePopupConfirm = () => {
-    setFormData({ ...originalData });
-    setIsEditable(false);
-    setIsCancelPopupOpen(false);
+  const handleEditClick = (requestId) => {
+    setEditingRequestId(requestId);
+    setAdditionalInfo("");
+    setSelectedDropdownOption("");
+    setSelectedAirconditionerform("");
   };
 
-  const handleSaveClick = () => {
-    setIsEditable(false);
-  };
   const handleCancelClick = () => {
+    setEditingRequestId(null);
+  };
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  const handleSaveClick = async (request) => {
+    if (!request.id) return;
+    let formattedDetailInfo = "";
+    if (["청소", "철거"].includes(selectedService)) {
+      formattedDetailInfo = additionalInfo;
+    } else if (selectedService === "설치") {
+      formattedDetailInfo = [
+        selectedDropdownOption,
+        additionalInfo,
+        selectedairconditionerform,
+      ]
+        .filter(Boolean) // 빈 값 제거
+        .join("\n"); // 줄바꿈 추가
+    } else if (["수리", "이전"].includes(selectedService)) {
+      formattedDetailInfo = [additionalInfo, selectedDropdownOption]
+        .filter(Boolean)
+        .join("\n");
+    }
+    try {
+      const updatedRequest = {
+        ...request,
+        hopeDate: selectedHopeDate,
+        hopeTime: selectedHopeTime,
+        service: selectedService,
+        brand: selectedBrand,
+        aircon: selectedType,
+        detailInfo: formattedDetailInfo,
+      };
+
+      const docRef = doc(db, "serviceRequests", request.id);
+      await updateDoc(docRef, updatedRequest);
+
+      if (isMounted.current) {
+        setRequests((prevRequests) =>
+          prevRequests.map((req) =>
+            req.id === request.id
+              ? { ...req, detailInfo: formattedDetailInfo }
+              : req
+          )
+        );
+        updateRequestData(request.id, {
+          ...updatedRequest,
+          detailInfo: formattedDetailInfo,
+        });
+        setAdditionalInfo(formattedDetailInfo);
+        setEditingRequestId(null);
+      }
+    } catch (error) {
+      console.error("❌ Firestore 업데이트 중 오류 발생:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (requestData && isMounted.current) {
+      setRequests([requestData]);
+      setAdditionalInfo(requestData.detailInfo || "");
+    }
+  }, [requestData]);
+
+  useEffect(() => {
+    setRequests((prevRequests) =>
+      prevRequests.map((req) =>
+        req.id === requestData.id ? { ...req, detailInfo: additionalInfo } : req
+      )
+    );
+  }, [additionalInfo]);
+
+  // useEffect(() => {
+  //   if (!requestData) return;
+  //   const unsubscribe = onSnapshot(
+  //     collection(db, "serviceRequests"),
+  //     (snapshot) => {
+  //       const updatedRequests = snapshot.docs.map((doc) => ({
+  //         id: doc.id,
+  //         ...doc.data(),
+  //       }));
+  //       setRequests(updatedRequests);
+  //     }
+  //   );
+
+  //   return () => unsubscribe();
+  // }, [requestData, isDeleted]);
+
+  const handleCancelRequestPopup = (requestId) => {
+    setCancelRequestId(requestId);
     setIsCancelPopupOpen(true);
   };
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-  const handleRequestCancel = () => {
-    navigate("/");
-  };
+  const handleCancelRequest = async () => {
+    if (!cancelRequestId) return;
 
+    try {
+      await deleteDoc(doc(db, "serviceRequests", cancelRequestId));
+
+      // 삭제 후 상태 업데이트 -> isDeleted를 true로 변경해 강제 리렌더링 유도
+      setRequests((prevRequests) =>
+        prevRequests.filter((req) => req.id !== cancelRequestId)
+      );
+      updateRequestData(cancelRequestId, null);
+
+      setIsDeleted((prev) => !prev); // 🔥 상태를 토글하여 useEffect 재실행
+
+      // 팝업 닫기
+      setCancelRequestId(null);
+      setIsCancelPopupOpen(false);
+    } catch (error) {
+      console.error("❌ Firestore 삭제 중 오류 발생:", error);
+    }
+  };
   return (
     <Container>
-      <ProgressBar>
-        {steps.map((step, index) => (
-          <ProgressStep key={index}>
-            <Circle isActive={index <= activeStep} />
-            <StepLabel isActive={index === activeStep}>{step.label}</StepLabel>
-            {index < steps.length - 1 && <Line isActive={index < activeStep} />}
-          </ProgressStep>
-        ))}
-      </ProgressBar>
-
-      <ContentBox>
-        {activeStep === 1 && (
-          <TechnicianCard>
-            <TechnicianTitle>배정된 기사님 정보</TechnicianTitle>
-            <ProfileImage />
-
-            <Tag>10건 이상</Tag>
-            <TechnicianName>홍길동 기사님</TechnicianName>
-
-            <ContactInfo>
-              <PhoneNumber>📞 010-1234-1234</PhoneNumber>
-              <CallButton>전화 연결</CallButton>
-            </ContactInfo>
-            <CompanyInfo>
-              <CompanyTitle>📦 코너-에어컨 서비스 플랫폼</CompanyTitle>
-              <CompanyAddress>서울특별시 중랑구 중랑천로 어쩌구</CompanyAddress>
-            </CompanyInfo>
-            <TechnicianFooter>
-              <ApprovalDate>
-                기사님 승인 날짜{" "}
-                <span style={{ fontSize: "16px" }}>2023년 12월 24일</span>
-              </ApprovalDate>
-              <ChangeRequestButton>변경 요청하기 ›</ChangeRequestButton>
-            </TechnicianFooter>
-          </TechnicianCard>
+      <RequestBox>
+        <ProgressBar>
+          {steps.map((step, index) => (
+            <ProgressStep key={index}>
+              <Circle isActive={index + 1 <= requestData.state} />
+              <StepLabel isActive={index + 1 === requestData.state}>
+                {step.label}
+              </StepLabel>
+              {index < steps.length - 1 && (
+                <Line isActive={index + 1 < requestData.state} />
+              )}
+            </ProgressStep>
+          ))}
+        </ProgressBar>
+        {requestData.state >= 2 && (
+          <TechnicianContainer>
+            <TechnicianCard>
+              <TechnicianTitle>배정된 기사님 정보</TechnicianTitle>
+              <ProfileImage
+                src={requestData.engineerProfileImage || "default-profile.jpg"}
+                alt="기사님 사진"
+              />
+              <TechnicianName>
+                {requestData.engineerName || "배정된 기사 없음"}
+              </TechnicianName>
+              <ContactInfo>
+                <PhoneNumber>{requestData.engineerPhone || "없음"}</PhoneNumber>
+              </ContactInfo>
+              <CompanyInfo>
+                <CompanyTitle>
+                  {requestData.companyName || "업체 정보 없음"}
+                </CompanyTitle>
+                <CompanyAddress>
+                  {requestData.companyAddress || "주소 정보 없음"}
+                </CompanyAddress>
+              </CompanyInfo>
+              <TechnicianFooter>
+                <CompanyAcceptTimeInfo>
+                  <Tag>기사님 승인날짜</Tag>
+                  <Tag2>
+                    {requestData.acceptanceDate || "접수완료시간없음"}
+                  </Tag2>
+                </CompanyAcceptTimeInfo>
+              </TechnicianFooter>
+            </TechnicianCard>
+            <TechnicianETC>
+              진행 중인 의뢰는 기사님의 일정에 따라 변경되거나 취소될 수
+              있습니다
+            </TechnicianETC>
+          </TechnicianContainer>
         )}
-        <Section>
-          <Label>방문 희망 일자</Label>
-          {isEditable ? (
-            <Input
-              name="visitDate"
-              value={formData.visitDate}
-              onChange={handleInputChange}
-            />
-          ) : (
-            <Value>{formData.visitDate}</Value>
-          )}
-        </Section>
+        <ContentBox>
+          {/* 방문 희망 날짜 수정 */}
+          <Section>
+            <Label>방문 희망 일자</Label>
+            {editingRequestId === requestData.id ? (
+              <LabelBox>
+                <CalendarPicker
+                  selectedDate={new Date(selectedHopeDate)}
+                  setSelectedDate={(date) => {
+                    const formattedDate = date
+                      .toLocaleDateString("ko-KR", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                      })
+                      .trim();
 
-        <Section>
-          <Label>서비스 받을 에어컨</Label>
-          {isEditable ? (
-            <Input
-              name="airconType"
-              value={formData.airconType}
-              onChange={handleInputChange}
-            />
-          ) : (
-            <Value>{formData.airconType}</Value>
-          )}
-        </Section>
+                    setSelectedHopeDate(formattedDate);
+                    updateRequestData("hopeDate", formattedDate);
+                  }}
+                />
+              </LabelBox>
+            ) : (
+              <Value>{selectedHopeDate || "없음"}</Value>
+            )}
+          </Section>
 
-        <Section>
-          <Label>원하는 서비스</Label>
-          {isEditable ? (
-            <Input
-              name="service"
-              value={formData.service}
-              onChange={handleInputChange}
-            />
-          ) : (
-            <Value>{formData.service}</Value>
-          )}
-        </Section>
-
-        <Section>
-          <Label>브랜드</Label>
-          {isEditable ? (
-            <Input
-              name="brand"
-              value={formData.brand}
-              onChange={handleInputChange}
-            />
-          ) : (
-            <Value>{formData.brand}</Value>
-          )}
-        </Section>
-
-        <Section>
-          <Label>주소</Label>
-          {isEditable ? (
-            <>
-              <Input
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
+          {/* 방문 희망 시간 수정 */}
+          <Section>
+            <Label>방문 희망 시간</Label>
+            {editingRequestId === requestData.id ? (
+              <LabelBox>
+                <TimeSlotPicker
+                  selectedTime={selectedHopeTime}
+                  setSelectedTime={(time) => {
+                    setSelectedHopeTime(time);
+                    updateRequestData("hopeTime", time);
+                  }}
+                />
+              </LabelBox>
+            ) : (
+              <Value>{selectedHopeTime || "없음"}</Value>
+            )}
+          </Section>
+          {/* 에어컨종류 */}
+          <Section>
+            <Label>서비스받을에어컨종류</Label>
+            {editingRequestId === requestData.id ? (
+              <DropdownSelector
+                title="에어컨 종류 선택하기"
+                icon={<GrApps size="18" />}
+                options={[
+                  "벽걸이형",
+                  "스탠드형",
+                  "천장형",
+                  "창문형",
+                  "항온항습기",
+                ]}
+                selected={selectedType}
+                setSelected={setSelectedType}
+                isOpen={isTypeOpen}
+                setIsOpen={setIsTypeOpen}
+                optionWidths={["90px", "90px", "90px", "90px", "110px"]}
               />
-              <Input
-                name="detailaddress"
-                value={formData.detailaddress}
-                onChange={handleInputChange}
+            ) : (
+              <Value>{selectedType || "없음"}</Value>
+            )}
+          </Section>
+          {/* 원하는서비스수정 */}
+          <Section>
+            <Label>원하는서비스</Label>
+            {editingRequestId === requestData.id ? (
+              <DropdownSelector
+                title={selectedService}
+                icon={<GrUserSettings size="18" />}
+                options={["청소", "설치", "이전", "수리", "철거"]}
+                selected={selectedService}
+                setSelected={setSelectedService}
+                isOpen={isServiceOpen}
+                setIsOpen={setIsServiceOpen}
+                optionWidths={["70px", "70px", "70px", "70px", "70px"]}
+                disabled
               />
-            </>
-          ) : (
-            <>
-              <Value style={{ marginBottom: "10px" }}>{formData.address}</Value>
-              <Value>{formData.detailaddress}</Value>
-            </>
-          )}
-        </Section>
+            ) : (
+              <Value>{selectedService || "없음"}</Value>
+            )}
+          </Section>
+          {/* 브랜드수정 */}
+          <Section>
+            <Label>브랜드</Label>
+            {editingRequestId === requestData.id ? (
+              <DropdownSelector
+                title="브랜드 선택하기"
+                icon={<GrBookmark size="18" />}
+                options={[
+                  "삼성전자",
+                  "LG전자",
+                  "캐리어",
+                  "센추리",
+                  "귀뚜라미",
+                  "SK매직",
+                  "기타(추천 또는 모름)",
+                ]}
+                selected={selectedBrand}
+                setSelected={setSelectedBrand}
+                isOpen={isBrandOpen}
+                setIsOpen={setIsBrandOpen}
+                optionWidths={[
+                  "100px",
+                  "90px",
+                  "90px",
+                  "90px",
+                  "100px",
+                  "100px",
+                  "150px",
+                ]}
+              />
+            ) : (
+              <Value>{selectedBrand || "없음"}</Value>
+            )}
+          </Section>
+          {/* 주소수정불가능 */}
+          <Section>
+            <Label>주소</Label>
+            <Value>{requestData.clientAddress || "없음"}</Value>
+            <Value style={{ marginTop: "5px" }}>
+              {requestData.clientDetailedAddress || "없음"}
+            </Value>
+          </Section>
+          {/* 연락처수정불가능 */}
+          <Section>
+            <Label>연락처</Label>
+            <Value>{requestData.clientPhone || "없음"}</Value>
+          </Section>
+          {/* 추가요청사항 */}
+          <Section style={{ whiteSpace: "pre-line" }}>
+            <Label>추가 요청사항</Label>
+            {editingRequestId === requestData.id ? (
+              <>
+                {["청소", "철거"].includes(selectedService) && (
+                  <RequestDetails
+                    additionalInfo={additionalInfo}
+                    setAdditionalInfo={setAdditionalInfo}
+                  />
+                )}
+                {selectedService === "수리" && (
+                  <>
+                    <AdditionalDropSelected
+                      options={[
+                        "에어컨이 작동하지 않아요.",
+                        "에어컨에서 이상한 소리가 나요.",
+                        "에어컨 전원이 켜지지 않아요.",
+                        "에어컨에서 이상한 냄새가 나요.",
+                        "에어컨에서 물이 흘러나와요.",
+                        "에어컨이 부분적으로만 작동돼요.",
+                        "에어컨이 자동으로 꺼지거나 켜져요.",
+                        "에어컨 온도 조절이 잘 안돼요.",
+                        "기타",
+                      ]}
+                      placeholderText="에어컨 이상사항을 선택해주세요"
+                      boxPerRow={2}
+                      isMultiSelect={true}
+                      onSelect={(option) => setSelectedDropdownOption(option)}
+                    />
+                    <RequestDetails
+                      additionalInfo={additionalInfo}
+                      setAdditionalInfo={setAdditionalInfo}
+                    />
+                  </>
+                )}
 
-        <Section>
-          <Label>연락처</Label>
-          {isEditable ? (
-            <Input
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-            />
-          ) : (
-            <Value>{formData.phone}</Value>
-          )}
-        </Section>
+                {selectedService === "설치" && (
+                  <>
+                    <AdditionalDropSelected
+                      options={[
+                        "에어컨 구매까지 원해요",
+                        "에어컨은 있어요. 설치 서비스만 원해요",
+                      ]}
+                      placeholderText="에어컨 구매 여부 선택하기"
+                      boxPerRow={2}
+                      onSelect={setSelectedAirconditionerform}
+                    />
+                    <AdditionalDropSelected
+                      options={[
+                        "앵글 설치가 필요해요.",
+                        "앵글 설치는 필요 없어요.",
+                      ]}
+                      placeholderText="앵글 설치 여부 선택하기"
+                      boxPerRow={2}
+                      onSelect={setSelectedDropdownOption}
+                    />
+                    <RequestDetails
+                      additionalInfo={additionalInfo}
+                      setAdditionalInfo={setAdditionalInfo}
+                    />
+                  </>
+                )}
+                {selectedService === "이전" && (
+                  <>
+                    <AdditionalDropSelected
+                      options={[
+                        "앵글 설치가 필요해요.",
+                        "앵글 설치는 필요 없어요.",
+                      ]}
+                      placeholderText="앵글 설치 여부 선택하기"
+                      boxPerRow={2}
+                      onSelect={setSelectedDropdownOption}
+                    />
+                    <RequestDetails
+                      additionalInfo={additionalInfo}
+                      setAdditionalInfo={setAdditionalInfo}
+                    />
+                  </>
+                )}
+              </>
+            ) : (
+              <Value style={{ whiteSpace: "pre-line" }}>
+                {additionalInfo || "없음"}
+              </Value>
+            )}
+          </Section>
+        </ContentBox>
 
-        <Section>
-          <Label>추가적인 정보와 요청사항</Label>
-          {isEditable ? (
-            <Textarea
-              name="additionalInfo"
-              value={formData.additionalInfo}
-              onChange={handleInputChange}
-            />
-          ) : (
-            <Value>{formData.additionalInfo}</Value>
-          )}
-        </Section>
-      </ContentBox>
+        {requestData.state === 1 && (
+          <WarningText>
+            의뢰서 수정은 기사님 배정 전까지만 가능합니다.
+          </WarningText>
+        )}
 
-      {!isEditable && activeStep === 0 && (
-        <WarningText>
-          의뢰서 수정은 기사님 배정 전까지만 가능합니다.
-        </WarningText>
-      )}
+        {editingRequestId === requestData.id ? (
+          <ButtonGroup>
+            <EditCancelButton onClick={handleCancelClick}>
+              취소
+            </EditCancelButton>
+            <SaveButton onClick={() => handleSaveClick(requestData)}>
+              저장
+            </SaveButton>
+          </ButtonGroup>
+        ) : (
+          <ButtonGroup>
+            <CancelButton
+              onClick={() => handleCancelRequestPopup(requestData.id)}
+            >
+              의뢰 취소
+            </CancelButton>
+            {requestData.state === 1 && (
+              <EditButton onClick={() => handleEditClick(requestData.id)}>
+                수정
+              </EditButton>
+            )}
+          </ButtonGroup>
+        )}
+      </RequestBox>
 
-      {/* 🚀 버튼: 수정 가능 여부 및 단계에 따라 다르게 표시 */}
-      {!isEditable && activeStep === 0 && (
-        <ButtonGroup>
-          <CancelButton onClick={handleRequestCancel}>의뢰 취소</CancelButton>
-          <EditButton onClick={handleEditClick}>수정하기</EditButton>
-        </ButtonGroup>
-      )}
-
-      {isEditable && (
-        <ButtonGroup style={{ marginTop: "30px" }}>
-          <EditCancelButton onClick={handleCancelClick}>취소</EditCancelButton>
-
-          <SaveButton onClick={handleSaveClick}>수정완료</SaveButton>
-        </ButtonGroup>
-      )}
       {isCancelPopupOpen && (
         <PopupOverlay>
           <PopupContainer>
-            <PopupText>취소 시 수정 내용이 초기화됩니다.</PopupText>
+            <PopupText>정말로 의뢰를 취소하시겠습니까?</PopupText>
             <PopupButtons>
-              <PopupButton onClick={handlePopupClose} secondary>
-                수정 화면으로
+              <PopupButton
+                onClick={handleCancelRequest}
+                style={{ backgroundColor: "red" }}
+              >
+                의뢰 취소
               </PopupButton>
-              <PopupButton onClick={handlePopupConfirm}>확인</PopupButton>
+              <PopupButton
+                onClick={() => setIsCancelPopupOpen(false)}
+                style={{ backgroundColor: "gray" }}
+              >
+                닫기
+              </PopupButton>
             </PopupButtons>
           </PopupContainer>
         </PopupOverlay>
@@ -232,6 +504,16 @@ const RequestReceived = () => {
   );
 };
 
+export default RequestReceived;
+const LabelBox = styled.div`
+  width: 100%;
+  border: 2px solid #e3e3e3;
+  border-radius: 10px;
+  background: white;
+  padding: 20px 10px 30px 20px;
+`;
+const TechnicianContainer = styled.div``;
+const TechnicianETC = styled.div``;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -251,7 +533,7 @@ const ProgressStep = styled.div`
   display: flex;
   align-items: center;
 `;
-
+const RequestBox = styled.div``;
 const Circle = styled.div`
   width: 20px;
   height: 20px;
@@ -300,17 +582,22 @@ const ProfileImage = styled.div`
   background: #ddd;
   margin: 0 auto;
 `;
+const CompanyAcceptTimeInfo = styled.div`
+  disaplay: flex;
+  flex-direction: column;
+`;
 
 const Tag = styled.span`
   display: inline-block;
   background: #00e6fd;
   color: white;
-  font-size: 12px;
+  font-size: 17px;
   font-weight: bold;
   padding: 5px 10px;
   border-radius: 15px;
   margin-top: 10px;
 `;
+const Tag2 = styled.div``;
 const TechnicianName = styled.h2`
   font-size: 18px;
   font-weight: bold;
@@ -331,15 +618,7 @@ const PhoneNumber = styled.span`
   color: #333;
   margin-right: 10px;
 `;
-const CallButton = styled.button`
-  background: #ddd;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 5px 10px;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-`;
+
 const CompanyInfo = styled.div`
   margin-top: 10px;
   text-align: center;
@@ -366,25 +645,10 @@ const TechnicianFooter = styled.div`
   font-weight: bold;
 `;
 
-const ApprovalDate = styled.div`
-  font-size: 14px;
-  span {
-    font-weight: bold;
-  }
-`;
-
-const ChangeRequestButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 14px;
-  font-weight: ${({ theme }) => theme.fonts.weights.bold};
-  color: white;
-  cursor: pointer;
-`;
-
 const Section = styled.div`
   display: flex;
   flex-direction: column;
+  margin-bottom: 10px;
 `;
 
 const Label = styled.div`
@@ -404,29 +668,11 @@ const Value = styled.div`
   border-radius: 5px;
 `;
 
-const Input = styled.input`
-  font-size: 16px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  outline: none;
-`;
-
-const Textarea = styled.textarea`
-  font-size: 16px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  outline: none;
-  resize: none;
-`;
-
 const WarningText = styled.p`
   text-align: center;
   color: #333;
   font-size: 14px;
   margin-top: 40px;
-  margin-bottom: 10px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
 `;
 
@@ -434,6 +680,7 @@ const ButtonGroup = styled.div`
   display: flex;
   gap: 10px;
   width: 100%;
+  margin-top: 15px;
 `;
 
 const CancelButton = styled.button`
@@ -525,4 +772,4 @@ const PopupButton = styled.button`
   background: ${({ secondary }) => (secondary ? "#ddd" : "#00e6fd")};
   color: white;
 `;
-export default RequestReceived;
+const CenteredContent = styled.div``;

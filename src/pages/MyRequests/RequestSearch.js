@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useRequest } from "../../context/context";
 
 const RequestSearch = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ name: "", phoneNumber: "" });
+  const { fetchRequestByClient } = useRequest();
+  const [formData, setFormData] = useState({ phoneNumber: "" });
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -13,25 +16,38 @@ const RequestSearch = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSearch = () => {
-    if (!formData.name || !formData.phoneNumber) {
-      setErrorMessage("이름과 전화번호를 모두 입력해주세요.");
+  const handleSearch = async () => {
+    if (!formData.phoneNumber) {
+      setErrorMessage("전화번호를 입력해주세요.");
       return;
     }
     setErrorMessage("");
-    navigate("/inquirydashboard", {
-      state: { name: formData.name, phoneNumber: formData.phoneNumber },
-    });
+    setLoading(true);
+
+    const requests = await fetchRequestByClient(
+      // formData.name,
+      formData.phoneNumber
+    );
+    setLoading(false);
+
+    if (requests && requests.length > 0) {
+      console.log("📢 검색된 데이터:", requests);
+      navigate("/inquirydashboard", {
+        state: { clientPhone: formData.phoneNumber },
+      });
+    } else {
+      setErrorMessage("일치하는 의뢰서를 찾을 수 없습니다.");
+    }
   };
 
   return (
     <Container>
       <Title>
         <h2>비회원 의뢰서 조회</h2>
-        <p>의뢰서에 작성했던 이름과 전화번호를 입력해주세요</p>
+        <p>의뢰서에 작성했던 전화번호를 입력해주세요</p>
       </Title>
       <Content>
-        <InputWrapper>
+        {/* <InputWrapper>
           <h3>이름</h3>
           <InputField
             name="name"
@@ -39,7 +55,7 @@ const RequestSearch = () => {
             value={formData.name}
             onChange={handleChange}
           />
-        </InputWrapper>
+        </InputWrapper> */}
         <InputWrapper>
           <h3>연락처</h3>
           <InputField
@@ -52,11 +68,12 @@ const RequestSearch = () => {
         </InputWrapper>
         {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
       </Content>
-      <SearchButton onClick={handleSearch}>의뢰서 조회하기</SearchButton>
+      <SearchButton onClick={handleSearch} disabled={loading}>
+        {loading ? "조회 중..." : "의뢰서 조회하기"}
+      </SearchButton>
     </Container>
   );
 };
-
 const Container = styled.div`
   width: 92%;
   margin: auto;

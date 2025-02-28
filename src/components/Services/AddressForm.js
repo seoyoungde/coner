@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
-
 import styled from "styled-components";
 import DaumPostcode from "react-daum-postcode";
+import { useRequest } from "../../context/context";
 
 const SERVICE_AREAS = [
   "서울 강북구",
@@ -16,42 +16,34 @@ const SERVICE_AREAS = [
   "서울 중랑구",
 ];
 
-const AddressForm = ({ title, description, buttonText, onSubmit }) => {
+const AddressForm = ({ title, description, buttonText }) => {
   const navigate = useNavigate();
+  const { updateRequestData } = useRequest();
   const [formData, setFormData] = useState({
-    address: "",
-    detailAddress: "",
-    name: "",
-    phone: "",
+    clientAddress: "",
+    // clientDetailedAddress: "",
+    // clientId: "",
+    clientPhone: "",
   });
   const [popupMessage, setPopupMessage] = useState("");
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    if (name === "phone") {
+    if (name === "clientPhone") {
       const onlyNumbers = value.replace(/\D/g, "");
       if (onlyNumbers.length > 11) return;
-      setFormData((prev) => ({
-        ...prev,
-        [name]: onlyNumbers,
-      }));
+      setFormData((prev) => ({ ...prev, [name]: onlyNumbers }));
     } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   const handleAddressSelect = (data) => {
     const selectedAddress = data.address;
-
     const isServiceArea = SERVICE_AREAS.some((area) =>
       selectedAddress.includes(area)
     );
-
     if (!isServiceArea) {
       setPopupMessage(
         "해당 지역은 서비스 제공이 불가능합니다. 다른 주소를 선택해주세요."
@@ -59,11 +51,10 @@ const AddressForm = ({ title, description, buttonText, onSubmit }) => {
       setIsAddressModalOpen(false);
       return;
     }
-
     setFormData((prev) => ({
       ...prev,
-      address: selectedAddress,
-      detailAddress: "",
+      clientAddress: selectedAddress,
+      // clientDetailedAddress: "",
     }));
     setIsAddressModalOpen(false);
   };
@@ -71,42 +62,27 @@ const AddressForm = ({ title, description, buttonText, onSubmit }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isAddressModalOpen) return;
-
-    if (!formData.address) {
+    if (!formData.clientAddress) {
       setPopupMessage("주소를 선택해주세요.");
       return;
     }
-    // if (!formData.detailAddress) {
-    //   setPopupMessage("상세 주소를 입력해주세요.");
-    //   return;
-    // }
-    if (!formData.name) {
-      setPopupMessage("이름을 입력해주세요.");
-      return;
-    }
-    if (!formData.phone) {
+
+    if (!formData.clientPhone) {
       setPopupMessage("전화번호를 입력해주세요.");
       return;
     }
+    updateRequestData("clientAddress", formData.clientAddress);
+    // updateRequestData("clientDetailedAddress", formData.clientDetailedAddress);
+    // updateRequestData("clientId", formData.clientId);
+    updateRequestData("clientPhone", formData.clientPhone);
 
-    if (onSubmit) {
-      onSubmit(formData);
-    }
-    navigate("/requestbasicinfo", { state: formData });
-  };
-
-  const handleGoBack = () => {
-    navigate(-1);
-  };
-
-  const closePopup = () => {
-    setPopupMessage("");
+    navigate("/selectservicedate");
   };
 
   return (
     <Container>
       <Header>
-        <BackButton onClick={handleGoBack}>
+        <BackButton onClick={() => navigate(-1)}>
           <IoIosArrowBack size={32} color="#333" />
         </BackButton>
       </Header>
@@ -117,62 +93,45 @@ const AddressForm = ({ title, description, buttonText, onSubmit }) => {
       <Form onSubmit={handleSubmit}>
         <Field>
           <Label>주소</Label>
-
           <CustomSelect>
             <Input
               type="text"
-              name="address"
+              name="clientAddress"
               placeholder="주소를 선택해주세요"
               style={{ border: "none" }}
-              value={formData.address}
+              value={formData.clientAddress}
               readOnly
             />
-            {/* <Select
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-            >
-              <option value="">주소를 선택해주세요</option>
-              <option value="서울시 강북구">서울시 강북구</option>
-              <option value="서울시 강남구">서울시 광진구</option>
-              <option value="서울시 노원구">서울시 노원구</option>
-              <option value="서울시 도봉구">서울시 도봉구</option>
-              <option value="서울시 도봉구">서울시 동대문구</option>
-              <option value="서울시 도봉구">서울시 성북구</option>
-              <option value="서울시 도봉구">서울시 종로구</option>
-              <option value="서울시 도봉구">서울시 중랑구</option>
-            </Select> */}
             <SearchBox onClick={() => setIsAddressModalOpen(true)}>
               주소찾기
             </SearchBox>
-            {/* <AiOutlineDown size={20} /> */}
           </CustomSelect>
-          <HelperText>예시) 효자로12</HelperText>
+          {/* <HelperText>예시) 효자로12</HelperText>
           <Input
             type="text"
-            name="detailAddress"
+            name="clientDetailedAddress"
             placeholder="상세주소를 입력해주세요."
-            value={formData.detailAddress}
+            value={formData.clientDetailedAddress}
             onChange={handleChange}
-          />
+          /> */}
         </Field>
-        <Field>
+        {/* <Field>
           <Label>이름</Label>
           <Input
             type="text"
-            name="name"
+            name="clientId"
             placeholder="이름"
-            value={formData.name}
+            value={formData.clientId}
             onChange={handleChange}
           />
-        </Field>
+        </Field> */}
         <Field>
           <Label>연락처</Label>
           <Input
             type="tel"
-            name="phone"
+            name="clientPhone"
             placeholder="전화번호"
-            value={formData.phone}
+            value={formData.clientPhone}
             onChange={handleChange}
           />
         </Field>
@@ -186,18 +145,18 @@ const AddressForm = ({ title, description, buttonText, onSubmit }) => {
           </CloseModalButton>
         </AddressModal>
       )}
-
       {popupMessage && (
         <Popup>
           <PopupContent>
             <PopupMessage>{popupMessage}</PopupMessage>
-            <CloseButton onClick={closePopup}>닫기</CloseButton>
+            <CloseButton onClick={() => setPopupMessage("")}>닫기</CloseButton>
           </PopupContent>
         </Popup>
       )}
     </Container>
   );
 };
+
 const SearchBox = styled.button`
   width: 100px;
   padding: 10px;

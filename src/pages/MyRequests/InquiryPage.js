@@ -1,7 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { IoIosArrowBack } from "react-icons/io";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  getDoc,
+} from "firebase/firestore";
+import { db } from "../../firebase";
 import CompletedRequests from "../MyRequests/CompletedRequests";
 import RequestReceived from "../MyRequests/InquiryDashboard/RequestReceived";
 
@@ -9,20 +18,64 @@ const InquiryPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { name, phoneNumber } = location.state || {
-    name: "사용자",
-    phoneNumber: "",
-  };
+  const requestId = location.state?.requestId;
+  // const clientId = location.state?.clientId;
+  const clientPhone = location.state?.clientPhone;
 
+  const [requestDataList, setRequestDataList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("progress");
 
-  const validData = { name: "박서영", phoneNumber: "01090395572" };
-  const isValid =
-    name === validData.name && phoneNumber === validData.phoneNumber;
+  const fetchRequestByClient = async () => {
+    setLoading(true);
+    let requests = new Map();
+
+    try {
+      // ✅ requestId가 있는 경우 단일 조회
+      if (requestId) {
+        const docRef = doc(db, "serviceRequests", requestId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          requests.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
+        }
+      }
+
+      //  clientPhone이 있을 경우 여러 개의 요청 조회
+      if (clientPhone) {
+        const q = query(
+          collection(db, "serviceRequests"),
+          // where("clientId", "==", clientId),
+          where("clientPhone", "==", clientPhone)
+        );
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          querySnapshot.forEach((doc) => {
+            // 🔥 이미 Map에 존재하는 데이터인지 확인하고 추가
+            if (!requests.has(doc.id)) {
+              requests.set(doc.id, { id: doc.id, ...doc.data() });
+            }
+          });
+        }
+      }
+    } catch (error) {
+      console.error("❌ Firestore에서 데이터 조회 중 오류 발생:", error);
+    }
+
+    setRequestDataList(Array.from(requests.values()));
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchRequestByClient();
+  }, [requestId, clientPhone]);
 
   const handleGoBack = () => {
     navigate("/requests");
   };
+
+  // ✅ 진행 중인 의뢰와 완료된 의뢰 분리
+  const completedRequests = requestDataList.filter((req) => req.state === 4);
+  const inProgressRequests = requestDataList.filter((req) => req.state < 4);
 
   return (
     <Container>
@@ -30,14 +83,15 @@ const InquiryPage = () => {
         <BackButton onClick={handleGoBack}>
           <IoIosArrowBack size={32} color="#333" />
         </BackButton>
-        <Title>{name} 님의 의뢰서</Title>
+        <Title>고객님의 의뢰서</Title>
       </Header>
+
       <TabHeader>
         <Tab
           isActive={activeTab === "progress"}
           onClick={() => setActiveTab("progress")}
         >
-          진행중인
+          진행 중
         </Tab>
         <Tab
           isActive={activeTab === "completed"}
@@ -46,27 +100,31 @@ const InquiryPage = () => {
           완료된
         </Tab>
       </TabHeader>
+
       <TabContent>
-        {activeTab === "progress" ? (
-          isValid ? (
-            <RequestReceived />
+        {loading ? (
+          <CenteredContent>로딩 중...</CenteredContent>
+        ) : activeTab === "progress" ? (
+          inProgressRequests.length > 0 ? (
+            inProgressRequests.map((req) => (
+              <RequestReceived key={req.id} requestData={req} />
+            ))
           ) : (
-            <>
-              <CenteredContent>
-                아직 진행중인 의뢰가 없습니다
-                {/* <RequestApplyButton>의뢰하기</RequestApplyButton> */}
-              </CenteredContent>
-            </>
+            <CenteredContent>아직 진행 중인 의뢰가 없습니다.</CenteredContent>
           )
-        ) : isValid ? (
-          <CompletedRequests />
+        ) : completedRequests.length > 0 ? (
+          completedRequests.map((req) => (
+            <CompletedRequests key={req.id} requestData={req} />
+          ))
         ) : (
-          <CenteredContent>아직 완료된 의뢰가 없습니다</CenteredContent>
+          <CenteredContent>아직 완료된 의뢰가 없습니다.</CenteredContent>
         )}
       </TabContent>
     </Container>
   );
 };
+
+export default InquiryPage;
 
 const Container = styled.div`
   display: flex;
@@ -150,16 +208,3 @@ const CenteredContent = styled.div`
   height: 100%;
   text-align: center;
 `;
-const RequestApplyButton = styled.button`
-  padding: 15px;
-  border-radius: 10px;
-  border: none;
-  width: 120px;
-  font-size: 16px;
-  margin-top: 15px;
-  font-weight: ${({ theme }) => theme.fonts.weights.bold};
-  color: white;
-  background: linear-gradient(to right, #01e6ff, #00dcf3, #59d7d7);
-  cursor: pointer;
-`;
-export default InquiryPage;

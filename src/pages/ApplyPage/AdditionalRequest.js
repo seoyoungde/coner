@@ -1,25 +1,61 @@
-import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import RequestDetails from "../../components/Apply/RequestDetails";
 import styled from "styled-components";
 import FormLayout from "../../components/Apply/FormLayout";
+import { useRequest } from "../../context/context";
+import AdditionalDropSelected from "../../components/Services/AdditionalDropSelected";
 
 const AdditionalRequest = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { selectedDate, selectedTime, selectedService, selectedBrand } =
-    location.state || {};
+  const { requestData, updateRequestData, submitRequest } = useRequest();
 
   const [additionalInfo, setAdditionalInfo] = useState("");
 
-  const handleSubmit = () => {
-    console.log({
-      selectedDate,
-      selectedTime,
-      selectedService,
-      selectedBrand,
-      additionalInfo,
-    });
+  const needsAdditionalDropSelected = ["설치", "이전"].includes(
+    requestData.service
+  );
+  const needsRepairAdditionalDropSelected = ["수리"].includes(
+    requestData.service
+  );
+  const [selectedDropdownOption, setSelectedDropdownOption] = useState("");
+
+  const handleSubmit = async () => {
+    try {
+      let formattedDetailInfo = "";
+
+      if (["청소", "철거"].includes(requestData.service)) {
+        formattedDetailInfo = additionalInfo.trim();
+      } else if (requestData.service === "설치") {
+        formattedDetailInfo =
+          `${requestData.detailInfo},${selectedDropdownOption}, ${additionalInfo}`.trim();
+      } else if (["이전", "수리"].includes(requestData.service)) {
+        formattedDetailInfo =
+          `${selectedDropdownOption}, ${additionalInfo}`.trim();
+      }
+      updateRequestData("selectedDropdownOption", selectedDropdownOption);
+
+      await new Promise((resolve) => {
+        updateRequestData("detailInfo", formattedDetailInfo);
+        setTimeout(resolve, 300);
+      });
+
+      const requestId = await submitRequest({
+        ...requestData,
+        detailInfo: formattedDetailInfo,
+      });
+
+      navigate("/inquirydashboard", {
+        state: {
+          // clientId: requestData.clientId,
+          clientPhone: requestData.clientPhone,
+          requestId: requestId,
+        },
+      });
+    } catch (error) {
+      console.error("❌ 데이터 저장 중 오류 발생:", error);
+      alert("제출 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
   };
 
   return (
@@ -28,6 +64,33 @@ const AdditionalRequest = () => {
       subtitle="추가적으로 작성할 내용이 있나요?"
     >
       <Container>
+        {needsAdditionalDropSelected && (
+          <AdditionalDropSelected
+            options={["앵글 설치가 필요해요.", "앵글 설치는 필요 없어요."]}
+            placeholderText="앵글 설치 여부 선택하기"
+            boxPerRow={2}
+            onSelect={(option) => setSelectedDropdownOption(option)}
+          />
+        )}
+        {needsRepairAdditionalDropSelected && (
+          <AdditionalDropSelected
+            options={[
+              "에어컨이 작동하지 않아요.",
+              "에어컨에서 이상한 소리가 나요.",
+              "에어컨 전원이 켜지지 않아요.",
+              "에어컨에서 이상한 냄새가 나요.",
+              "에어컨에서 물이 흘러나와요.",
+              "에어컨이 부분적으로만 작동돼요.",
+              "에어컨이 자동으로 꺼지거나 켜져요.",
+              "에어컨 온도 조절이 잘 안돼요.",
+              "기타",
+            ]}
+            placeholderText="에어컨 이상사항을 선택해주세요"
+            boxPerRow={2}
+            isMultiSelect={true}
+            onSelect={(option) => setSelectedDropdownOption(option)}
+          />
+        )}
         <RequestDetails
           additionalInfo={additionalInfo}
           setAdditionalInfo={setAdditionalInfo}
