@@ -1,14 +1,20 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import FormLayout from "../../components/Apply/FormLayout";
 import DropdownSelector from "../../components/Apply/DropdownSelector";
 import styled from "styled-components";
 import { GrApps, GrUserSettings, GrBookmark } from "react-icons/gr";
 import Popup from "../../components/Apply/Popup";
+import { useRequest } from "../../context/context";
 
 const RequestBasicInfo = () => {
   const navigate = useNavigate();
-  const [selectedService, setSelectedService] = useState("");
+  const location = useLocation();
+  const { requestData, updateRequestData } = useRequest();
+
+  const [selectedService, setSelectedService] = useState(
+    requestData.service || location.state?.selectedService
+  );
   const [selectedType, setSelectedType] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -17,31 +23,40 @@ const RequestBasicInfo = () => {
   const [isTypeOpen, setIsTypeOpen] = useState(true);
   const [isBrandOpen, setIsBrandOpen] = useState(true);
 
+  useEffect(() => {
+    if (selectedService) {
+      updateRequestData("service", selectedService);
+    }
+  }, [selectedService]);
+
   const handleNext = () => {
     if (!selectedService || !selectedType || !selectedBrand) {
       setIsPopupOpen(true);
       return;
     }
-    navigate("/selectservicedate", {
-      state: { selectedService, selectedType, selectedBrand },
-    });
+    updateRequestData("service", selectedService);
+    updateRequestData("aircon", selectedType);
+    updateRequestData("brand", selectedBrand);
+
+    navigate("/additionalrequest");
   };
 
   return (
     <FormLayout
-      title="의뢰서 기본 정보"
+      title={`"의뢰서 기본 정보"- ${selectedService || "서비스 미선택"}`}
       subtitle="희망 서비스와 에어컨 종류를 선택해주세요."
       onNext={handleNext}
     >
       <DropdownSelector
-        title="청소"
+        title={selectedService}
         icon={<GrUserSettings size="18" />}
         options={["청소", "설치", "이전", "수리", "철거"]}
         selected={selectedService}
         setSelected={setSelectedService}
-        isOpen={isServiceOpen}
+        isOpen={false}
         setIsOpen={setIsServiceOpen}
         optionWidths={["70px", "70px", "70px", "70px", "70px"]}
+        disabled
       />
 
       <DropdownSelector

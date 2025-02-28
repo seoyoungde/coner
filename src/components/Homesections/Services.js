@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useRequest } from "../../context/context";
 import Divider from "../layout/Divider";
 
 const serviceData = [
@@ -38,10 +39,23 @@ const serviceData = [
 
 const Services = () => {
   const navigate = useNavigate();
+  const { requestData, updateRequestData } = useRequest();
+  const [selectedService, setSelectedService] = useState(
+    requestData.service || ""
+  );
 
-  const handleServiceClick = (path) => {
-    navigate(path);
+  useEffect(() => {
+    if (requestData.service) {
+      setSelectedService(requestData.service);
+    }
+  }, [requestData.service]);
+
+  const handleServiceClick = (service) => {
+    updateRequestData("service", service.title);
+    setSelectedService(service.title);
+    navigate(service.path, { state: { selectedService: service.title } });
   };
+
   return (
     <ServiceContainer>
       <Title>서비스 예약하기</Title>
@@ -49,7 +63,8 @@ const Services = () => {
         {serviceData.map((service) => (
           <ServiceItem
             key={service.id}
-            onClick={() => handleServiceClick(service.path)}
+            onClick={() => handleServiceClick(service)}
+            isSelected={selectedService === service.title}
           >
             <img src={service.icon} alt={`${service.title} 아이콘`} />
             <p>{service.title}</p>

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import { HiOutlineChevronUp, HiOutlineChevronDown } from "react-icons/hi";
 import { MdOutlineComment } from "react-icons/md";
+import { useRequest } from "../../context/context";
 
 const AirConditionerForm = ({
   options,
@@ -14,22 +15,23 @@ const AirConditionerForm = ({
   boxWidths = ["45%", "45%"],
 }) => {
   const navigate = useNavigate();
+
   const [selectedOption, setSelectedOption] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(true);
   const [popupMessage, setPopupMessage] = useState("");
+  const { updateRequestData } = useRequest();
 
   const handleOptionClick = (option) => {
     setSelectedOption(option);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedOption) {
       setPopupMessage("에어컨 보유 여부를 선택해주세요.");
       return;
     }
-    if (onSubmit) {
-      onSubmit(selectedOption);
-    }
+    updateRequestData("detailInfo", selectedOption);
+
     navigate("/installpage2");
   };
 

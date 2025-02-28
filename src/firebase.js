@@ -1,7 +1,5 @@
-// Import Firebase SDK
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
@@ -24,5 +22,4 @@ const auth = getAuth(app); // 인증
 const db = getFirestore(app); // Firestore 데이터베이스
 const storage = getStorage(app); // 스토리지
 
-// 필요한 모듈 export
 export { app, auth, db, storage, analytics };

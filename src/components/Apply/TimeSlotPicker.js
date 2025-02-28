@@ -28,15 +28,15 @@ const TimeSlotPicker = ({ selectedTime, setSelectedTime }) => {
 export default TimeSlotPicker;
 
 const TimeSlotContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 한 줄에 3개씩 */
+  gap: 10px; /* 버튼 간격 */
+  margin: auto;
   margin-top: 20px;
+  width: 400px;
 `;
 
 const TimeSlotButton = styled.button`
-  flex: 1;
   padding: 12px;
   border-radius: 20px;
   font-size: 14px;
@@ -46,4 +46,5 @@ const TimeSlotButton = styled.button`
   background: ${({ isSelected }) => (isSelected ? "#00e6fd" : "white")};
   color: ${({ isSelected }) => (isSelected ? "white" : "#333")};
   cursor: pointer;
+  text-align: center;
 `;

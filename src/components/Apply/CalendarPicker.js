@@ -9,8 +9,11 @@ const CalendarPicker = ({ selectedDate, setSelectedDate }) => {
     <CalendarWrapper>
       <Calendar
         onChange={setSelectedDate}
-        value={new Date(selectedDate)}
+        value={selectedDate ? new Date(selectedDate) : null}
         minDate={new Date(new Date().setDate(new Date().getDate() + 2))}
+        tileDisabled={({ date }) =>
+          date.toDateString() === new Date().toDateString()
+        }
       />
     </CalendarWrapper>
   );
@@ -25,5 +28,17 @@ const CalendarWrapper = styled.div`
     background: white;
     border-radius: 10px;
     font-weight: bold;
+    font-size: 18px;
+  }
+  .react-calendar__tile:disabled {
+    background-color: #f0f0f0 !important;
+    color: #ccc !important;
+    cursor: not-allowed !important;
+    border-radius: 0 !important;
+  }
+  .react-calendar__tile--active {
+    background-color: #01e6ff !important;
+    color: white !important;
+    border-radius: 10px !important;
   }
 `;

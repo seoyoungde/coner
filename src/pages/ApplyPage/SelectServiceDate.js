@@ -5,23 +5,39 @@ import TimeSlotPicker from "../../components/Apply/TimeSlotPicker";
 import styled from "styled-components";
 import FormLayout from "../../components/Apply/FormLayout";
 import { GrFormCalendar } from "react-icons/gr";
+import Popup from "../../components/Apply/Popup";
 import { AiOutlineClockCircle } from "react-icons/ai";
+import { useRequest } from "../../context/context";
 
 const SelectServiceDate = () => {
   const navigate = useNavigate();
+  const { updateRequestData } = useRequest();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState("");
-  const [isPopupOpen, setIsPopupOpen] = useState(false); // 🚀 팝업 상태 추가
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleNext = () => {
     if (!selectedDate || !selectedTime) {
-      setIsPopupOpen(true); // 🚀 팝업 열기
+      setIsPopupOpen(true);
       return;
     }
-    navigate("/additionalrequest", { state: { selectedDate, selectedTime } });
+    const formattedDate = selectedDate.toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+
+    updateRequestData("hopeDate", formattedDate);
+    updateRequestData("hopeTime", selectedTime);
+    navigate("/requestbasicinfo", { state: { selectedDate, selectedTime } });
   };
 
-  const formatDate = (date) => date.toISOString().split("T")[0];
+  const formatDate = (date) =>
+    date.toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
 
   return (
     <FormLayout
@@ -30,7 +46,6 @@ const SelectServiceDate = () => {
       onNext={handleNext}
     >
       <InfoText>오늘 날짜로부터 2일 이후부터 예약이 가능합니다.</InfoText>
-
       <Container>
         <DateBox>
           <SelectedContainer>
@@ -42,7 +57,6 @@ const SelectServiceDate = () => {
             setSelectedDate={setSelectedDate}
           />
         </DateBox>
-
         <TimeBox>
           <SelectedContainer>
             <AiOutlineClockCircle size="18" />
@@ -55,22 +69,15 @@ const SelectServiceDate = () => {
           />
         </TimeBox>
       </Container>
-
-      {/* 🚀 팝업 추가 */}
       {isPopupOpen && (
-        <PopupOverlay>
-          <PopupContainer>
-            <PopupText>날짜와 시간을 모두 선택해주세요.</PopupText>
-            <PopupButton onClick={() => setIsPopupOpen(false)}>
-              닫기
-            </PopupButton>
-          </PopupContainer>
-        </PopupOverlay>
+        <Popup onClose={() => setIsPopupOpen(false)}>
+          <PopupText>모든 옵션을 선택해주세요.</PopupText>
+          <PopupButton onClick={() => setIsPopupOpen(false)}>닫기</PopupButton>
+        </Popup>
       )}
     </FormLayout>
   );
 };
-
 export default SelectServiceDate;
 
 const Container = styled.div`
@@ -80,6 +87,7 @@ const Container = styled.div`
 const InfoText = styled.p`
   font-size: 14px;
   color: #888;
+  margin-top: 10px;
 `;
 
 const DateBox = styled.div`
@@ -117,34 +125,13 @@ const SelectedText = styled.div`
   color: #333;
 `;
 
-/* 🚀 팝업 스타일 */
-const PopupOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-`;
-
-const PopupContainer = styled.div`
-  background: white;
-  border-radius: 10px;
-  text-align: center;
-  width: 280px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-`;
-
 const PopupText = styled.p`
   font-size: 16px;
   font-weight: bold;
   color: #333;
   margin-bottom: 40px;
   margin-top: 40px;
+  padding: 30px 50px 30px 50px;
 `;
 
 const PopupButton = styled.button`

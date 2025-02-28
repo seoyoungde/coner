@@ -1,45 +1,31 @@
 import React from "react";
 import styled from "styled-components";
 
-const CompletedRequests = () => {
-  const requests = [
-    {
-      date: "2023.12.29",
-      technician: "홍길동 기사님",
-      address: "서울특별시 성북구 안암로 145",
-      service: "설치",
-      category: "에어컨",
-    },
-    {
-      date: "2023.12.29",
-      technician: "홍길동 기사님",
-      address: "서울특별시 성북구 안암로 145",
-      service: "설치",
-      category: "에어컨",
-    },
-  ];
+const CompletedRequests = ({ requestData }) => {
+  if (!requestData) {
+    return <CenteredContent>완료된 의뢰가 없습니다.</CenteredContent>;
+  }
 
   return (
     <RequestList>
-      {requests.map((request, index) => (
-        <RequestCard key={index}>
-          <RequestHeader>
-            <Date>{request.date}</Date>
-            <Technician>{request.technician}</Technician>
-          </RequestHeader>
-          <RequestDetails>
-            <TagContainer>
-              <Category>{request.category}</Category>
-              <Service>{request.service}</Service>
-            </TagContainer>
-            <Address>{request.address}</Address>
-          </RequestDetails>
-        </RequestCard>
-      ))}
+      <RequestCard>
+        <RequestHeader>
+          <Date>{requestData.completionDate || "날짜 없음"}</Date>
+          <Technician>{requestData.engineerName || "기사님 없음"}</Technician>
+        </RequestHeader>
+        <RequestDetails>
+          <TagContainer>
+            <Category>{requestData.service || "서비스 없음"}</Category>
+            <Service>{requestData.aircon || "에어컨 종류 없음"}</Service>
+          </TagContainer>
+          <Address>{requestData.clientAddress || "주소 없음"}</Address>
+        </RequestDetails>
+      </RequestCard>
     </RequestList>
   );
 };
 
+const CenteredContent = styled.div``;
 const RequestList = styled.div`
   display: flex;
   flex-direction: column;
