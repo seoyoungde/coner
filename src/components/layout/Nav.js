@@ -18,7 +18,7 @@ const Nav = () => {
         </NavItem>
         <NavItem to="/mypage">
           <FaCircle />
-          <p>마이페이지</p>
+          <p>고객센터</p>
         </NavItem>
       </NavbarContainer>
     </Navbar>

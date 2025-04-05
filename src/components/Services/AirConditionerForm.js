@@ -5,6 +5,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { HiOutlineChevronUp, HiOutlineChevronDown } from "react-icons/hi";
 import { MdOutlineComment } from "react-icons/md";
 import { useRequest } from "../../context/context";
+import StepProgressBar from "../../components/Apply/StepProgressBar";
 
 const AirConditionerForm = ({
   options,
@@ -50,6 +51,7 @@ const AirConditionerForm = ({
           <IoIosArrowBack size={32} color="#333" />
         </BackButton>
       </Header>
+      <StepProgressBar currentStep={0} totalSteps={4} />
       <TitleSection>
         <Title>{title}</Title>
         <Description>{description}</Description>

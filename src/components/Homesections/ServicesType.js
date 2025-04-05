@@ -33,7 +33,7 @@ const types = [
 const ServicesType = () => {
   return (
     <TypeCards>
-      <h1>코너가 다루는 에어컨 종류</h1>
+      <h1>서비스 가능한 에어컨</h1>
       <p>창문형은 설치 서비스를 제공하지 않아요</p>
       <TypeList>
         {types.map((type) => (
@@ -43,15 +43,15 @@ const ServicesType = () => {
           </TypeCard>
         ))}
       </TypeList>
-      <Divider />
+      {/* <Divider /> */}
     </TypeCards>
   );
 };
 
 const TypeCards = styled.section`
-  margin-top: 23px;
   cursor: default;
   background-color: #ffffff;
+  padding-top: 22px;
 
   h1 {
     margin-left: 17px;
@@ -67,7 +67,7 @@ const TypeCards = styled.section`
   p {
     margin-left: 17px;
     font-size: ${({ theme }) => theme.fonts.sizes.medium};
-    font-weight: ${({ theme }) => theme.fonts.weights.bold};
+    font-weight: ${({ theme }) => theme.fonts.weights.medium};
     color: ${({ theme }) => theme.colors.subtext};
     margin-top: 5px;
     margin-bottom: 12px;
@@ -87,12 +87,11 @@ const TypeList = styled.div`
   justify-content: space-between;
   margin: auto;
   list-style: none;
-  overflow-x: auto;
   scroll-behavior: smooth;
   white-space: nowrap;
 
   @media (max-width: 600px) {
-    width: 78%;
+    width: 90%;
     margin-top: 17px;
   }
 `;
@@ -113,7 +112,7 @@ const TypeCard = styled.div`
 
   h3 {
     font-size: ${({ theme }) => theme.fonts.sizes.medium || "17px"};
-    font-weight: ${({ theme }) => theme.fonts.weights.bold || "980"};
+    font-weight: ${({ theme }) => theme.fonts.weights.medium};
   }
 `;
 

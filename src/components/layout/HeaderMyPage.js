@@ -7,13 +7,14 @@ const HeaderMyPage = () => {
       <Title>
         <img src="../conerlogo 2.png" alt="Coner 로고" />
       </Title>
-      <SubTitle>내 정보</SubTitle>
+      <SubTitle>고객센터</SubTitle>
     </HeaderContainer>
   );
 };
 const HeaderContainer = styled.header`
   display: flex;
   flex-direction: row;
+  background-color: #ffffff;
 `;
 
 const Title = styled.div`

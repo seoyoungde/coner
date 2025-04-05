@@ -1,32 +1,22 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import styled from "styled-components";
-import DaumPostcode from "react-daum-postcode";
 import { useRequest } from "../../context/context";
-
-const SERVICE_AREAS = [
-  "서울 강북구",
-  "서울 광진구",
-  "서울 노원구",
-  "서울 도봉구",
-  "서울 동대문구",
-  "서울 성북구",
-  "서울 종로구",
-  "서울 중랑구",
-];
+import { HiOutlineExclamationCircle } from "react-icons/hi";
+import StepProgressBar from "../../components/Apply/StepProgressBar";
 
 const AddressForm = ({ title, description, buttonText }) => {
   const navigate = useNavigate();
   const { updateRequestData } = useRequest();
+  const location = useLocation();
   const [formData, setFormData] = useState({
     clientAddress: "",
-    // clientDetailedAddress: "",
+    clientDetailedAddress: "",
     // clientId: "",
     clientPhone: "",
   });
   const [popupMessage, setPopupMessage] = useState("");
-  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,40 +29,35 @@ const AddressForm = ({ title, description, buttonText }) => {
     }
   };
 
-  const handleAddressSelect = (data) => {
-    const selectedAddress = data.address;
-    const isServiceArea = SERVICE_AREAS.some((area) =>
-      selectedAddress.includes(area)
-    );
-    if (!isServiceArea) {
-      setPopupMessage(
-        "해당 지역은 서비스 제공이 불가능합니다. 다른 주소를 선택해주세요."
-      );
-      setIsAddressModalOpen(false);
-      return;
+  useEffect(() => {
+    if (location.state?.selectedAddress) {
+      setFormData((prev) => ({
+        ...prev,
+        clientAddress: location.state.selectedAddress,
+      }));
     }
-    setFormData((prev) => ({
-      ...prev,
-      clientAddress: selectedAddress,
-      // clientDetailedAddress: "",
-    }));
-    setIsAddressModalOpen(false);
+  }, [location.state]);
+
+  const AddressInputClick = () => {
+    navigate("/addressmodal", { state: { prevPath: location.pathname } });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (isAddressModalOpen) return;
     if (!formData.clientAddress) {
       setPopupMessage("주소를 선택해주세요.");
       return;
     }
-
+    if (!formData.clientDetailedAddress) {
+      setPopupMessage("상세주소를 입력해주세요.");
+      return;
+    }
     if (!formData.clientPhone) {
       setPopupMessage("전화번호를 입력해주세요.");
       return;
     }
     updateRequestData("clientAddress", formData.clientAddress);
-    // updateRequestData("clientDetailedAddress", formData.clientDetailedAddress);
+    updateRequestData("clientDetailedAddress", formData.clientDetailedAddress);
     // updateRequestData("clientId", formData.clientId);
     updateRequestData("clientPhone", formData.clientPhone);
 
@@ -86,6 +71,7 @@ const AddressForm = ({ title, description, buttonText }) => {
           <IoIosArrowBack size={32} color="#333" />
         </BackButton>
       </Header>
+      <StepProgressBar currentStep={1} totalSteps={4} />
       <TitleSection>
         <Title>{title}</Title>
         <Description>{description}</Description>
@@ -93,27 +79,35 @@ const AddressForm = ({ title, description, buttonText }) => {
       <Form onSubmit={handleSubmit}>
         <Field>
           <Label>주소</Label>
+          <HelperTextBox>
+            <HiOutlineExclamationCircle color=" #a5a5a5" size="18" />
+            <HelperText>
+              현재 서비스 제공 지역은 서울 강북권 일부로 제한되어 있습니다.
+              <br></br>
+              강북구, 광진구, 노원구, 동대문구, 성북구, 도봉구, 은평구, 중량구,
+              종로구
+            </HelperText>
+          </HelperTextBox>
           <CustomSelect>
             <Input
               type="text"
               name="clientAddress"
-              placeholder="주소를 선택해주세요"
+              placeholder="클릭하여 주소 검색"
               style={{ border: "none" }}
               value={formData.clientAddress}
+              onClick={AddressInputClick}
               readOnly
             />
-            <SearchBox onClick={() => setIsAddressModalOpen(true)}>
-              주소찾기
-            </SearchBox>
           </CustomSelect>
-          {/* <HelperText>예시) 효자로12</HelperText>
+
           <Input
             type="text"
             name="clientDetailedAddress"
-            placeholder="상세주소를 입력해주세요."
+            placeholder="상세주소"
             value={formData.clientDetailedAddress}
             onChange={handleChange}
-          /> */}
+            style={{ marginTop: "10px" }}
+          />
         </Field>
         {/* <Field>
           <Label>이름</Label>
@@ -137,14 +131,6 @@ const AddressForm = ({ title, description, buttonText }) => {
         </Field>
         <SubmitButton type="submit">{buttonText}</SubmitButton>
       </Form>
-      {isAddressModalOpen && (
-        <AddressModal>
-          <DaumPostcode onComplete={handleAddressSelect} />
-          <CloseModalButton onClick={() => setIsAddressModalOpen(false)}>
-            닫기
-          </CloseModalButton>
-        </AddressModal>
-      )}
       {popupMessage && (
         <Popup>
           <PopupContent>
@@ -157,15 +143,6 @@ const AddressForm = ({ title, description, buttonText }) => {
   );
 };
 
-const SearchBox = styled.button`
-  width: 100px;
-  padding: 10px;
-  font-size: ${({ theme }) => theme.fonts.sizes.small};
-  font-weight: ${({ theme }) => theme.fonts.weights.bold};
-  margin-right: 10px;
-  border-radius: 8px;
-  border: none;
-`;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -209,7 +186,7 @@ const Form = styled.form`
 `;
 
 const Field = styled.div`
-  margin-bottom: 15px;
+  margin-bottom: 45px;
 `;
 
 const Label = styled.label`
@@ -233,24 +210,16 @@ const CustomSelect = styled.div`
   }
 `;
 
-const Select = styled.select`
-  width: 100%;
-  padding: 15px;
-  font-size: 16px;
-  font-weight: ${({ theme }) => theme.fonts.weights.bold};
-  border: none;
-  background-color: transparent;
-  appearance: none;
-  outline: none;
-`;
-
 const HelperText = styled.p`
   color: #a5a5a5;
-  font-weight: bold;
-  margin-bottom: 4px;
-  margin-top: 10px;
+  font-weight: 500;
+  font-size: 15px;
+  padding: 0px 0px 15px 5px;
 `;
-
+const HelperTextBox = styled.div`
+  display: flex;
+  padding-left: 5px;
+`;
 const Input = styled.input`
   width: 100%;
   padding: 15px;
@@ -272,7 +241,7 @@ const Input = styled.input`
 
 const SubmitButton = styled.button`
   width: 100%;
-  padding: 15px;
+  padding: 15px 15px 15px 15px;
   font-size: 19px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   color: white;
@@ -280,36 +249,12 @@ const SubmitButton = styled.button`
   border: none;
   border-radius: 9px;
   cursor: pointer;
-  margin-top: 75px;
+  margin-top: 45px;
   &:hover {
     background: linear-gradient(to right, #00ddf6, #00dbf2, #53cfce);
   }
 `;
-const AddressModal = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  padding: 25px;
-  width: 500px;
-  border-radius: 10px;
-  z-index: 1000;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-`;
 
-const CloseModalButton = styled.button`
-  width: 100%;
-  margin-top: 10px;
-  padding: 10px;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  background-color: #ff5c5c;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-`;
 const Popup = styled.div`
   position: fixed;
   top: 0;
