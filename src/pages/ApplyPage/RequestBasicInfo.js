@@ -6,6 +6,8 @@ import styled from "styled-components";
 import { GrApps, GrUserSettings, GrBookmark } from "react-icons/gr";
 import Popup from "../../components/Apply/Popup";
 import { useRequest } from "../../context/context";
+import StepProgressBar from "../../components/Apply/StepProgressBar";
+import { IoIosArrowBack } from "react-icons/io";
 
 const RequestBasicInfo = () => {
   const navigate = useNavigate();
@@ -42,68 +44,79 @@ const RequestBasicInfo = () => {
   };
 
   return (
-    <FormLayout
-      title={`"의뢰서 기본 정보"- ${selectedService || "서비스 미선택"}`}
-      subtitle="희망 서비스와 에어컨 종류를 선택해주세요."
-      onNext={handleNext}
-    >
-      <DropdownSelector
-        title={selectedService}
-        icon={<GrUserSettings size="18" />}
-        options={["청소", "설치", "이전", "수리", "철거"]}
-        selected={selectedService}
-        setSelected={setSelectedService}
-        isOpen={false}
-        setIsOpen={setIsServiceOpen}
-        optionWidths={["70px", "70px", "70px", "70px", "70px"]}
-        disabled
-      />
+    <div>
+      <Header>
+        <BackButton onClick={() => navigate(-1)}>
+          <IoIosArrowBack size={32} color="#333" />
+        </BackButton>
+      </Header>
+      <StepProgressBar currentStep={3} totalSteps={4} />
+      <FormLayout
+        title={`"의뢰서 기본 정보"- ${selectedService || "서비스 미선택"}`}
+        subtitle="희망 서비스와 에어컨 종류를 선택해주세요."
+        onNext={handleNext}
+      >
+        <a />
+        <DropdownSelector
+          title={selectedService}
+          icon={<GrUserSettings size="18" />}
+          options={["청소", "설치", "이전", "수리", "철거"]}
+          selected={selectedService}
+          setSelected={setSelectedService}
+          isOpen={false}
+          setIsOpen={setIsServiceOpen}
+          optionWidths={["70px", "70px", "70px", "70px", "70px"]}
+          disabled
+        />
 
-      <DropdownSelector
-        title="에어컨 종류 선택하기"
-        icon={<GrApps size="18" />}
-        options={["벽걸이형", "스탠드형", "천장형", "창문형", "항온항습기"]}
-        selected={selectedType}
-        setSelected={setSelectedType}
-        isOpen={isTypeOpen}
-        setIsOpen={setIsTypeOpen}
-        optionWidths={["90px", "90px", "90px", "90px", "110px"]}
-      />
+        <DropdownSelector
+          title="에어컨 종류 선택하기"
+          icon={<GrApps size="18" />}
+          options={["벽걸이형", "스탠드형", "천장형", "창문형", "항온항습기"]}
+          selected={selectedType}
+          setSelected={setSelectedType}
+          isOpen={isTypeOpen}
+          setIsOpen={setIsTypeOpen}
+          optionWidths={["90px", "90px", "90px", "90px", "110px"]}
+        />
 
-      <DropdownSelector
-        title="브랜드 선택하기"
-        icon={<GrBookmark size="18" />}
-        options={[
-          "삼성전자",
-          "LG전자",
-          "캐리어",
-          "센추리",
-          "귀뚜라미",
-          "SK매직",
-          "기타(추천 또는 모름)",
-        ]}
-        selected={selectedBrand}
-        setSelected={setSelectedBrand}
-        isOpen={isBrandOpen}
-        setIsOpen={setIsBrandOpen}
-        optionWidths={[
-          "100px",
-          "90px",
-          "90px",
-          "90px",
-          "100px",
-          "100px",
-          "150px",
-        ]}
-      />
+        <DropdownSelector
+          title="브랜드 선택하기"
+          icon={<GrBookmark size="18" />}
+          options={[
+            "삼성전자",
+            "LG전자",
+            "캐리어",
+            "센추리",
+            "귀뚜라미",
+            "SK매직",
+            "기타(추천 또는 모름)",
+          ]}
+          selected={selectedBrand}
+          setSelected={setSelectedBrand}
+          isOpen={isBrandOpen}
+          setIsOpen={setIsBrandOpen}
+          optionWidths={[
+            "100px",
+            "90px",
+            "90px",
+            "90px",
+            "100px",
+            "100px",
+            "150px",
+          ]}
+        />
 
-      {isPopupOpen && (
-        <Popup onClose={() => setIsPopupOpen(false)}>
-          <PopupText>모든 옵션을 선택해주세요.</PopupText>
-          <PopupButton onClick={() => setIsPopupOpen(false)}>닫기</PopupButton>
-        </Popup>
-      )}
-    </FormLayout>
+        {isPopupOpen && (
+          <Popup onClose={() => setIsPopupOpen(false)}>
+            <PopupText>모든 옵션을 선택해주세요.</PopupText>
+            <PopupButton onClick={() => setIsPopupOpen(false)}>
+              닫기
+            </PopupButton>
+          </Popup>
+        )}
+      </FormLayout>
+    </div>
   );
 };
 
@@ -128,4 +141,16 @@ const PopupButton = styled.button`
   background: #00e6fd;
   color: white;
   cursor: pointer;
+`;
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const BackButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding-left: 20px;
+  padding-top: 10px;
 `;

@@ -33,7 +33,7 @@ const InquiryPage = () => {
     try {
       // ✅ requestId가 있는 경우 단일 조회
       if (requestId) {
-        const docRef = doc(db, "serviceRequests", requestId);
+        const docRef = doc(db, "testservice", requestId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           requests.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
@@ -43,7 +43,7 @@ const InquiryPage = () => {
       //  clientPhone이 있을 경우 여러 개의 요청 조회
       if (clientPhone) {
         const q = query(
-          collection(db, "serviceRequests"),
+          collection(db, "testservice"),
           // where("clientId", "==", clientId),
           where("clientPhone", "==", clientPhone)
         );

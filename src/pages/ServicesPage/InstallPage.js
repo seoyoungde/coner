@@ -19,7 +19,7 @@ const YourPage = () => {
       title="에어컨 보유 여부"
       description="현재 설치하실 에어컨을 가지고 있습니까?"
       buttonText="다음으로"
-      boxWidths={["30%", "55%"]}
+      boxWidths={["35%", "55%"]}
       onSubmit={handleFormSubmit}
     />
   );

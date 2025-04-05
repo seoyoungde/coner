@@ -43,7 +43,7 @@ const RequestSearch = () => {
   return (
     <Container>
       <Title>
-        <h2>비회원 의뢰서 조회</h2>
+        <h2>의뢰서 조회</h2>
         <p>의뢰서에 작성했던 전화번호를 입력해주세요</p>
       </Title>
       <Content>
@@ -57,7 +57,7 @@ const RequestSearch = () => {
           />
         </InputWrapper> */}
         <InputWrapper>
-          <h3>연락처</h3>
+          <h3>전화번호</h3>
           <InputField
             name="phoneNumber"
             placeholder="전화번호"
@@ -92,7 +92,7 @@ const Title = styled.div`
   }
   p {
     font-size: ${({ theme }) => theme.fonts.sizes.medium};
-    font-weight: ${({ theme }) => theme.fonts.weights.semibold};
+    font-weight: ${({ theme }) => theme.fonts.weights.medium};
     margin-top: 3px;
   }
 `;

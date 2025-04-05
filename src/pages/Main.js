@@ -18,10 +18,41 @@ import RequestSearch from "../pages/MyRequests/RequestSearch";
 import RequestBasicInfo from "./ApplyPage/RequestBasicInfo";
 import SelectServiceDate from "./ApplyPage/SelectServiceDate";
 import AdditionalRequest from "./ApplyPage/AdditionalRequest";
+import AddressModal from "../components/Services/AddressModal";
 
 const Main = () => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const location = useLocation();
+
+  const getBackgroundColor = (pathname) => {
+    switch (pathname) {
+      case "/requests":
+        return "#ffffff";
+      case "/clean":
+        return "#ffffff";
+      case "/install":
+        return "#ffffff";
+      case "/installpage2":
+        return "#ffffff";
+      case "/move":
+        return "#ffffff";
+      case "/repair":
+        return "#ffffff";
+      case "/demolish":
+        return "#ffffff";
+      case "/inquirydashboard":
+        return "#ffffff";
+      case "/selectservicedate":
+        return "#ffffff";
+      case "/requestbasicinfo":
+        return "#ffffff";
+      case "/additionalrequest":
+        return "#ffffff";
+      default:
+        return "#f9f9f9";
+    }
+  };
+
   useEffect(() => {
     const updateHeight = () => {
       setWindowHeight(window.innerHeight);
@@ -44,15 +75,16 @@ const Main = () => {
     "/requestbasicinfo",
     "/additionalrequest",
     "/selectservicedate",
+    "/addressmodal",
   ];
   return (
     <Container style={{ height: `${windowHeight}px` }}>
       {/* 왼쪽 민트색 박스 */}
       <ImageBox>
-        <img src="../mainimage.png" alt="Coner 로고" />
+        <img src="../mainimage2.jpg" alt="Coner 로고" />
       </ImageBox>
       {/* 오른쪽 콘텐츠 박스 */}
-      <ContentBox>
+      <ContentBox backgroundColor={getBackgroundColor(location.pathname)}>
         <MainContent>
           <Routes>
             <Route path="/clean" element={<CleanPage />} />
@@ -70,6 +102,7 @@ const Main = () => {
             <Route path="/requestbasicinfo" element={<RequestBasicInfo />} />
             <Route path="/selectservicedate" element={<SelectServiceDate />} />
             <Route path="/additionalrequest" element={<AdditionalRequest />} />
+            <Route path="/addressmodal" element={<AddressModal />} />
           </Routes>
         </MainContent>
 
@@ -121,6 +154,7 @@ const ImageBox = styled.div`
 `;
 
 const ContentBox = styled.div`
+  background-color: ${({ backgroundColor }) => backgroundColor};
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -145,7 +179,13 @@ const ContentBox = styled.div`
     margin-left: 0;
     border: none;
     box-shadow: none;
-    width: 580px;
+    width: 560px;
+  }
+  @media (max-width: 550px) {
+    margin-left: 0;
+    border: none;
+    box-shadow: none;
+    width: 520px;
   }
 `;
 

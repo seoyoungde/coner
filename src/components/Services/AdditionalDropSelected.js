@@ -128,13 +128,13 @@ const DropdownIcon = styled.div`
 const DropdownContent = styled.div`
   display: grid;
   grid-template-columns: repeat(${({ boxPerRow }) => boxPerRow}, 1fr);
-  gap: 15px;
-  padding: 15px;
+  gap: 10px;
+  padding: 12px;
   margin-bottom: 10px;
 `;
 
 const OptionBox = styled.div`
-  padding: 13px;
+  padding: 10px;
   width: ${({ width }) => width};
   border-radius: 20px;
   font-size: 15px;

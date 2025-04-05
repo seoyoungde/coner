@@ -60,7 +60,7 @@ export const RequestProvider = ({ children }) => {
   const fetchRequestByClient = async (clientPhone) => {
     try {
       const q = query(
-        collection(db, "serviceRequests"),
+        collection(db, "testservice"),
         where("clientPhone", "==", clientPhone)
       );
       const querySnapshot = await getDocs(q);
@@ -104,7 +104,7 @@ export const RequestProvider = ({ children }) => {
       const today = new Date();
       const formattedDate = today.toISOString().split("T")[0];
 
-      const newDocRef = doc(collection(db, "serviceRequests"));
+      const newDocRef = doc(collection(db, "testservice"));
       await setDoc(newDocRef, {
         ...updatedRequestData,
         id: newDocRef.id,

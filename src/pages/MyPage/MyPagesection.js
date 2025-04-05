@@ -46,10 +46,10 @@ const MyPageSection = () => {
       <Content>
         <ProfileSection>
           <Logo src="../conerlogo3.png" alt="앱 로고" />
-          <Instruction>
+          {/* <Instruction>
             앱에서 회원가입하고 편하게 서비스를 관리하세요.
           </Instruction>
-          <DownloadLink onClick={togglePopup}>앱 다운로드하기</DownloadLink>
+          <DownloadLink onClick={togglePopup}>앱 다운로드하기</DownloadLink> */}
         </ProfileSection>
 
         {sections.map((section, index) => (
@@ -64,7 +64,7 @@ const MyPageSection = () => {
           </InfoSection>
         ))}
 
-        <HelpCenter>
+        {/* <HelpCenter>
           <h4>Help Center</h4>
           <p>coner.aircon@gmail.com</p>
           <SocialIcons>
@@ -83,7 +83,7 @@ const MyPageSection = () => {
               <FaSquareInstagram size="40" color="#E4405F" />
             </a>
           </SocialIcons>
-        </HelpCenter>
+        </HelpCenter> */}
 
         <Footer>
           <p>©CONER Co., All rights reserved.</p>
@@ -116,13 +116,13 @@ const Container = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: #f9f9f9;
 `;
 
 const Content = styled.div`
   flex: 1;
   padding: 20px;
-  overflow-y: auto;
+  height: 100%;
+  background-color: #f9f9f9;
 `;
 
 const ProfileSection = styled.div`
@@ -165,7 +165,7 @@ const InfoSection = styled.div`
 const InfoItem = styled.div`
   padding: 10px 0;
   font-size: ${({ theme }) => theme.fonts.sizes.medium};
-  font-weight: ${({ theme }) => theme.fonts.weights.semibold};
+  font-weight: ${({ theme }) => theme.fonts.weights.medium};
 
   a {
     text-decoration: none;
@@ -197,9 +197,8 @@ const SocialIcons = styled.div`
 const Footer = styled.footer`
   text-align: center;
   margin-top: 40px;
-  margin-bottom: 40px;
-  font-size: 16px;
-  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  font-size: 14px;
+  font-weight: ${({ theme }) => theme.fonts.weights.medium};
 `;
 
 const PopupOverlay = styled.div`

@@ -4,7 +4,13 @@ import styled from "styled-components";
 import { useRequest } from "../../../context/context";
 import CalendarPicker from "../../../components/Apply/CalendarPicker";
 import TimeSlotPicker from "../../../components/Apply/TimeSlotPicker";
-import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import {
+  doc,
+  updateDoc,
+  deleteDoc,
+  onSnapshot,
+  collection,
+} from "firebase/firestore";
 import DropdownSelector from "../../../components/Apply/DropdownSelector";
 import AdditionalDropSelected from "../../../components/Services/AdditionalDropSelected";
 import RequestDetails from "../../../components/Apply/RequestDetails";
@@ -15,8 +21,9 @@ const RequestReceived = ({ requestData }) => {
   const navigate = useNavigate();
   const { updateRequestData } = useRequest();
   const isMounted = useRef(true);
-  const [isDeleted, setIsDeleted] = useState(false);
   const [requests, setRequests] = useState(requestData ? [requestData] : []);
+  const [requestDataState, setRequestDataState] = useState(requestData);
+  const [forceUpdate, setForceUpdate] = useState(0);
   const [editingRequestId, setEditingRequestId] = useState(null);
   const [selectedHopeDate, setSelectedHopeDate] = useState(
     requestData.hopeDate
@@ -48,13 +55,14 @@ const RequestReceived = ({ requestData }) => {
 
   const handleEditClick = (requestId) => {
     setEditingRequestId(requestId);
-    setAdditionalInfo("");
     setSelectedDropdownOption("");
     setSelectedAirconditionerform("");
+    setAdditionalInfo("");
   };
 
   const handleCancelClick = () => {
     setEditingRequestId(null);
+    setAdditionalInfo(requestData.detailInfo || "");
   };
 
   useEffect(() => {
@@ -66,6 +74,7 @@ const RequestReceived = ({ requestData }) => {
 
   const handleSaveClick = async (request) => {
     if (!request.id) return;
+
     let formattedDetailInfo = "";
     if (["청소", "철거"].includes(selectedService)) {
       formattedDetailInfo = additionalInfo;
@@ -75,25 +84,24 @@ const RequestReceived = ({ requestData }) => {
         additionalInfo,
         selectedairconditionerform,
       ]
-        .filter(Boolean) // 빈 값 제거
-        .join("\n"); // 줄바꿈 추가
+        .filter(Boolean)
+        .join("\n");
     } else if (["수리", "이전"].includes(selectedService)) {
       formattedDetailInfo = [additionalInfo, selectedDropdownOption]
         .filter(Boolean)
         .join("\n");
     }
+    const updatedRequest = {
+      ...request,
+      hopeDate: selectedHopeDate,
+      hopeTime: selectedHopeTime,
+      service: selectedService,
+      brand: selectedBrand,
+      aircon: selectedType,
+      detailInfo: formattedDetailInfo,
+    };
     try {
-      const updatedRequest = {
-        ...request,
-        hopeDate: selectedHopeDate,
-        hopeTime: selectedHopeTime,
-        service: selectedService,
-        brand: selectedBrand,
-        aircon: selectedType,
-        detailInfo: formattedDetailInfo,
-      };
-
-      const docRef = doc(db, "serviceRequests", request.id);
+      const docRef = doc(db, "testservice", request.id);
       await updateDoc(docRef, updatedRequest);
 
       if (isMounted.current) {
@@ -131,47 +139,63 @@ const RequestReceived = ({ requestData }) => {
     );
   }, [additionalInfo]);
 
-  // useEffect(() => {
-  //   if (!requestData) return;
-  //   const unsubscribe = onSnapshot(
-  //     collection(db, "serviceRequests"),
-  //     (snapshot) => {
-  //       const updatedRequests = snapshot.docs.map((doc) => ({
-  //         id: doc.id,
-  //         ...doc.data(),
-  //       }));
-  //       setRequests(updatedRequests);
-  //     }
-  //   );
-
-  //   return () => unsubscribe();
-  // }, [requestData, isDeleted]);
-
   const handleCancelRequestPopup = (requestId) => {
     setCancelRequestId(requestId);
     setIsCancelPopupOpen(true);
   };
+
   const handleCancelRequest = async () => {
     if (!cancelRequestId) return;
 
     try {
-      await deleteDoc(doc(db, "serviceRequests", cancelRequestId));
+      await deleteDoc(doc(db, "testservice", cancelRequestId));
 
-      // 삭제 후 상태 업데이트 -> isDeleted를 true로 변경해 강제 리렌더링 유도
-      setRequests((prevRequests) =>
-        prevRequests.filter((req) => req.id !== cancelRequestId)
-      );
       updateRequestData(cancelRequestId, null);
 
-      setIsDeleted((prev) => !prev); // 🔥 상태를 토글하여 useEffect 재실행
-
-      // 팝업 닫기
-      setCancelRequestId(null);
       setIsCancelPopupOpen(false);
+      setCancelRequestId(null);
+      window.location.reload();
     } catch (error) {
       console.error("❌ Firestore 삭제 중 오류 발생:", error);
+      alert("⚠️ 의뢰 취소 중 오류가 발생했습니다.");
     }
   };
+
+  useEffect(() => {
+    console.log("📡 Firestore 실시간 업데이트 감지 시작...");
+
+    const unsubscribe = onSnapshot(
+      collection(db, "testservice"),
+      (snapshot) => {
+        console.log("🔄 Firestore 데이터 변경 감지됨!", snapshot.docs.length);
+
+        const updatedRequests = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setRequests([...updatedRequests]); // 🔥 상태 변경 감지하여 즉시 반영
+
+        const updatedRequest = updatedRequests.find(
+          (req) => req.id === requestData?.id
+        );
+        if (updatedRequest) {
+          console.log("🔁 requestData 변경 감지:", updatedRequest);
+          updateRequestData(updatedRequest.id, updatedRequest);
+          setRequestDataState(updatedRequest); // 🔥 상태 업데이트하여 UI 반영
+        }
+
+        // 🔥 강제 리렌더링 실행
+        setForceUpdate((prev) => prev + 1);
+      }
+    );
+
+    return () => {
+      console.log("🛑 Firestore 실시간 감지 중지됨.");
+      unsubscribe();
+    };
+  }, [forceUpdate]);
+
   return (
     <Container>
       <RequestBox>
@@ -361,7 +385,6 @@ const RequestReceived = ({ requestData }) => {
           </Section>
           {/* 추가요청사항 */}
           <Section style={{ whiteSpace: "pre-line" }}>
-            <Label>추가 요청사항</Label>
             {editingRequestId === requestData.id ? (
               <>
                 {["청소", "철거"].includes(selectedService) && (
@@ -513,7 +536,9 @@ const LabelBox = styled.div`
   padding: 20px 10px 30px 20px;
 `;
 const TechnicianContainer = styled.div``;
-const TechnicianETC = styled.div``;
+const TechnicianETC = styled.div`
+  font-size: 15px;
+`;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -681,6 +706,7 @@ const ButtonGroup = styled.div`
   gap: 10px;
   width: 100%;
   margin-top: 15px;
+  margin-bottom: 15px;
 `;
 
 const CancelButton = styled.button`
@@ -772,4 +798,3 @@ const PopupButton = styled.button`
   background: ${({ secondary }) => (secondary ? "#ddd" : "#00e6fd")};
   color: white;
 `;
-const CenteredContent = styled.div``;

@@ -7,13 +7,14 @@ const HeaderRequest = () => {
       <Title>
         <img src="../conerlogo 2.png" alt="Coner 로고" />
       </Title>
-      <SubTitle>비회원님의 의뢰서</SubTitle>
+      <SubTitle>의뢰서 조회</SubTitle>
     </HeaderContainer>
   );
 };
 const HeaderContainer = styled.header`
   display: flex;
   flex-direction: row;
+  background-color: #ffffff;
 `;
 
 const Title = styled.div`

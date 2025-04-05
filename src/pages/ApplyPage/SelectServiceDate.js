@@ -8,6 +8,8 @@ import { GrFormCalendar } from "react-icons/gr";
 import Popup from "../../components/Apply/Popup";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { useRequest } from "../../context/context";
+import { IoIosArrowBack } from "react-icons/io";
+import StepProgressBar from "../../components/Apply/StepProgressBar";
 
 const SelectServiceDate = () => {
   const navigate = useNavigate();
@@ -40,42 +42,54 @@ const SelectServiceDate = () => {
     });
 
   return (
-    <FormLayout
-      title="서비스 희망 날짜 선택"
-      subtitle="원하시는 서비스 날짜를 선택해주세요."
-      onNext={handleNext}
-    >
-      <InfoText>오늘 날짜로부터 2일 이후부터 예약이 가능합니다.</InfoText>
-      <Container>
-        <DateBox>
-          <SelectedContainer>
-            <GrFormCalendar size="22" />
-            <SelectedText>{formatDate(selectedDate)}</SelectedText>
-          </SelectedContainer>
-          <CalendarPicker
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-          />
-        </DateBox>
-        <TimeBox>
-          <SelectedContainer>
-            <AiOutlineClockCircle size="18" />
-            <SelectedText>{selectedTime || "시간을 선택해주세요"}</SelectedText>
-          </SelectedContainer>
-          <InfoText>선택하신 시간대 사이에 기사님이 방문해요</InfoText>
-          <TimeSlotPicker
-            selectedTime={selectedTime}
-            setSelectedTime={setSelectedTime}
-          />
-        </TimeBox>
-      </Container>
-      {isPopupOpen && (
-        <Popup onClose={() => setIsPopupOpen(false)}>
-          <PopupText>모든 옵션을 선택해주세요.</PopupText>
-          <PopupButton onClick={() => setIsPopupOpen(false)}>닫기</PopupButton>
-        </Popup>
-      )}
-    </FormLayout>
+    <div>
+      <Header>
+        <BackButton onClick={() => navigate(-1)}>
+          <IoIosArrowBack size={32} color="#333" />
+        </BackButton>
+      </Header>
+      <StepProgressBar currentStep={2} totalSteps={4} />
+      <FormLayout
+        title="서비스 희망 날짜 선택"
+        subtitle="원하시는 서비스 날짜를 선택해주세요."
+        onNext={handleNext}
+      >
+        <InfoText>오늘 날짜로부터 2일 이후부터 예약이 가능합니다.</InfoText>
+        <Container>
+          <DateBox>
+            <SelectedContainer>
+              <GrFormCalendar size="22" />
+              <SelectedText>{formatDate(selectedDate)}</SelectedText>
+            </SelectedContainer>
+            <CalendarPicker
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
+          </DateBox>
+          <TimeBox>
+            <SelectedContainer>
+              <AiOutlineClockCircle size="18" />
+              <SelectedText>
+                {selectedTime || "시간을 선택해주세요"}
+              </SelectedText>
+            </SelectedContainer>
+            <InfoText>선택하신 시간대 사이에 기사님이 방문해요</InfoText>
+            <TimeSlotPicker
+              selectedTime={selectedTime}
+              setSelectedTime={setSelectedTime}
+            />
+          </TimeBox>
+        </Container>
+        {isPopupOpen && (
+          <Popup onClose={() => setIsPopupOpen(false)}>
+            <PopupText>모든 옵션을 선택해주세요.</PopupText>
+            <PopupButton onClick={() => setIsPopupOpen(false)}>
+              닫기
+            </PopupButton>
+          </Popup>
+        )}
+      </FormLayout>
+    </div>
   );
 };
 export default SelectServiceDate;
@@ -83,11 +97,21 @@ export default SelectServiceDate;
 const Container = styled.div`
   text-align: center;
 `;
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
+const BackButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding-left: 20px;
+  padding-top: 10px;
+`;
 const InfoText = styled.p`
   font-size: 14px;
   color: #888;
-  margin-top: 10px;
 `;
 
 const DateBox = styled.div`
@@ -106,7 +130,7 @@ const TimeBox = styled.div`
   width: 100%;
   padding: 20px;
   border-radius: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   border: 1px solid #d6d6d6;
   display: flex;
   flex-direction: column;
