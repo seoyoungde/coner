@@ -26,7 +26,7 @@ const AdditionalRequest = () => {
     try {
       let formattedDetailInfo = "";
 
-      if (["청소", "철거"].includes(requestData.service)) {
+      if (["청소", "철거", "점검", "냉매 충전"].includes(requestData.service)) {
         formattedDetailInfo = additionalInfo.trim();
       } else if (requestData.service === "설치") {
         formattedDetailInfo =

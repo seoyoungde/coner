@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Nav from "../components/layout/Nav";
 import Home from "./Home";
 import Requests from "./MyRequests/Requests";
@@ -19,14 +19,43 @@ import RequestBasicInfo from "./ApplyPage/RequestBasicInfo";
 import SelectServiceDate from "./ApplyPage/SelectServiceDate";
 import AdditionalRequest from "./ApplyPage/AdditionalRequest";
 import AddressModal from "../components/Services/AddressModal";
+import Inspection from "./ServicesPage/Inspection";
+import Charge from "./ServicesPage/Charge";
+import Header from "../components/layout/Header";
+
+const headerMap = {
+  "/": <Header />,
+};
 
 const Main = () => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const location = useLocation();
+  const headerComponent = headerMap[location.pathname] || null;
+  const [showScrollbar, setShowScrollbar] = useState(false);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+
+    const handleScroll = () => {
+      setShowScrollbar(true);
+      clearTimeout(scrollContainer._scrollTimeout);
+      scrollContainer._scrollTimeout = setTimeout(() => {
+        setShowScrollbar(false);
+      }, 1000);
+    };
+
+    scrollContainer.addEventListener("scroll", handleScroll);
+    return () => {
+      scrollContainer.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const getBackgroundColor = (pathname) => {
     switch (pathname) {
       case "/requests":
+        return "#ffffff";
+      case "/inspection":
         return "#ffffff";
       case "/clean":
         return "#ffffff";
@@ -35,6 +64,8 @@ const Main = () => {
       case "/installpage2":
         return "#ffffff";
       case "/move":
+        return "#ffffff";
+      case "/charge":
         return "#ffffff";
       case "/repair":
         return "#ffffff";
@@ -76,6 +107,8 @@ const Main = () => {
     "/additionalrequest",
     "/selectservicedate",
     "/addressmodal",
+    "/inspection",
+    "/charge",
   ];
   return (
     <Container style={{ height: `${windowHeight}px` }}>
@@ -85,7 +118,11 @@ const Main = () => {
       </ImageBox>
       {/* 오른쪽 콘텐츠 박스 */}
       <ContentBox backgroundColor={getBackgroundColor(location.pathname)}>
-        <MainContent>
+        {headerComponent && <HeaderBox>{headerComponent}</HeaderBox>}
+        <MainContent
+          ref={scrollRef}
+          className={showScrollbar ? "show-scrollbar" : ""}
+        >
           <Routes>
             <Route path="/clean" element={<CleanPage />} />
             <Route path="/install" element={<InstallPage />} />
@@ -103,6 +140,8 @@ const Main = () => {
             <Route path="/selectservicedate" element={<SelectServiceDate />} />
             <Route path="/additionalrequest" element={<AdditionalRequest />} />
             <Route path="/addressmodal" element={<AddressModal />} />
+            <Route path="/inspection" element={<Inspection />} />
+            <Route path="/charge" element={<Charge />} />
           </Routes>
         </MainContent>
 
@@ -137,7 +176,15 @@ const Container = styled.div`
     align-items: center;
   }
 `;
-
+const HeaderBox = styled.div`
+  position: fixed;
+  top: 0;
+  width: 605px;
+  z-index: 100;
+  background: white;
+  padding: 20px 0 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+`;
 const ImageBox = styled.div`
   display: flex;
   align-items: center;
@@ -192,21 +239,39 @@ const ContentBox = styled.div`
 const MainContent = styled.div`
   flex: 1;
   height: calc(100% - 95px);
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #c4c4c4 transparent;
+  overflow-y: scroll;
+  position: relative;
+
+  /* 🎯 핵심: 콘텐츠 위에 스크롤바를 겹쳐서 표시하고, 레이아웃은 안 바뀜 */
+  scrollbar-gutter: stable overlay;
+
+  /* 기본 상태: 스크롤바 투명 처리 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE */
 
   &::-webkit-scrollbar {
     width: 8px;
+    background: transparent;
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #c4c4c4;
+    background-color: transparent;
     border-radius: 4px;
+    transition: background-color 0.3s ease;
   }
 
   &::-webkit-scrollbar-track {
     background: transparent;
+  }
+
+  /* Hover 또는 스크롤 상태에서 스크롤바 표시 */
+  &:hover::-webkit-scrollbar-thumb,
+  &.show-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.15);
+  }
+
+  &.show-scrollbar {
+    scrollbar-width: thin;
   }
 `;
 

@@ -8,9 +8,9 @@ import InfoCards from "../components/Homesections/InfoCards";
 const Home = () => {
   return (
     <Container>
-      <HeaderBox>
+      {/* <HeaderBox>
         <Header />
-      </HeaderBox>
+      </HeaderBox> */}
       <img src="../banner.jpg" alt="Coner 로고" />
       <MainServiceTap>
         <Services />
@@ -23,6 +23,7 @@ const Home = () => {
 
 const Container = styled.div`
   display: flex;
+
   flex-direction: column;
 `;
 const MainServiceTap = styled.div`

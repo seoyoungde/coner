@@ -76,7 +76,7 @@ const RequestReceived = ({ requestData }) => {
     if (!request.id) return;
 
     let formattedDetailInfo = "";
-    if (["청소", "철거"].includes(selectedService)) {
+    if (["청소", "철거", "점검", "냉매 충전"].includes(selectedService)) {
       formattedDetailInfo = additionalInfo;
     } else if (selectedService === "설치") {
       formattedDetailInfo = [
@@ -324,12 +324,28 @@ const RequestReceived = ({ requestData }) => {
               <DropdownSelector
                 title={selectedService}
                 icon={<GrUserSettings size="18" />}
-                options={["청소", "설치", "이전", "수리", "철거"]}
+                options={[
+                  "설치",
+                  "점검",
+                  "청소",
+                  "수리",
+                  "냉매 충전",
+                  "이전",
+                  "철거",
+                ]}
                 selected={selectedService}
                 setSelected={setSelectedService}
                 isOpen={isServiceOpen}
                 setIsOpen={setIsServiceOpen}
-                optionWidths={["70px", "70px", "70px", "70px", "70px"]}
+                optionWidths={[
+                  "70px",
+                  "70px",
+                  "70px",
+                  "70px",
+                  "90px",
+                  "70px",
+                  "70px",
+                ]}
                 disabled
               />
             ) : (
@@ -387,7 +403,9 @@ const RequestReceived = ({ requestData }) => {
           <Section style={{ whiteSpace: "pre-line" }}>
             {editingRequestId === requestData.id ? (
               <>
-                {["청소", "철거"].includes(selectedService) && (
+                {["청소", "철거", "점검", "냉매 충전"].includes(
+                  selectedService
+                ) && (
                   <RequestDetails
                     additionalInfo={additionalInfo}
                     setAdditionalInfo={setAdditionalInfo}

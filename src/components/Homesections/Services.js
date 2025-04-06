@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useRequest } from "../../context/context";
-import Divider from "../layout/Divider";
 
 const serviceData = [
   {
@@ -15,7 +14,7 @@ const serviceData = [
     id: 2,
     title: "점검",
     icon: "../servicesimage/services_inspection.png",
-    path: "/clean",
+    path: "/inspection",
   },
   {
     id: 3,
@@ -33,7 +32,7 @@ const serviceData = [
     id: 5,
     title: "냉매 충전",
     icon: "../servicesimage/services_charge.png",
-    path: "/move",
+    path: "/charge",
   },
   {
     id: 6,
