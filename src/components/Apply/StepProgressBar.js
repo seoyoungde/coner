@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { device } from "../../styles/theme";
 
 const StepProgressBar = ({ currentStep = 0, totalSteps = 4 }) => {
   const progressPercentage = Math.min((currentStep / totalSteps) * 100, 100);
@@ -40,6 +41,9 @@ const ProgressBar = styled.div`
   border-radius: 20px;
   overflow: hidden;
   margin-right: 10px;
+  @media ${device.mobile} {
+    height: 10px;
+  }
 `;
 
 const ProgressFill = styled.div`
@@ -52,4 +56,7 @@ const StepText = styled.span`
   font-size: 15px;
   color: #a5a5a5;
   white-space: nowrap;
+  @media ${device.mobile} {
+    font-size: 1.4rem;
+  }
 `;

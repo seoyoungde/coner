@@ -1,58 +1,59 @@
 import React from "react";
 import styled from "styled-components";
-import Header from "../components/layout/Header";
-import ServicesType from "../components/Homesections/ServicesType";
 import Services from "../components/Homesections/Services";
-import InfoCards from "../components/Homesections/InfoCards";
+import ServicesType from "../components/Homesections/ServicesType";
+import { useScaleLayout } from "../hooks/useScaleLayout";
 
 const Home = () => {
+  const { scale, height, ref } = useScaleLayout();
+
   return (
-    <Container>
-      {/* <HeaderBox>
-        <Header />
-      </HeaderBox> */}
-      <img src="../banner.jpg" alt="Coner 로고" />
-      <MainServiceTap>
-        <Services />
-        <ServicesType />
-        {/* <InfoCards /> */}
-      </MainServiceTap>
-    </Container>
+    <ScaleWrapper
+      style={{
+        transform: `scale(${scale})`,
+        transformOrigin: "top center",
+        height: `${height}px`,
+      }}
+    >
+      <Container ref={ref}>
+        <BannerSection>
+          <BannerImg src="../banner.jpg" alt="Coner 메인 배너" />
+        </BannerSection>
+        <MainContent>
+          <Services />
+          <ServicesType />
+        </MainContent>
+      </Container>
+    </ScaleWrapper>
   );
 };
 
-const Container = styled.div`
+const ScaleWrapper = styled.div`
+  width: 100%;
   display: flex;
+  justify-content: center;
+`;
 
+const Container = styled.div`
+  width: 100%;
+  display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 `;
-const MainServiceTap = styled.div`
-  flex: 1;
-  height: calc(100% - 95px);
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #c4c4c4 transparent;
 
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #c4c4c4;
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
+const BannerSection = styled.section`
+  width: 100%;
+  height: 340px;
 `;
-const HeaderBox = styled.div`
-  position: sticky;
-  top: 0;
-  z-index: 100; /* 배너나 다른 요소 위에 올라오게 */
-  background-color: #ffffff;
-  padding-top: 20px;
-  padding-bottom: 10px;
+
+const BannerImg = styled.img`
+  width: 100%;
+  height: 400px;
+  object-fit: contain;
+`;
+
+const MainContent = styled.section`
+  width: 100%;
 `;
 
 export default Home;

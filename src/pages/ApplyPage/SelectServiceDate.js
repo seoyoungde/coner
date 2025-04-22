@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CalendarPicker from "../../components/Apply/CalendarPicker";
 import TimeSlotPicker from "../../components/Apply/TimeSlotPicker";
@@ -14,9 +14,22 @@ import StepProgressBar from "../../components/Apply/StepProgressBar";
 const SelectServiceDate = () => {
   const navigate = useNavigate();
   const { updateRequestData } = useRequest();
+  const [scale, setScale] = useState(1);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  useEffect(() => {
+    const updateScale = () => {
+      const baseWidth = 500;
+      const ratio = Math.min(window.innerWidth / baseWidth, 1);
+      setScale(ratio);
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
 
   const handleNext = () => {
     if (!selectedDate || !selectedTime) {
@@ -42,20 +55,26 @@ const SelectServiceDate = () => {
     });
 
   return (
-    <div>
-      <Header>
-        <BackButton onClick={() => navigate(-1)}>
-          <IoIosArrowBack size={32} color="#333" />
-        </BackButton>
-      </Header>
-      <StepProgressBar currentStep={2} totalSteps={4} />
-      <FormLayout
-        title="서비스 희망 날짜 선택"
-        subtitle="원하시는 서비스 날짜를 선택해주세요."
-        onNext={handleNext}
-      >
-        <InfoText>오늘 날짜로부터 2일 이후부터 예약이 가능합니다.</InfoText>
-        <Container>
+    <ScaleWrapper
+      style={{
+        transform: `scale(${scale})`,
+        transformOrigin: "top center",
+      }}
+    >
+      <Container>
+        <Header>
+          <BackButton onClick={() => navigate(-1)}>
+            <IoIosArrowBack size={32} color="#333" />
+          </BackButton>
+        </Header>
+        <StepProgressBar currentStep={2} totalSteps={4} />
+        <FormLayout
+          title="서비스 희망 날짜 선택"
+          subtitle="원하시는 서비스 날짜를 선택해주세요."
+          onNext={handleNext}
+        >
+          <InfoText>오늘 날짜로부터 2일 이후부터 예약이 가능합니다.</InfoText>
+
           <DateBox>
             <SelectedContainer>
               <GrFormCalendar size="22" />
@@ -79,23 +98,31 @@ const SelectServiceDate = () => {
               setSelectedTime={setSelectedTime}
             />
           </TimeBox>
-        </Container>
-        {isPopupOpen && (
-          <Popup onClose={() => setIsPopupOpen(false)}>
-            <PopupText>모든 옵션을 선택해주세요.</PopupText>
-            <PopupButton onClick={() => setIsPopupOpen(false)}>
-              닫기
-            </PopupButton>
-          </Popup>
-        )}
-      </FormLayout>
-    </div>
+
+          {isPopupOpen && (
+            <Popup onClose={() => setIsPopupOpen(false)}>
+              <PopupText>모든 옵션을 선택해주세요.</PopupText>
+              <PopupButton onClick={() => setIsPopupOpen(false)}>
+                닫기
+              </PopupButton>
+            </Popup>
+          )}
+        </FormLayout>
+      </Container>
+    </ScaleWrapper>
   );
 };
 export default SelectServiceDate;
 
+const ScaleWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+`;
 const Container = styled.div`
-  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
 `;
 const Header = styled.div`
   display: flex;

@@ -22,6 +22,12 @@ import AddressModal from "../components/Services/AddressModal";
 import Inspection from "./ServicesPage/Inspection";
 import Charge from "./ServicesPage/Charge";
 import Header from "../components/layout/Header";
+import LoginPage from "./Login/LoginPage";
+import CreatAcount from "./Login/CreatAcount";
+import IdSearch from "./Login/IdSearch";
+import PasswordSearch from "./Login/PasswordSearch";
+import InfoModify from "./MyPage/InfoModify";
+import Withdraw from "./MyPage/Withdraw";
 
 const headerMap = {
   "/": <Header />,
@@ -79,6 +85,18 @@ const Main = () => {
         return "#ffffff";
       case "/additionalrequest":
         return "#ffffff";
+      case "/loginpage":
+        return "#ffffff";
+      case "/createacount":
+        return "#ffffff";
+      case "/idsearch":
+        return "#ffffff";
+      case "/passwordsearch":
+        return "#ffffff";
+      case "/infomodify":
+        return "#ffffff";
+      case "/withdraw":
+        return "#ffffff";
       default:
         return "#f9f9f9";
     }
@@ -109,6 +127,11 @@ const Main = () => {
     "/addressmodal",
     "/inspection",
     "/charge",
+    "/createacount",
+    "/idsearch",
+    "/passwordsearch",
+    "/infomodify",
+    "/withdraw",
   ];
   return (
     <Container style={{ height: `${windowHeight}px` }}>
@@ -142,6 +165,12 @@ const Main = () => {
             <Route path="/addressmodal" element={<AddressModal />} />
             <Route path="/inspection" element={<Inspection />} />
             <Route path="/charge" element={<Charge />} />
+            <Route path="/loginpage" element={<LoginPage />}></Route>
+            <Route path="/createacount" element={<CreatAcount />}></Route>
+            <Route path="/idsearch" element={<IdSearch />} />
+            <Route path="/passwordsearch" element={<PasswordSearch />} />
+            <Route path="/infomodify" element={<InfoModify />} />
+            <Route path="/withdraw" element={<Withdraw />} />
           </Routes>
         </MainContent>
 
@@ -242,37 +271,9 @@ const MainContent = styled.div`
   overflow-y: scroll;
   position: relative;
 
-  /* 🎯 핵심: 콘텐츠 위에 스크롤바를 겹쳐서 표시하고, 레이아웃은 안 바뀜 */
-  scrollbar-gutter: stable overlay;
-
   /* 기본 상태: 스크롤바 투명 처리 */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE */
-
-  &::-webkit-scrollbar {
-    width: 8px;
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: transparent;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  /* Hover 또는 스크롤 상태에서 스크롤바 표시 */
-  &:hover::-webkit-scrollbar-thumb,
-  &.show-scrollbar::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.15);
-  }
-
-  &.show-scrollbar {
-    scrollbar-width: thin;
-  }
 `;
 
 export default Main;

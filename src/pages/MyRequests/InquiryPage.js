@@ -31,7 +31,6 @@ const InquiryPage = () => {
     let requests = new Map();
 
     try {
-      // ✅ requestId가 있는 경우 단일 조회
       if (requestId) {
         const docRef = doc(db, "testservice", requestId);
         const docSnap = await getDoc(docRef);
@@ -40,7 +39,6 @@ const InquiryPage = () => {
         }
       }
 
-      //  clientPhone이 있을 경우 여러 개의 요청 조회
       if (clientPhone) {
         const q = query(
           collection(db, "testservice"),
@@ -50,7 +48,6 @@ const InquiryPage = () => {
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
           querySnapshot.forEach((doc) => {
-            // 🔥 이미 Map에 존재하는 데이터인지 확인하고 추가
             if (!requests.has(doc.id)) {
               requests.set(doc.id, { id: doc.id, ...doc.data() });
             }
@@ -58,7 +55,7 @@ const InquiryPage = () => {
         }
       }
     } catch (error) {
-      console.error("❌ Firestore에서 데이터 조회 중 오류 발생:", error);
+      console.error("Firestore에서 데이터 조회 중 오류 발생:", error);
     }
 
     setRequestDataList(Array.from(requests.values()));
@@ -73,7 +70,6 @@ const InquiryPage = () => {
     navigate("/requests");
   };
 
-  // ✅ 진행 중인 의뢰와 완료된 의뢰 분리
   const completedRequests = requestDataList.filter((req) => req.state === 4);
   const inProgressRequests = requestDataList.filter((req) => req.state < 4);
 

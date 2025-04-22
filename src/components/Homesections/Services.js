@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useRequest } from "../../context/context";
+import { device } from "../../styles/theme";
 
 const serviceData = [
   {
@@ -70,8 +71,9 @@ const Services = () => {
 
   return (
     <ServiceContainer>
-      <Title>간편하게 신청하고 바로 연결!</Title>
-      <Title2>필요한 에어컨 서비스는 무엇인가요?</Title2>
+      <h1>간편하게 신청하고 바로 연결!</h1>
+      <h1>필요한 에어컨 서비스는 무엇인가요?</h1>
+
       <ServiceList>
         {[...serviceData, { id: "empty", hidden: true }].map((service) =>
           service.hidden ? (
@@ -97,46 +99,36 @@ const ServiceContainer = styled.section`
   padding-top: 22px;
   padding-bottom: 5px;
   margin-bottom: 20px;
-`;
-const Title = styled.h2`
-  font-size: ${({ theme }) => theme.fonts.sizes.large || "20px"};
-  font-weight: ${({ theme }) => theme.fonts.weights.bold || "700"};
-  margin-bottom: 2px;
-  margin-left: 17px;
-  @media (max-width: 600px) {
-    width: 80%;
-    margin: auto;
-    margin-bottom: 15px;
+  h1 {
+    margin-left: 17px;
+    font-size: ${({ theme }) => theme.fonts.sizes.large};
+    font-weight: ${({ theme }) => theme.fonts.weights.bold};
+
+    @media ${device.mobile} {
+      font-size: 1.9rem;
+      padding-left: 14px;
+    }
+  }
+  h1:nth-child(2) {
+    margin-bottom: 35px;
   }
 `;
 
-const Title2 = styled.h2`
-  font-size: ${({ theme }) => theme.fonts.sizes.large || "20px"};
-  font-weight: ${({ theme }) => theme.fonts.weights.bold || "700"};
-  margin-bottom: 35px;
-  margin-left: 17px;
-  @media (max-width: 600px) {
-    width: 80%;
-    margin: auto;
-    margin-bottom: 15px;
-  }
-`;
 const ServiceList = styled.ul`
   display: flex;
   flex-wrap: wrap;
   width: 95%;
   margin: auto;
-
   list-style: none;
   padding: 0;
 
-  @media (max-width: 600px) {
-    width: 90%;
+  @media ${device.mobile} {
+    padding: 10px 10px 0px 10px;
   }
 `;
 
 const ServiceItem = styled.li`
-  flex: 1 0 25%; // 한 줄에 최대 4개
+  flex: 1 0 25%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -145,20 +137,31 @@ const ServiceItem = styled.li`
   margin-bottom: 20px;
   height: 90px;
 
+  @media ${device.mobile} {
+    margin-bottom: 0px;
+    height: 129px;
+  }
+
   img {
     width: 45px;
     height: 45px;
     object-fit: contain;
+
+    @media ${device.mobile} {
+      width: 50px;
+      height: 50px;
+    }
   }
 
   p {
     margin-top: 5px;
     font-size: 16px;
     font-weight: 600;
-  }
 
-  @media (max-width: 600px) {
-    flex: 1 0 50%;
+    @media ${device.mobile} {
+      font-size: 1.4rem;
+      margin-top: 15px;
+    }
   }
 `;
 

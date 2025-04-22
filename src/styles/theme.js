@@ -1,3 +1,11 @@
+export const device = {
+  mobileS: `(max-width:360px)`,
+  mobile: `(max-width:480px)`,
+  tablet: `(max-width:768px)`,
+  laptop: `(max-width:1024px)`,
+  desktop: `(min-width:1025px)`,
+};
+
 export const theme = {
   colors: {
     main: "#00e5fd", // 메인 색상
@@ -20,4 +28,5 @@ export const theme = {
       bold: 980, // 굵은 글씨
     },
   },
+  device,
 };

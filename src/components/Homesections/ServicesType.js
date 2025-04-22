@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Divider from "../layout/Divider";
+import { device } from "../../styles/theme";
 
 const types = [
   {
@@ -43,7 +43,6 @@ const ServicesType = () => {
           </TypeCard>
         ))}
       </TypeList>
-      {/* <Divider /> */}
     </TypeCards>
   );
 };
@@ -53,35 +52,34 @@ const TypeCards = styled.section`
   background-color: #ffffff;
   padding-top: 22px;
 
+  @media ${device.mobile} {
+    margin-bottom: 19px;
+  }
+
   h1 {
     margin-left: 17px;
     font-size: ${({ theme }) => theme.fonts.sizes.large};
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
-
-    @media (max-width: 600px) {
-      width: 80%;
-      margin: auto;
+    @media ${device.mobile} {
+      font-size: 1.9rem;
+      padding-left: 14px;
     }
   }
 
   p {
-    margin-left: 17px;
     font-size: ${({ theme }) => theme.fonts.sizes.medium};
     font-weight: ${({ theme }) => theme.fonts.weights.medium};
     color: ${({ theme }) => theme.colors.subtext};
-    margin-top: 5px;
-    margin-bottom: 12px;
+    margin: 5px 0px 12px 17px;
 
-    @media (max-width: 600px) {
-      width: 80%;
-      margin: auto;
-      margin-top: 5px;
-      margin-bottom: 12px;
+    @media ${device.mobile} {
+      font-size: 1.5rem;
+      padding-left: 14px;
     }
   }
 `;
 
-const TypeList = styled.div`
+const TypeList = styled.ul`
   display: flex;
   width: 80%;
   justify-content: space-between;
@@ -89,14 +87,16 @@ const TypeList = styled.div`
   list-style: none;
   scroll-behavior: smooth;
   white-space: nowrap;
+  overflow-x: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE */
 
-  @media (max-width: 600px) {
+  @media ${device.mobile} {
     width: 90%;
-    margin-top: 17px;
   }
 `;
 
-const TypeCard = styled.div`
+const TypeCard = styled.li`
   display: flex;
   flex-direction: column;
   margin-bottom: 30px;
@@ -108,11 +108,18 @@ const TypeCard = styled.div`
     width: 100px;
     height: 100px;
     object-fit: contain;
+    @media ${device.mobile} {
+      width: 130px;
+      height: 130px;
+    }
   }
 
   h3 {
     font-size: ${({ theme }) => theme.fonts.sizes.medium || "17px"};
-    font-weight: ${({ theme }) => theme.fonts.weights.medium};
+    font-weight: 600;
+    @media ${device.mobile} {
+      font-size: 1.4rem;
+    }
   }
 `;
 

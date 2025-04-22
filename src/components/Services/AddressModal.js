@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import DaumPostcode from "react-daum-postcode";
@@ -18,8 +18,21 @@ const SERVICE_AREAS = [
 const AddressModal = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [scale, setScale] = useState(1);
   const [popupMessage, setPopupMessage] = useState("");
   const [postcodeKey, setPostcodeKey] = useState(0);
+
+  useEffect(() => {
+    const updateScale = () => {
+      const baseWidth = 500;
+      const ratio = Math.min(window.innerWidth / baseWidth, 1);
+      setScale(ratio);
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
 
   const handleAddressSelect = (data) => {
     const selectedAddress = data.address;
@@ -42,35 +55,48 @@ const AddressModal = () => {
     setPopupMessage("");
   };
   return (
-    <Container>
-      <Header>
-        <BackButton onClick={() => navigate(-1)}>
-          <IoIosArrowBack size={32} color="#333" />
-        </BackButton>
-      </Header>
-      <PostcodeWrapper>
-        <DaumPostcode
-          key={postcodeKey}
-          onComplete={handleAddressSelect}
-          style={{ height: "100%" }}
-        />
-        {popupMessage && (
-          <Popup>
-            <PopupContent>
-              <PopupMessage>{popupMessage}</PopupMessage>
-              <CloseButton onClick={handleClosePopup}>닫기</CloseButton>
-            </PopupContent>
-          </Popup>
-        )}
-      </PostcodeWrapper>
-    </Container>
+    <ScaleWrapper
+      style={{
+        transform: `scale(${scale})`,
+        transformOrigin: "top center",
+      }}
+    >
+      <Container>
+        <Header>
+          <BackButton onClick={() => navigate(-1)}>
+            <IoIosArrowBack size={32} color="#333" />
+          </BackButton>
+        </Header>
+        <PostcodeWrapper>
+          <DaumPostcode
+            key={postcodeKey}
+            onComplete={handleAddressSelect}
+            style={{ height: "100%" }}
+          />
+          {popupMessage && (
+            <Popup>
+              <PopupContent>
+                <PopupMessage>{popupMessage}</PopupMessage>
+                <CloseButton onClick={handleClosePopup}>닫기</CloseButton>
+              </PopupContent>
+            </Popup>
+          )}
+        </PostcodeWrapper>
+      </Container>
+    </ScaleWrapper>
   );
 };
-
+const ScaleWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+`;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
 `;
 
 const Header = styled.div`

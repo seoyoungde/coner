@@ -13,7 +13,7 @@ const AdditionalRequest = () => {
   const { requestData, updateRequestData, submitRequest } = useRequest();
 
   const [additionalInfo, setAdditionalInfo] = useState("");
-
+  const [scale, setScale] = useState(1);
   const needsAdditionalDropSelected = ["설치", "이전"].includes(
     requestData.service
   );
@@ -21,6 +21,18 @@ const AdditionalRequest = () => {
     requestData.service
   );
   const [selectedDropdownOption, setSelectedDropdownOption] = useState("");
+
+  useEffect(() => {
+    const updateScale = () => {
+      const baseWidth = 500;
+      const ratio = Math.min(window.innerWidth / baseWidth, 1);
+      setScale(ratio);
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -61,18 +73,23 @@ const AdditionalRequest = () => {
   };
 
   return (
-    <div>
-      <Header>
-        <BackButton onClick={() => navigate(-1)}>
-          <IoIosArrowBack size={32} color="#333" />
-        </BackButton>
-      </Header>
-      <StepProgressBar currentStep={4} totalSteps={4} />
-      <FormLayout
-        title="추가 요청사항"
-        subtitle="추가적으로 작성할 내용이 있나요?"
-      >
-        <Container>
+    <ScaleWrapper
+      style={{
+        transform: `scale(${scale})`,
+        transformOrigin: "top center",
+      }}
+    >
+      <Container>
+        <Header>
+          <BackButton onClick={() => navigate(-1)}>
+            <IoIosArrowBack size={32} color="#333" />
+          </BackButton>
+        </Header>
+        <StepProgressBar currentStep={4} totalSteps={4} />
+        <FormLayout
+          title="추가 요청사항"
+          subtitle="추가적으로 작성할 내용이 있나요?"
+        >
           {needsAdditionalDropSelected && (
             <AdditionalDropSelected
               options={["앵글 설치가 필요해요.", "앵글 설치는 필요 없어요."]}
@@ -127,17 +144,22 @@ const AdditionalRequest = () => {
           </ServiceCostContainer>
 
           <SubmitButton onClick={handleSubmit}>제출하기</SubmitButton>
-        </Container>
-      </FormLayout>
-    </div>
+        </FormLayout>
+      </Container>
+    </ScaleWrapper>
   );
 };
 
 export default AdditionalRequest;
-
-const Container = styled.div`
+const ScaleWrapper = styled.div`
+  width: 100%;
+  height: 100%;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+`;
+const Container = styled.div`
+  width: 100%;
+  box-sizing: border-box;
   text-align: left;
 `;
 const Header = styled.div`

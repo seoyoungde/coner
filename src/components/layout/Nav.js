@@ -3,29 +3,46 @@ import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { RiHomeFill } from "react-icons/ri";
 import { FaSquare, FaCircle } from "react-icons/fa";
+import { device } from "../../styles/theme";
+import { useScaleLayout } from "../../hooks/useScaleLayout";
 
 const Nav = () => {
+  const { scale, height, ref } = useScaleLayout();
+
   return (
-    <Navbar>
-      <NavbarContainer>
-        <NavItem to="/" exact>
-          <RiHomeFill />
-          <p>홈</p>
-        </NavItem>
-        <NavItem to="/requests">
-          <FaSquare />
-          <p>내 의뢰서</p>
-        </NavItem>
-        <NavItem to="/mypage">
-          <FaCircle />
-          <p>고객센터</p>
-        </NavItem>
-      </NavbarContainer>
-    </Navbar>
+    <ScaleWrapper
+      style={{
+        transform: `scale(${scale})`,
+        transformOrigin: "top center",
+        height: `${height}px`,
+      }}
+    >
+      <Container ref={ref}>
+        <NavbarContainer>
+          <NavItem to="/" exact>
+            <RiHomeFill />
+            <p>홈</p>
+          </NavItem>
+          <NavItem to="/requests">
+            <FaSquare />
+            <p>내 의뢰서</p>
+          </NavItem>
+          <NavItem to="/mypage">
+            <FaCircle />
+            <p>고객센터</p>
+          </NavItem>
+        </NavbarContainer>
+      </Container>
+    </ScaleWrapper>
   );
 };
+const ScaleWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
 
-const Navbar = styled.div`
+const Container = styled.div`
   bottom: 0;
   left: 0;
   width: 100%;
@@ -33,56 +50,66 @@ const Navbar = styled.div`
   background-color: white;
   display: flex;
   align-items: center;
-  justify-content: center;
   z-index: 10;
   border-top: 1px solid #d4d4d4;
   border-radius: 30px 30px 0px 0px;
   box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.1);
+  @media ${device.mobile} {
+    height: 130px;
+  }
+  @media ${device.mobile} {
+    border-radius: 60px 60px 0px 0px;
+  }
 `;
 
 const NavbarContainer = styled.div`
-  width: 70%;
-  max-width: 500px;
+  width: 100%;
+  max-width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  text-align: center;
+  justify-content: space-around;
+  padding: 0 12px;
 `;
 
 const NavItem = styled(NavLink)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+
   cursor: pointer;
   gap: 5px;
   text-decoration: none;
 
   p {
-    font-size: 12px;
+    font-size: 1rem;
     color: #d9d9d9;
+    @media ${device.mobile} {
+      font-size: 1.2rem;
+    }
   }
 
   svg {
-    font-size: 24px;
+    font-size: 1.3rem;
     color: #d9d9d9;
+    @media ${device.mobile} {
+      font-size: 1.7rem;
+    }
   }
 
   &.active {
     p {
+      font-size: 1rem;
       color: #00e5fd;
+      @media ${device.mobile} {
+        font-size: 1.2rem;
+      }
     }
     svg {
+      font-size: 1.3rem;
       color: #00e5fd;
-    }
-  }
-
-  &:hover {
-    p {
-      color: #00e5fd;
-    }
-    svg {
-      color: #00e5fd;
+      @media ${device.mobile} {
+        font-size: 1.7rem;
+      }
     }
   }
 `;
