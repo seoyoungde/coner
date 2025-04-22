@@ -6,6 +6,7 @@ import { HiOutlineChevronUp, HiOutlineChevronDown } from "react-icons/hi";
 import { MdOutlineComment } from "react-icons/md";
 import { useRequest } from "../../context/context";
 import StepProgressBar from "../../components/Apply/StepProgressBar";
+import { device } from "../../styles/theme";
 
 const AirConditionerForm = ({
   options,
@@ -48,7 +49,9 @@ const AirConditionerForm = ({
     <Container>
       <Header>
         <BackButton onClick={handleGoBack}>
-          <IoIosArrowBack size={32} color="#333" />
+          <BackIcon>
+            <IoIosArrowBack size={32} color="#333" />
+          </BackIcon>
         </BackButton>
       </Header>
       <StepProgressBar currentStep={0} totalSteps={4} />
@@ -60,7 +63,9 @@ const AirConditionerForm = ({
         <DropdownContainer>
           <DropdownHeader onClick={() => setIsDropdownOpen((prev) => !prev)}>
             <DropdownLabelBox>
-              <MdOutlineComment size={23} />
+              <IconBox>
+                <MdOutlineComment size={23} />
+              </IconBox>
               <DropdownLabel>
                 {selectedOption || "에어컨 보유 여부 선택하기"}
               </DropdownLabel>
@@ -91,7 +96,6 @@ const AirConditionerForm = ({
         <SubmitButton onClick={handleSubmit}>{buttonText}</SubmitButton>
       </Form>
 
-      {/* 팝업 */}
       {popupMessage && (
         <Popup>
           <PopupContent>
@@ -126,7 +130,12 @@ const BackButton = styled.button`
   align-items: center;
   justify-content: center;
 `;
+const BackIcon = styled(IoIosArrowBack)`
+  font-size: 30px;
+  @media ${device.mobile}{
+font-size:50px;
 
+`;
 const TitleSection = styled.div`
   margin-top: 38px;
   margin-bottom: 25px;
@@ -137,11 +146,18 @@ const Title = styled.h2`
   font-size: ${({ theme }) => theme.fonts.sizes.large};
   margin-bottom: 3px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  @media ${device.mobile} {
+    font-size: 1.8rem;
+  }
 `;
 
 const Description = styled.p`
   font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  @media ${device.mobile} {
+    font-size: 1.4rem;
+    font-weight: 500;
+  }
 `;
 
 const Form = styled.div`
@@ -171,11 +187,17 @@ const DropdownHeader = styled.div`
 const DropdownLabel = styled.div`
   color: #333;
   margin-left: 10px;
+  @media ${device.mobile} {
+    font-size: 1.4rem;
+  }
 `;
 
 const DropdownLabelBox = styled.div`
   display: flex;
   flex-direction: row;
+`;
+const IconBox = styled(MdOutlineComment)`
+  font-size: 30px;
 `;
 
 const DropdownIcon = styled.div`
@@ -194,7 +216,7 @@ const DropdownContent = styled.div`
 const OptionBox = styled.div`
   width: ${({ width }) => width};
   padding: 10px;
-  border: 1.5px solid #f6f6f6;
+  border: 1.5px solid rgb(235, 235, 235);
   border-radius: 20px;
   text-align: center;
   font-size: 14px;
@@ -202,6 +224,10 @@ const OptionBox = styled.div`
   background-color: ${({ isSelected }) => (isSelected ? "#01e6ff" : "#ffffff")};
   color: ${({ isSelected }) => (isSelected ? "white" : "#333")};
   cursor: pointer;
+  @media ${device.mobile} {
+    width: 350px;
+    font-size: 1.2rem;
+  }
 `;
 
 const SubmitButton = styled.button`
@@ -218,6 +244,12 @@ const SubmitButton = styled.button`
 
   &:hover {
     background: linear-gradient(to right, #00ddf6, #00dbf2, #53cfce);
+  }
+  @media ${device.mobile} {
+    height: 73px;
+    margin-top: 20px;
+    font-size: 1.6rem;
+    font-weight: 900;
   }
 `;
 

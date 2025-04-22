@@ -12,6 +12,7 @@ import { IoIosArrowBack } from "react-icons/io";
 const RequestBasicInfo = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [scale, setScale] = useState(1);
   const { requestData, updateRequestData } = useRequest();
 
   const [selectedService, setSelectedService] = useState(
@@ -24,6 +25,18 @@ const RequestBasicInfo = () => {
   const [isServiceOpen, setIsServiceOpen] = useState(true);
   const [isTypeOpen, setIsTypeOpen] = useState(true);
   const [isBrandOpen, setIsBrandOpen] = useState(true);
+
+  useEffect(() => {
+    const updateScale = () => {
+      const baseWidth = 500;
+      const ratio = Math.min(window.innerWidth / baseWidth, 1);
+      setScale(ratio);
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
 
   useEffect(() => {
     if (selectedService) {
@@ -44,84 +57,95 @@ const RequestBasicInfo = () => {
   };
 
   return (
-    <div>
-      <Header>
-        <BackButton onClick={() => navigate(-1)}>
-          <IoIosArrowBack size={32} color="#333" />
-        </BackButton>
-      </Header>
-      <StepProgressBar currentStep={3} totalSteps={4} />
-      <FormLayout
-        title={`"의뢰서 기본 정보"- ${selectedService || "서비스 미선택"}`}
-        subtitle="희망 서비스와 에어컨 종류를 선택해주세요."
-        onNext={handleNext}
-      >
-        <a />
-        <DropdownSelector
-          title={selectedService}
-          icon={<GrUserSettings size="18" />}
-          options={["청소", "설치", "이전", "수리", "철거"]}
-          selected={selectedService}
-          setSelected={setSelectedService}
-          isOpen={false}
-          setIsOpen={setIsServiceOpen}
-          optionWidths={["70px", "70px", "70px", "70px", "70px"]}
-          disabled
-        />
+    <ScaleWrapper
+      style={{ transform: `scale(${scale})`, transformOrigin: "top center" }}
+    >
+      <Container>
+        <Header>
+          <BackButton onClick={() => navigate(-1)}>
+            <IoIosArrowBack size={32} color="#333" />
+          </BackButton>
+        </Header>
+        <StepProgressBar currentStep={3} totalSteps={4} />
+        <FormLayout
+          title={`"의뢰서 기본 정보"- ${selectedService || "서비스 미선택"}`}
+          subtitle="희망 서비스와 에어컨 종류를 선택해주세요."
+          onNext={handleNext}
+        >
+          <DropdownSelector
+            title={selectedService}
+            icon={<GrUserSettings size="18" />}
+            options={["청소", "설치", "이전", "수리", "철거"]}
+            selected={selectedService}
+            setSelected={setSelectedService}
+            isOpen={false}
+            setIsOpen={setIsServiceOpen}
+            optionWidths={["70px", "70px", "70px", "70px", "70px"]}
+            disabled
+          />
 
-        <DropdownSelector
-          title="에어컨 종류 선택하기"
-          icon={<GrApps size="18" />}
-          options={["벽걸이형", "스탠드형", "천장형", "창문형", "항온항습기"]}
-          selected={selectedType}
-          setSelected={setSelectedType}
-          isOpen={isTypeOpen}
-          setIsOpen={setIsTypeOpen}
-          optionWidths={["90px", "90px", "90px", "90px", "110px"]}
-        />
+          <DropdownSelector
+            title="에어컨 종류 선택하기"
+            icon={<GrApps size="18" />}
+            options={["벽걸이형", "스탠드형", "천장형", "창문형", "항온항습기"]}
+            selected={selectedType}
+            setSelected={setSelectedType}
+            isOpen={isTypeOpen}
+            setIsOpen={setIsTypeOpen}
+            optionWidths={["90px", "90px", "90px", "90px", "110px"]}
+          />
 
-        <DropdownSelector
-          title="브랜드 선택하기"
-          icon={<GrBookmark size="18" />}
-          options={[
-            "삼성전자",
-            "LG전자",
-            "캐리어",
-            "센추리",
-            "귀뚜라미",
-            "SK매직",
-            "기타(추천 또는 모름)",
-          ]}
-          selected={selectedBrand}
-          setSelected={setSelectedBrand}
-          isOpen={isBrandOpen}
-          setIsOpen={setIsBrandOpen}
-          optionWidths={[
-            "100px",
-            "90px",
-            "90px",
-            "90px",
-            "100px",
-            "100px",
-            "150px",
-          ]}
-        />
+          <DropdownSelector
+            title="브랜드 선택하기"
+            icon={<GrBookmark size="18" />}
+            options={[
+              "삼성전자",
+              "LG전자",
+              "캐리어",
+              "센추리",
+              "귀뚜라미",
+              "SK매직",
+              "기타(추천 또는 모름)",
+            ]}
+            selected={selectedBrand}
+            setSelected={setSelectedBrand}
+            isOpen={isBrandOpen}
+            setIsOpen={setIsBrandOpen}
+            optionWidths={[
+              "100px",
+              "90px",
+              "90px",
+              "90px",
+              "100px",
+              "100px",
+              "150px",
+            ]}
+          />
 
-        {isPopupOpen && (
-          <Popup onClose={() => setIsPopupOpen(false)}>
-            <PopupText>모든 옵션을 선택해주세요.</PopupText>
-            <PopupButton onClick={() => setIsPopupOpen(false)}>
-              닫기
-            </PopupButton>
-          </Popup>
-        )}
-      </FormLayout>
-    </div>
+          {isPopupOpen && (
+            <Popup onClose={() => setIsPopupOpen(false)}>
+              <PopupText>모든 옵션을 선택해주세요.</PopupText>
+              <PopupButton onClick={() => setIsPopupOpen(false)}>
+                닫기
+              </PopupButton>
+            </Popup>
+          )}
+        </FormLayout>
+      </Container>
+    </ScaleWrapper>
   );
 };
 
 export default RequestBasicInfo;
-
+const ScaleWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+const Container = styled.div`
+  width: 100%;
+  box-sizing: border-box;
+`;
 const PopupText = styled.p`
   font-size: 16px;
   font-weight: bold;

@@ -10,6 +10,7 @@ const AddressForm = ({ title, description, buttonText }) => {
   const navigate = useNavigate();
   const { updateRequestData } = useRequest();
   const location = useLocation();
+  const [scale, setScale] = useState(1);
   const [formData, setFormData] = useState({
     clientAddress: "",
     clientDetailedAddress: "",
@@ -17,6 +18,18 @@ const AddressForm = ({ title, description, buttonText }) => {
     clientPhone: "",
   });
   const [popupMessage, setPopupMessage] = useState("");
+
+  useEffect(() => {
+    const updateScale = () => {
+      const baseWidth = 500;
+      const ratio = Math.min(window.innerWidth / baseWidth, 1);
+      setScale(ratio);
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -65,51 +78,54 @@ const AddressForm = ({ title, description, buttonText }) => {
   };
 
   return (
-    <Container>
-      <Header>
-        <BackButton onClick={() => navigate(-1)}>
-          <IoIosArrowBack size={32} color="#333" />
-        </BackButton>
-      </Header>
-      <StepProgressBar currentStep={1} totalSteps={4} />
-      <TitleSection>
-        <Title>{title}</Title>
-        <Description>{description}</Description>
-      </TitleSection>
-      <Form onSubmit={handleSubmit}>
-        <Field>
-          <Label>주소</Label>
-          <HelperTextBox>
-            <HiOutlineExclamationCircle color=" #a5a5a5" size="18" />
-            <HelperText>
-              현재 서비스 제공 지역은 서울 강북권 일부로 제한되어 있습니다.
-              <br></br>
-              강북구, 광진구, 노원구, 동대문구, 성북구, 도봉구, 은평구, 중량구,
-              종로구
-            </HelperText>
-          </HelperTextBox>
-          <CustomSelect>
+    <ScaleWrapper
+      style={{ transform: `scale(${scale})`, transformOrigin: "top center" }}
+    >
+      <Container>
+        <Header>
+          <BackButton onClick={() => navigate(-1)}>
+            <IoIosArrowBack size={32} color="#333" />
+          </BackButton>
+        </Header>
+        <StepProgressBar currentStep={1} totalSteps={4} />
+        <TitleSection>
+          <Title>{title}</Title>
+          <Description>{description}</Description>
+        </TitleSection>
+        <Form onSubmit={handleSubmit}>
+          <Field>
+            <Label>주소</Label>
+            <HelperTextBox>
+              <HiOutlineExclamationCircle color=" #a5a5a5" size="18" />
+              <HelperText>
+                현재 서비스 제공 지역은 서울 강북권 일부로 제한되어 있습니다.
+                <br></br>
+                강북구, 광진구, 노원구, 동대문구, 성북구, 도봉구, 은평구,
+                중량구, 종로구
+              </HelperText>
+            </HelperTextBox>
+            <CustomSelect>
+              <Input
+                type="text"
+                name="clientAddress"
+                placeholder="클릭하여 주소 검색"
+                style={{ border: "none" }}
+                value={formData.clientAddress}
+                onClick={AddressInputClick}
+                readOnly
+              />
+            </CustomSelect>
+
             <Input
               type="text"
-              name="clientAddress"
-              placeholder="클릭하여 주소 검색"
-              style={{ border: "none" }}
-              value={formData.clientAddress}
-              onClick={AddressInputClick}
-              readOnly
+              name="clientDetailedAddress"
+              placeholder="상세주소"
+              value={formData.clientDetailedAddress}
+              onChange={handleChange}
+              style={{ marginTop: "10px" }}
             />
-          </CustomSelect>
-
-          <Input
-            type="text"
-            name="clientDetailedAddress"
-            placeholder="상세주소"
-            value={formData.clientDetailedAddress}
-            onChange={handleChange}
-            style={{ marginTop: "10px" }}
-          />
-        </Field>
-        {/* <Field>
+          </Field>
+          {/* <Field>
           <Label>이름</Label>
           <Input
             type="text"
@@ -119,34 +135,41 @@ const AddressForm = ({ title, description, buttonText }) => {
             onChange={handleChange}
           />
         </Field> */}
-        <Field>
-          <Label>연락처</Label>
-          <Input
-            type="tel"
-            name="clientPhone"
-            placeholder="전화번호"
-            value={formData.clientPhone}
-            onChange={handleChange}
-          />
-        </Field>
-        <SubmitButton type="submit">{buttonText}</SubmitButton>
-      </Form>
-      {popupMessage && (
-        <Popup>
-          <PopupContent>
-            <PopupMessage>{popupMessage}</PopupMessage>
-            <CloseButton onClick={() => setPopupMessage("")}>닫기</CloseButton>
-          </PopupContent>
-        </Popup>
-      )}
-    </Container>
+          <Field>
+            <Label>연락처</Label>
+            <Input
+              type="tel"
+              name="clientPhone"
+              placeholder="전화번호"
+              value={formData.clientPhone}
+              onChange={handleChange}
+            />
+          </Field>
+          <SubmitButton type="submit">{buttonText}</SubmitButton>
+        </Form>
+        {popupMessage && (
+          <Popup>
+            <PopupContent>
+              <PopupMessage>{popupMessage}</PopupMessage>
+              <CloseButton onClick={() => setPopupMessage("")}>
+                닫기
+              </CloseButton>
+            </PopupContent>
+          </Popup>
+        )}
+      </Container>
+    </ScaleWrapper>
   );
 };
-
-const Container = styled.div`
+const ScaleWrapper = styled.div`
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  padding: 10px 20px;
+  justify-content: center;
+`;
+const Container = styled.div`
+  width: 100%;
+  padding: 16px;
+  box-sizing: border-box;
 `;
 
 const Header = styled.div`

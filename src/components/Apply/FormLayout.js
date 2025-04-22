@@ -23,6 +23,7 @@ const Container = styled.div`
 
 const TitleSection = styled.div`
   margin-top: 20px;
+  margin-bottom: 20px;
 `;
 
 const Title = styled.h2`
