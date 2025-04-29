@@ -8,13 +8,14 @@ import Popup from "../../components/Apply/Popup";
 import { useRequest } from "../../context/context";
 import StepProgressBar from "../../components/Apply/StepProgressBar";
 import { IoIosArrowBack } from "react-icons/io";
+import { useScaleLayout } from "../../hooks/useScaleLayout";
+import { device } from "../../styles/theme";
 
 const RequestBasicInfo = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [scale, setScale] = useState(1);
   const { requestData, updateRequestData } = useRequest();
-
+  const { scale, height, ref } = useScaleLayout();
   const [selectedService, setSelectedService] = useState(
     requestData.service || location.state?.selectedService
   );
@@ -25,18 +26,6 @@ const RequestBasicInfo = () => {
   const [isServiceOpen, setIsServiceOpen] = useState(true);
   const [isTypeOpen, setIsTypeOpen] = useState(true);
   const [isBrandOpen, setIsBrandOpen] = useState(true);
-
-  useEffect(() => {
-    const updateScale = () => {
-      const baseWidth = 500;
-      const ratio = Math.min(window.innerWidth / baseWidth, 1);
-      setScale(ratio);
-    };
-
-    updateScale();
-    window.addEventListener("resize", updateScale);
-    return () => window.removeEventListener("resize", updateScale);
-  }, []);
 
   useEffect(() => {
     if (selectedService) {
@@ -58,12 +47,18 @@ const RequestBasicInfo = () => {
 
   return (
     <ScaleWrapper
-      style={{ transform: `scale(${scale})`, transformOrigin: "top center" }}
+      style={{
+        transform: `scale(${scale})`,
+        transformOrigin: "top center",
+        height: `${height}px`,
+      }}
     >
-      <Container>
+      <Container ref={ref}>
         <Header>
           <BackButton onClick={() => navigate(-1)}>
-            <IoIosArrowBack size={32} color="#333" />
+            <BackIcon>
+              <IoIosArrowBack size={32} color="#333" />
+            </BackIcon>
           </BackButton>
         </Header>
         <StepProgressBar currentStep={3} totalSteps={4} />
@@ -74,7 +69,7 @@ const RequestBasicInfo = () => {
         >
           <DropdownSelector
             title={selectedService}
-            icon={<GrUserSettings size="18" />}
+            icon={<GrUserSettings />}
             options={["청소", "설치", "이전", "수리", "철거"]}
             selected={selectedService}
             setSelected={setSelectedService}
@@ -86,7 +81,7 @@ const RequestBasicInfo = () => {
 
           <DropdownSelector
             title="에어컨 종류 선택하기"
-            icon={<GrApps size="18" />}
+            icon={<GrApps />}
             options={["벽걸이형", "스탠드형", "천장형", "창문형", "항온항습기"]}
             selected={selectedType}
             setSelected={setSelectedType}
@@ -97,7 +92,7 @@ const RequestBasicInfo = () => {
 
           <DropdownSelector
             title="브랜드 선택하기"
-            icon={<GrBookmark size="18" />}
+            icon={<GrBookmark />}
             options={[
               "삼성전자",
               "LG전자",
@@ -177,4 +172,9 @@ const BackButton = styled.button`
   cursor: pointer;
   padding-left: 20px;
   padding-top: 10px;
+`;
+const BackIcon = styled(IoIosArrowBack)`
+  font-size: 30px;
+  @media ${device.mobile}{
+  font-size:50px;
 `;

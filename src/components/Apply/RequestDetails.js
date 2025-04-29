@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { device } from "../../styles/theme";
 
 const RequestDetails = ({ additionalInfo, setAdditionalInfo }) => {
   return (
@@ -25,6 +26,10 @@ const Label = styled.p`
   font-size: 17px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   margin-bottom: 8px;
+  text-align: left;
+  @media ${device.mobile} {
+    font-size: 1.6rem;
+  }
 `;
 
 const Textarea = styled.textarea`
@@ -40,5 +45,8 @@ const Textarea = styled.textarea`
   font-weight: bold;
   &::placeholder {
     color: #aaa;
+    @media ${device.mobile} {
+      font-size: 1.3rem;
+    }
   }
 `;

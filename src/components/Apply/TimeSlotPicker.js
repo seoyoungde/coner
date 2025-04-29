@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { device } from "../../styles/theme";
 
 const timeSlots = [
   "9:00 ~ 11:00",
@@ -29,11 +30,14 @@ export default TimeSlotPicker;
 
 const TimeSlotContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 한 줄에 3개씩 */
-  gap: 10px; /* 버튼 간격 */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
   margin: auto;
   margin-top: 20px;
   width: 400px;
+  @media ${device.mobile} {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 const TimeSlotButton = styled.button`
@@ -47,4 +51,7 @@ const TimeSlotButton = styled.button`
   color: ${({ isSelected }) => (isSelected ? "white" : "#333")};
   cursor: pointer;
   text-align: center;
+  @media ${device.mobile} {
+    font-size: 1.2rem;
+  }
 `;

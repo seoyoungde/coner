@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useRequest } from "../../context/context";
 import { device } from "../../styles/theme";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
+import { auth } from "../../firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 const RequestSearch = () => {
   const navigate = useNavigate();
@@ -39,6 +41,17 @@ const RequestSearch = () => {
     }
   };
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        navigate("/inquirydashboard", {
+          state: { clientId: currentUser.uid },
+        });
+      }
+    });
+    return () => unsubscribe();
+  });
+
   return (
     <ScaleWrapper
       style={{
@@ -57,6 +70,7 @@ const RequestSearch = () => {
             e.preventDefault();
             handleSearch();
           }}
+          style={{ width: "92%", margin: "auto" }}
         >
           <Content>
             <InputWrapper>
@@ -91,13 +105,13 @@ const ScaleWrapper = styled.div`
 `;
 
 const Container = styled.div`
-  width: 92%;
+  width: 100%;
   margin: auto;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   @media ${device.mobile} {
-    width: 88%;
+    width: 92%;
   }
 `;
 
@@ -161,13 +175,14 @@ const InputField = styled.input`
     color: #a0a0a0;
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
     @media ${device.mobile} {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
     }
   }
   @media ${device.mobile} {
-    height: 70px;
+    height: 62px;
     padding: 20px;
     margin-top: 5px;
+    font-size: 1.3rem;
   }
 `;
 
@@ -195,7 +210,7 @@ const SearchButton = styled.button`
     background: linear-gradient(to right, #00ddf6, #00dbf2, #53cfce);
   }
   @media ${device.mobile} {
-    height: 73px;
+    height: 70px;
     margin-top: 20px;
     font-size: 1.6rem;
     font-weight: 900;

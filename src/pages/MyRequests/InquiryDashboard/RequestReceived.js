@@ -16,6 +16,7 @@ import AdditionalDropSelected from "../../../components/Services/AdditionalDropS
 import RequestDetails from "../../../components/Apply/RequestDetails";
 import { db } from "../../../firebase";
 import { GrApps, GrUserSettings, GrBookmark } from "react-icons/gr";
+import { device } from "../../../styles/theme";
 
 const RequestReceived = ({ requestData }) => {
   const navigate = useNavigate();
@@ -556,6 +557,10 @@ const LabelBox = styled.div`
 const TechnicianContainer = styled.div``;
 const TechnicianETC = styled.div`
   font-size: 15px;
+  @media ${device.mobile} {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+  }
 `;
 const Container = styled.div`
   display: flex;
@@ -576,12 +581,19 @@ const ProgressStep = styled.div`
   display: flex;
   align-items: center;
 `;
-const RequestBox = styled.div``;
+const RequestBox = styled.div`
+  width: 100%;
+  height: 100%;
+`;
 const Circle = styled.div`
   width: 20px;
   height: 20px;
   border-radius: 50%;
   background-color: ${({ isActive }) => (isActive ? "#00e6fd" : "#ddd")};
+  @media ${device.mobile} {
+    width: 15px;
+    height: 15px;
+  }
 `;
 
 const Line = styled.div`
@@ -589,6 +601,9 @@ const Line = styled.div`
   height: 2px;
   background-color: ${({ isActive }) => (isActive ? "#00e6fd" : "#ddd")};
   margin: 0 5px;
+  @media ${device.mobile} {
+    width: 30px;
+  }
 `;
 
 const StepLabel = styled.div`
@@ -596,6 +611,9 @@ const StepLabel = styled.div`
   font-weight: ${({ isActive }) => (isActive ? "bold" : "normal")};
   color: ${({ isActive }) => (isActive ? "#00e6fd" : "#666")};
   margin-top: 5px;
+  @media ${device.mobile} {
+    font-size: 1.2rem;
+  }
 `;
 
 const ContentBox = styled.div`
@@ -617,6 +635,9 @@ const TechnicianTitle = styled.h3`
   font-weight: bold;
   color: #333;
   margin-bottom: 15px;
+  @media ${device.mobile} {
+    font-size: 1.7rem;
+  }
 `;
 const ProfileImage = styled.div`
   width: 70px;
@@ -624,6 +645,10 @@ const ProfileImage = styled.div`
   border-radius: 50%;
   background: #ddd;
   margin: 0 auto;
+  @media ${device.mobile} {
+    width: 125px;
+    height: 125px;
+  }
 `;
 const CompanyAcceptTimeInfo = styled.div`
   disaplay: flex;
@@ -639,13 +664,23 @@ const Tag = styled.span`
   padding: 5px 10px;
   border-radius: 15px;
   margin-top: 10px;
+  @media ${device.mobile} {
+    font-size: 1.6rem;
+  }
 `;
-const Tag2 = styled.div``;
+const Tag2 = styled.div`
+  @media ${device.mobile} {
+    font-size: 1.6rem;
+  }
+`;
 const TechnicianName = styled.h2`
   font-size: 18px;
   font-weight: bold;
   color: #333;
   margin-top: 5px;
+  @media ${device.mobile} {
+    font-size: 1.8rem;
+  }
 `;
 
 const ContactInfo = styled.div`
@@ -660,6 +695,9 @@ const PhoneNumber = styled.span`
   font-weight: bold;
   color: #333;
   margin-right: 10px;
+  @media ${device.mobile} {
+    font-size: 1.6rem;
+  }
 `;
 
 const CompanyInfo = styled.div`
@@ -671,11 +709,17 @@ const CompanyTitle = styled.p`
   font-size: 14px;
   font-weight: bold;
   color: #666;
+  @media ${device.mobile} {
+    font-size: 1.5rem;
+  }
 `;
 
 const CompanyAddress = styled.p`
   font-size: 12px;
   color: #999;
+  @media ${device.mobile} {
+    font-size: 1.3rem;
+  }
 `;
 const TechnicianFooter = styled.div`
   background: #00e6fd;
@@ -699,6 +743,10 @@ const Label = styled.div`
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   color: #333;
   margin-bottom: 5px;
+  @media ${device.mobile} {
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
 `;
 
 const Value = styled.div`
@@ -709,6 +757,12 @@ const Value = styled.div`
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
+  @media ${device.mobile} {
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding: 15px;
+    margin-top: 5px;
+  }
 `;
 
 const WarningText = styled.p`
@@ -717,6 +771,9 @@ const WarningText = styled.p`
   font-size: 14px;
   margin-top: 40px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  @media ${device.mobile} {
+    font-size: 1.2rem;
+  }
 `;
 
 const ButtonGroup = styled.div`
@@ -737,6 +794,10 @@ const CancelButton = styled.button`
   border: none;
   cursor: pointer;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  @media ${device.mobile} {
+    font-size: 1.6rem;
+    padding: 15px;
+  }
 `;
 
 const EditButton = styled.button`
@@ -749,6 +810,10 @@ const EditButton = styled.button`
   border: none;
   cursor: pointer;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  @media ${device.mobile} {
+    font-size: 1.6rem;
+    padding: 15px;
+  }
 `;
 
 const SaveButton = styled.button`
@@ -761,6 +826,10 @@ const SaveButton = styled.button`
   border: none;
   cursor: pointer;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  @media ${device.mobile} {
+    font-size: 1.6rem;
+    padding: 15px;
+  }
 `;
 const EditCancelButton = styled.div`
   flex: 1;
@@ -773,13 +842,16 @@ const EditCancelButton = styled.div`
   border: none;
   cursor: pointer;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  @media ${device.mobile} {
+    font-size: 1.6rem;
+    padding: 15px;
+  }
 `;
 const PopupOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
   background: rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;
@@ -791,12 +863,15 @@ const PopupContainer = styled.div`
   border-radius: 10px;
   text-align: center;
   width: 300px;
+  min-height: 150px; /* ✅ 최소 높이 지정 */
+  z-index: 10000;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 `;
 
 const PopupText = styled.p`
   font-size: 16px;
   color: #333;
-
   padding: 40px;
 `;
 

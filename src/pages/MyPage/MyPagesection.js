@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
+import { auth, db } from "../../firebase";
+import { signOut, onAuthStateChanged } from "firebase/auth";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 
 const sections = [
   {
@@ -29,14 +39,61 @@ const sections = [
   },
 ];
 
-const requestStates = [
-  { label: "진행예정", count: "1건" },
-  { label: "진행중", count: "1건" },
-  { label: "진행완료", count: "1건" },
-];
-
 const MyPageSection = () => {
   const { scale, height, ref } = useScaleLayout();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
+  const [requests, setRequests] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+
+        const clientRef = doc(db, "testclients", currentUser.uid);
+        const clientSnap = await getDoc(clientRef);
+        if (clientSnap.exists()) {
+          setUserInfo(clientSnap.data());
+        }
+
+        const q = query(
+          collection(db, "testservice"),
+          where("clientId", "==", currentUser.uid)
+        );
+        const snapshot = await getDocs(q);
+        const fetchedRequests = snapshot.docs.map((doc) => doc.data());
+        setRequests(fetchedRequests);
+      } else {
+        setUser(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    navigate("/loginpage");
+  };
+
+  const requestStates = [
+    {
+      label: "진행예정",
+      count: `${requests.filter((r) => r.state === 1).length}건`,
+      stateValue: 1,
+    },
+    {
+      label: "진행중",
+      count: `${requests.filter((r) => r.state === 2).length}건`,
+      stateValue: 2,
+    },
+    {
+      label: "진행완료",
+      count: `${requests.filter((r) => r.state === 4).length}건`,
+      stateValue: 4,
+    },
+  ];
 
   return (
     <ScaleWrapper
@@ -48,20 +105,42 @@ const MyPageSection = () => {
     >
       <Container ref={ref}>
         <UserBox>
-          <h1> 반가워요 박서영님</h1>
+          <h1>반가워요 {userInfo?.clientname || "고객"}님</h1>
           <Link to="/infomodify">내 정보 수정하기</Link>
-          <Link to="/loginpage">로그인하기</Link>
+          {user ? (
+            <button
+              onClick={handleLogout}
+              style={{
+                border: "none",
+                backgroundColor: "#ffffff",
+                cursor: "pointer",
+              }}
+            >
+              로그아웃
+            </button>
+          ) : (
+            <Link to="/loginpage">로그인하기</Link>
+          )}
         </UserBox>
         <Content>
           <ProfileSection>
             <Logo src="../conerlogo3.png" alt="앱 로고" />
-            <p>박서영님</p>
+            <p>{userInfo?.clientname || "고객"}님</p>
           </ProfileSection>
 
           <UserRequestNumber>
             <StateBox>
               {requestStates.map((state, i) => (
-                <StateItem key={i} isLast={i === requestStates.length - 1}>
+                <StateItem
+                  key={i}
+                  isLast={i === requestStates.length - 1}
+                  onClick={() =>
+                    navigate("/inquirydashboard", {
+                      status: state.stateValue,
+                      clientId: user?.uid,
+                    })
+                  }
+                >
                   <p>{state.label}</p>
                   <p>{state.count}</p>
                 </StateItem>

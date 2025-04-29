@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import RequestDetails from "../../components/Apply/RequestDetails";
 import styled from "styled-components";
@@ -7,13 +7,16 @@ import { useRequest } from "../../context/context";
 import AdditionalDropSelected from "../../components/Services/AdditionalDropSelected";
 import StepProgressBar from "../../components/Apply/StepProgressBar";
 import { IoIosArrowBack } from "react-icons/io";
+import { useScaleLayout } from "../../hooks/useScaleLayout";
+import { device } from "../../styles/theme";
+import { auth } from "../../firebase";
 
 const AdditionalRequest = () => {
   const navigate = useNavigate();
   const { requestData, updateRequestData, submitRequest } = useRequest();
-
+  const { scale, height, ref } = useScaleLayout();
   const [additionalInfo, setAdditionalInfo] = useState("");
-  const [scale, setScale] = useState(1);
+
   const needsAdditionalDropSelected = ["설치", "이전"].includes(
     requestData.service
   );
@@ -21,18 +24,6 @@ const AdditionalRequest = () => {
     requestData.service
   );
   const [selectedDropdownOption, setSelectedDropdownOption] = useState("");
-
-  useEffect(() => {
-    const updateScale = () => {
-      const baseWidth = 500;
-      const ratio = Math.min(window.innerWidth / baseWidth, 1);
-      setScale(ratio);
-    };
-
-    updateScale();
-    window.addEventListener("resize", updateScale);
-    return () => window.removeEventListener("resize", updateScale);
-  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -49,6 +40,8 @@ const AdditionalRequest = () => {
       }
       updateRequestData("selectedDropdownOption", selectedDropdownOption);
 
+      const user = auth.currentUser;
+
       await new Promise((resolve) => {
         updateRequestData("detailInfo", formattedDetailInfo);
         setTimeout(resolve, 300);
@@ -57,6 +50,7 @@ const AdditionalRequest = () => {
       const requestId = await submitRequest({
         ...requestData,
         detailInfo: formattedDetailInfo,
+        clientId: user ? user.uid : "",
       });
 
       navigate("/inquirydashboard", {
@@ -77,12 +71,15 @@ const AdditionalRequest = () => {
       style={{
         transform: `scale(${scale})`,
         transformOrigin: "top center",
+        height: `${height}px`,
       }}
     >
-      <Container>
+      <Container ref={ref}>
         <Header>
           <BackButton onClick={() => navigate(-1)}>
-            <IoIosArrowBack size={32} color="#333" />
+            <BackIcon>
+              <IoIosArrowBack size={32} color="#333" />
+            </BackIcon>
           </BackButton>
         </Header>
         <StepProgressBar currentStep={4} totalSteps={4} />
@@ -160,7 +157,6 @@ const ScaleWrapper = styled.div`
 const Container = styled.div`
   width: 100%;
   box-sizing: border-box;
-  text-align: left;
 `;
 const Header = styled.div`
   display: flex;
@@ -174,6 +170,11 @@ const BackButton = styled.button`
   padding-left: 20px;
   padding-top: 10px;
 `;
+const BackIcon = styled(IoIosArrowBack)`
+  font-size: 30px;
+  @media ${device.mobile}{
+  font-size:50px;
+`;
 const ServiceCostContainer = styled.div`
   padding: 20px;
   border-radius: 10px;
@@ -184,6 +185,10 @@ const CostTitle = styled.p`
   font-size: 17px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   margin-bottom: 5px;
+  text-align: left;
+  @media ${device.mobile} {
+    font-size: 1.6rem;
+  }
 `;
 
 const CostDescription = styled.p`
@@ -191,6 +196,11 @@ const CostDescription = styled.p`
   color: #666;
   margin-bottom: 10px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  text-align: left;
+  @media ${device.mobile} {
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
 `;
 
 const CostTable = styled.div`
@@ -210,12 +220,19 @@ const CostRow = styled.div`
 const CostLabel = styled.p`
   font-size: 16px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  @media ${device.mobile} {
+    font-size: 1.4rem;
+  }
 `;
 
 const CostValue = styled.p`
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   font-size: 16px;
   text-align: right;
+  @media ${device.mobile} {
+    font-size: 1.4rem;
+    font-weight: 500;
+  }
 `;
 
 const SmallText = styled.span`
@@ -223,6 +240,10 @@ const SmallText = styled.span`
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   display: block;
   margin-top: 3px;
+  @media ${device.mobile} {
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
 `;
 
 const SubmitButton = styled.button`
@@ -238,5 +259,11 @@ const SubmitButton = styled.button`
   font-weight: bold;
   &:hover {
     background: linear-gradient(to right, #00ddf6, #00dbf2, #53cfce);
+  }
+  @media ${device.mobile} {
+    height: 70px;
+    margin-top: 20px;
+    font-size: 1.6rem;
+    font-weight: 900;
   }
 `;

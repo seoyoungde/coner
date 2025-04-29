@@ -13,18 +13,33 @@ import {
 import { db } from "../../firebase";
 import CompletedRequests from "../MyRequests/CompletedRequests";
 import RequestReceived from "../MyRequests/InquiryDashboard/RequestReceived";
+import { useScaleLayout } from "../../hooks/useScaleLayout";
+import { device } from "../../styles/theme";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../firebase";
 
 const InquiryPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const { scale, height, ref } = useScaleLayout();
   const requestId = location.state?.requestId;
-  // const clientId = location.state?.clientId;
+  const [clientId, setClientId] = useState(location.state?.clientId || null);
   const clientPhone = location.state?.clientPhone;
+  const statusFilter = location.state?.status || null;
+  const [user, setUser] = useState(null);
 
   const [requestDataList, setRequestDataList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("progress");
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (!clientId && currentUser) {
+        setClientId(currentUser.uid);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   const fetchRequestByClient = async () => {
     setLoading(true);
@@ -38,7 +53,18 @@ const InquiryPage = () => {
           requests.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
         }
       }
-
+      if (clientId) {
+        const q = query(
+          collection(db, "testservice"),
+          where("clientId", "==", clientId)
+        );
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          if (!requests.has(doc.id)) {
+            requests.set(doc.id, { id: doc.id, ...doc.data() });
+          }
+        });
+      }
       if (clientPhone) {
         const q = query(
           collection(db, "testservice"),
@@ -54,6 +80,22 @@ const InquiryPage = () => {
           });
         }
       }
+      const queryConditions = [];
+      if (clientId) {
+        queryConditions.push(where("clientId", "==", clientId));
+      } else if (clientPhone) {
+        queryConditions.push(where("clientPhone", "==", clientPhone));
+      }
+
+      if (queryConditions.length > 0) {
+        const q = query(collection(db, "testservice"), ...queryConditions);
+        const snapshot = await getDocs(q);
+        snapshot.forEach((doc) => {
+          if (!requests.has(doc.id)) {
+            requests.set(doc.id, { id: doc.id, ...doc.data() });
+          }
+        });
+      }
     } catch (error) {
       console.error("Firestore에서 데이터 조회 중 오류 발생:", error);
     }
@@ -64,7 +106,13 @@ const InquiryPage = () => {
 
   useEffect(() => {
     fetchRequestByClient();
-  }, [requestId, clientPhone]);
+
+    if (statusFilter === 4) {
+      setActiveTab("completed");
+    } else {
+      setActiveTab("progress");
+    }
+  }, [requestId, clientPhone, clientId, statusFilter]);
 
   const handleGoBack = () => {
     navigate("/requests");
@@ -74,62 +122,96 @@ const InquiryPage = () => {
   const inProgressRequests = requestDataList.filter((req) => req.state < 4);
 
   return (
-    <Container>
-      <Header>
-        <BackButton onClick={handleGoBack}>
-          <IoIosArrowBack size={32} color="#333" />
-        </BackButton>
-        <Title>고객님의 의뢰서</Title>
-      </Header>
+    <ScaleWrapper
+      style={{
+        transform: `scale(${scale})`,
+        transformOrigin: "top center",
+        height: `${height}px`,
+      }}
+    >
+      <Container ref={ref}>
+        <Header>
+          <InnerWrapper>
+            <BackButton onClick={handleGoBack}>
+              <BackIcon>
+                <IoIosArrowBack size={32} color="#333" />
+              </BackIcon>
+            </BackButton>
 
-      <TabHeader>
-        <Tab
-          isActive={activeTab === "progress"}
-          onClick={() => setActiveTab("progress")}
-        >
-          진행 중
-        </Tab>
-        <Tab
-          isActive={activeTab === "completed"}
-          onClick={() => setActiveTab("completed")}
-        >
-          완료된
-        </Tab>
-      </TabHeader>
+            <Title>고객님의 의뢰서</Title>
+            <Spacer />
+          </InnerWrapper>
+        </Header>
 
-      <TabContent>
-        {loading ? (
-          <CenteredContent>로딩 중...</CenteredContent>
-        ) : activeTab === "progress" ? (
-          inProgressRequests.length > 0 ? (
-            inProgressRequests.map((req) => (
-              <RequestReceived key={req.id} requestData={req} />
+        <TabHeader>
+          <Tab
+            isActive={activeTab === "progress"}
+            onClick={() => setActiveTab("progress")}
+          >
+            진행 중
+          </Tab>
+          <Tab
+            isActive={activeTab === "completed"}
+            onClick={() => setActiveTab("completed")}
+          >
+            완료된
+          </Tab>
+        </TabHeader>
+
+        <TabContent>
+          {loading ? (
+            <CenteredContent>로딩 중...</CenteredContent>
+          ) : activeTab === "progress" ? (
+            inProgressRequests.length > 0 ? (
+              inProgressRequests.map((req) => (
+                <RequestReceived key={req.id} requestData={req} />
+              ))
+            ) : (
+              <CenteredContent>아직 진행 중인 의뢰가 없습니다.</CenteredContent>
+            )
+          ) : completedRequests.length > 0 ? (
+            completedRequests.map((req) => (
+              <CompletedRequests key={req.id} requestData={req} />
             ))
           ) : (
-            <CenteredContent>아직 진행 중인 의뢰가 없습니다.</CenteredContent>
-          )
-        ) : completedRequests.length > 0 ? (
-          completedRequests.map((req) => (
-            <CompletedRequests key={req.id} requestData={req} />
-          ))
-        ) : (
-          <CenteredContent>아직 완료된 의뢰가 없습니다.</CenteredContent>
-        )}
-      </TabContent>
-    </Container>
+            <CenteredContent>아직 완료된 의뢰가 없습니다.</CenteredContent>
+          )}
+        </TabContent>
+      </Container>
+    </ScaleWrapper>
   );
 };
 
 export default InquiryPage;
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 96%;
-  margin: auto;
+const ScaleWrapper = styled.div`
+  width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+`;
+const Container = styled.div`
+  width: 100%;
+  box-sizing: border-box;
+  @media ${device.mobile} {
+    width: 92%;
+  }
 `;
 
+const InnerWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  box-sizing: border-box;
+  position: relative;
+  @media ${device.mobile} {
+    width: 95%;
+  }
+`;
+const Spacer = styled.div`
+  width: 22px;
+`;
 const Header = styled.div`
   margin-top: 10px;
   display: flex;
@@ -144,11 +226,21 @@ const BackButton = styled.button`
   align-items: center;
   justify-content: center;
 `;
-
+const BackIcon = styled(IoIosArrowBack)`
+  font-size: 30px;
+  @media ${device.mobile}{
+  font-size:50px;
+`;
 const Title = styled.h1`
-  margin: auto;
-  font-size: 20px;
-  font-weight: bold;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: ${({ theme }) => theme.fonts.sizes.HeaderText || "16px"};
+  font-weight: ${({ theme }) => theme.fonts.weights.bold || 600};
+  margin: 0;
+  @media ${device.mobile} {
+    font-size: 1.6rem;
+  }
 `;
 
 const TabHeader = styled.div`
@@ -181,6 +273,9 @@ const Tab = styled.button`
       isActive ? "#00e6fd" : "transparent"};
     transition: width 0.3s ease;
   }
+  @media ${device.mobile} {
+    font-size: 1.5rem;
+  }
 `;
 
 const TabContent = styled.div`
@@ -188,8 +283,6 @@ const TabContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: ${({ isCentered }) =>
-    isCentered ? "center" : "flex-start"};
   padding: 20px;
 `;
 
@@ -197,10 +290,7 @@ const CenteredContent = styled.div`
   font-size: 16px;
   color: #333;
   font-weight: bold;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  text-align: center;
+  @media ${device.mobile} {
+    font-size: 1.4rem;
+  }
 `;

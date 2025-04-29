@@ -7,6 +7,7 @@ import { MdOutlineComment } from "react-icons/md";
 import { useRequest } from "../../context/context";
 import StepProgressBar from "../../components/Apply/StepProgressBar";
 import { device } from "../../styles/theme";
+import { useScaleLayout } from "../../hooks/useScaleLayout";
 
 const AirConditionerForm = ({
   options,
@@ -17,7 +18,7 @@ const AirConditionerForm = ({
   boxWidths = ["45%", "45%"],
 }) => {
   const navigate = useNavigate();
-
+  const { scale, height, ref } = useScaleLayout();
   const [selectedOption, setSelectedOption] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(true);
   const [popupMessage, setPopupMessage] = useState("");
@@ -46,74 +47,83 @@ const AirConditionerForm = ({
   };
 
   return (
-    <Container>
-      <Header>
-        <BackButton onClick={handleGoBack}>
-          <BackIcon>
-            <IoIosArrowBack size={32} color="#333" />
-          </BackIcon>
-        </BackButton>
-      </Header>
-      <StepProgressBar currentStep={0} totalSteps={4} />
-      <TitleSection>
-        <Title>{title}</Title>
-        <Description>{description}</Description>
-      </TitleSection>
-      <Form>
-        <DropdownContainer>
-          <DropdownHeader onClick={() => setIsDropdownOpen((prev) => !prev)}>
-            <DropdownLabelBox>
-              <IconBox>
-                <MdOutlineComment size={23} />
-              </IconBox>
-              <DropdownLabel>
-                {selectedOption || "에어컨 보유 여부 선택하기"}
-              </DropdownLabel>
-            </DropdownLabelBox>
-            <DropdownIcon>
-              {isDropdownOpen ? (
-                <HiOutlineChevronUp size={25} color="#333" />
-              ) : (
-                <HiOutlineChevronDown size={25} color="#333" />
-              )}
-            </DropdownIcon>
-          </DropdownHeader>
-          {isDropdownOpen && (
-            <DropdownContent>
-              {options.map((option, index) => (
-                <OptionBox
-                  key={index}
-                  isSelected={selectedOption === option}
-                  onClick={() => handleOptionClick(option)}
-                  width={boxWidths[index] || "45%"}
-                >
-                  {option}
-                </OptionBox>
-              ))}
-            </DropdownContent>
-          )}
-        </DropdownContainer>
-        <SubmitButton onClick={handleSubmit}>{buttonText}</SubmitButton>
-      </Form>
+    <ScaleWrapper
+      style={{
+        transform: `scale(${scale})`,
+        transformOrigin: "top center",
+        height: `${height}px`,
+      }}
+    >
+      <Container ref={ref}>
+        <Header>
+          <BackButton onClick={handleGoBack}>
+            <BackIcon>
+              <IoIosArrowBack size={32} color="#333" />
+            </BackIcon>
+          </BackButton>
+        </Header>
+        <StepProgressBar currentStep={0} totalSteps={4} />
+        <TitleSection>
+          <Title>{title}</Title>
+          <Description>{description}</Description>
+        </TitleSection>
+        <Form>
+          <DropdownContainer>
+            <DropdownHeader onClick={() => setIsDropdownOpen((prev) => !prev)}>
+              <DropdownLabelBox>
+                <IconBox>
+                  <MdOutlineComment size={23} />
+                </IconBox>
+                <DropdownLabel>
+                  {selectedOption || "에어컨 보유 여부 선택하기"}
+                </DropdownLabel>
+              </DropdownLabelBox>
+              <DropdownIcon>
+                {isDropdownOpen ? (
+                  <HiOutlineChevronUp size={25} color="#333" />
+                ) : (
+                  <HiOutlineChevronDown size={25} color="#333" />
+                )}
+              </DropdownIcon>
+            </DropdownHeader>
+            {isDropdownOpen && (
+              <DropdownContent>
+                {options.map((option, index) => (
+                  <OptionBox
+                    key={index}
+                    isSelected={selectedOption === option}
+                    onClick={() => handleOptionClick(option)}
+                    width={boxWidths[index] || "45%"}
+                  >
+                    {option}
+                  </OptionBox>
+                ))}
+              </DropdownContent>
+            )}
+          </DropdownContainer>
+          <SubmitButton onClick={handleSubmit}>{buttonText}</SubmitButton>
+        </Form>
 
-      {popupMessage && (
-        <Popup>
-          <PopupContent>
-            <PopupMessage>{popupMessage}</PopupMessage>
-            <CloseButton onClick={closePopup}>닫기</CloseButton>
-          </PopupContent>
-        </Popup>
-      )}
-    </Container>
+        {popupMessage && (
+          <Popup>
+            <PopupContent>
+              <PopupMessage>{popupMessage}</PopupMessage>
+              <CloseButton onClick={closePopup}>닫기</CloseButton>
+            </PopupContent>
+          </Popup>
+        )}
+      </Container>
+    </ScaleWrapper>
   );
 };
-
-const Container = styled.div`
+const ScaleWrapper = styled.div`
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  padding: 20px;
-  background-color: #ffffff;
-  height: 100%;
+  justify-content: center;
+`;
+const Container = styled.div`
+  width: 100%;
+  box-sizing: border-box;
 `;
 
 const Header = styled.div`
@@ -126,15 +136,13 @@ const BackButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding-left: 20px;
+  padding-top: 10px;
 `;
 const BackIcon = styled(IoIosArrowBack)`
   font-size: 30px;
   @media ${device.mobile}{
-font-size:50px;
-
+  font-size:50px;
 `;
 const TitleSection = styled.div`
   margin-top: 38px;
@@ -164,6 +172,10 @@ const Form = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  @media ${device.mobile} {
+    width: 86%;
+    margin: auto;
+  }
 `;
 
 const DropdownContainer = styled.div`
@@ -246,7 +258,7 @@ const SubmitButton = styled.button`
     background: linear-gradient(to right, #00ddf6, #00dbf2, #53cfce);
   }
   @media ${device.mobile} {
-    height: 73px;
+    height: 70px;
     margin-top: 20px;
     font-size: 1.6rem;
     font-weight: 900;

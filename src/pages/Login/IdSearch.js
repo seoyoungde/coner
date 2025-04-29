@@ -2,61 +2,81 @@ import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
+import { useScaleLayout } from "../../hooks/useScaleLayout";
+import { device } from "../../styles/theme";
 
 const IdSearch = () => {
   const navigate = useNavigate();
+  const { scale, height, ref } = useScaleLayout();
   return (
-    <Container>
-      <Header>
-        <BackButton onClick={() => navigate(-1)}>
-          <IoIosArrowBack size={28} />
-        </BackButton>
-      </Header>
-      <SearchSection>
-        <TabWrapper>
-          <Tab active>아이디 찾기</Tab>
-          <Tab onClick={() => navigate("/passwordsearch")}>비밀번호 찾기</Tab>
-        </TabWrapper>
-        <Underline />
-        <Underline2 />
-        <HelpText>이름과 핸드폰번호를 입력해주세요</HelpText>
+    <ScaleWrapper
+      style={{
+        transform: `scale(${scale})`,
+        transformOrigin: "top center",
+        height: `${height}px`,
+      }}
+    >
+      <Container ref={ref}>
+        <Header>
+          <BackButton onClick={() => navigate(-1)}>
+            <BackIcon>
+              <IoIosArrowBack size={28} />
+            </BackIcon>
+          </BackButton>
+        </Header>
+        <SearchSection>
+          <TabWrapper>
+            <Tab active>아이디 찾기</Tab>
+            <Tab onClick={() => navigate("/passwordsearch")}>비밀번호 찾기</Tab>
+          </TabWrapper>
+          <Underline />
+          <Underline2 />
+          <HelpText>이름과 핸드폰번호를 입력해주세요</HelpText>
 
-        <FormSection>
-          <Label>이름</Label>
-          <Input placeholder="이름을 입력하세요" style={{ width: "100%" }} />
-        </FormSection>
+          <FormSection>
+            <Label>이름</Label>
+            <Input placeholder="이름을 입력하세요" style={{ width: "100%" }} />
+          </FormSection>
 
-        <FormSection>
-          <Label>핸드폰번호</Label>
-          <InputWrapper>
-            <Input placeholder="핸드폰번호를 입력하세요" />
-            <SendBtn>인증발송</SendBtn>
-          </InputWrapper>
-        </FormSection>
+          <FormSection>
+            <Label>핸드폰번호</Label>
+            <InputWrapper>
+              <Input placeholder="핸드폰번호를 입력하세요" />
+              <SendBtn>인증발송</SendBtn>
+            </InputWrapper>
+          </FormSection>
 
-        <FormSection>
-          <Label>인증번호</Label>
-          <InputWrapper>
-            <Input placeholder="인증번호를 입력하세요" />
-            <SendBtn>인증발송</SendBtn>
-          </InputWrapper>
-        </FormSection>
-      </SearchSection>
+          <FormSection>
+            <Label>인증번호</Label>
+            <InputWrapper>
+              <Input placeholder="인증번호를 입력하세요" />
+              <SendBtn>인증발송</SendBtn>
+            </InputWrapper>
+          </FormSection>
+        </SearchSection>
 
-      <ConfirmBtn disabled>확인</ConfirmBtn>
-    </Container>
+        <ConfirmBtn disabled>확인</ConfirmBtn>
+      </Container>
+    </ScaleWrapper>
   );
 };
 
 export default IdSearch;
 
-// ===== Styled Components =====
+const ScaleWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+`;
 
 const Container = styled.div`
-  padding: 16px;
-  width: 98%;
-
-  margin: 0 auto;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  @media ${device.mobile} {
+    width: 92%;
+  }
 `;
 
 const Header = styled.div`
@@ -72,7 +92,11 @@ const BackButton = styled.button`
   border: none;
   cursor: pointer;
 `;
-
+const BackIcon = styled(IoIosArrowBack)`
+  font-size: 30px;
+  @media ${device.mobile}{
+  font-size:50px;
+`;
 const SearchSection = styled.div`
   padding-top: 100px;
 `;
@@ -90,23 +114,35 @@ const Tab = styled.div`
   padding: 12px 0;
   color: ${({ active }) => (active ? "#000" : "#777")};
   cursor: pointer;
+  @media ${device.mobile} {
+    font-size: 1.5rem;
+  }
 `;
 
 const Underline = styled.div`
   height: 2px;
   width: 50%;
   background-color: #36c8d5;
+  @media ${device.mobile} {
+    height: 4px;
+  }
 `;
 const Underline2 = styled.div`
   height: 2px;
   width: 100%;
   background-color: #d2d2d2;
+  @media ${device.mobile} {
+    height: 3px;
+  }
 `;
 const HelpText = styled.p`
   margin: 50px 0 16px;
   text-align: center;
   font-size: 14px;
   color: #333;
+  @media ${device.mobile} {
+    font-size: 1.2rem;
+  }
 `;
 
 const FormSection = styled.div`
@@ -117,6 +153,9 @@ const Label = styled.p`
   font-size: 14px;
   color: #333;
   margin-bottom: 6px;
+  @media ${device.mobile} {
+    font-size: 1.4rem;
+  }
 `;
 
 const InputWrapper = styled.div`
@@ -131,6 +170,12 @@ const Input = styled.input`
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  @media ${device.mobile} {
+    height: 62px;
+    padding: 20px;
+    margin-top: 5px;
+    font-size: 1.3rem;
+  }
 `;
 
 const SendBtn = styled.button`
@@ -143,6 +188,12 @@ const SendBtn = styled.button`
   border: none;
   border-radius: 4px;
   white-space: nowrap;
+  @media ${device.mobile} {
+    height: 62px;
+    padding: 15px;
+    margin-top: 5px;
+    font-size: 1.3rem;
+  }
 `;
 
 const ConfirmBtn = styled.button`
@@ -154,4 +205,10 @@ const ConfirmBtn = styled.button`
   color: white;
   border: none;
   border-radius: 8px;
+  @media ${device.mobile} {
+    height: 70px;
+    margin-top: 20px;
+    font-size: 1.6rem;
+    font-weight: 900;
+  }
 `;

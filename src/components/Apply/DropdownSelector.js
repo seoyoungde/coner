@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { HiOutlineChevronUp, HiOutlineChevronDown } from "react-icons/hi";
+import { device } from "../../styles/theme";
 
 const DropdownSelector = ({
   icon,
@@ -19,7 +20,9 @@ const DropdownSelector = ({
           {icon && <IconWrapper>{icon}</IconWrapper>}
           <Title>{title}</Title>
         </TitleContainer>
-        {isOpen ? <HiOutlineChevronUp /> : <HiOutlineChevronDown />}
+        <ArrowIcon>
+          {isOpen ? <HiOutlineChevronUp /> : <HiOutlineChevronDown />}
+        </ArrowIcon>
       </Header>
       {isOpen && options && (
         <Options>
@@ -55,15 +58,46 @@ const Header = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
+
 const TitleContainer = styled.div`
   display: flex;
   flex-direction: row;
   gap: 7px;
 `;
-const IconWrapper = styled.div``;
+
+const IconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+
+  svg {
+    font-size: 20px;
+
+    @media ${device.mobile} {
+      font-size: 28px;
+    }
+  }
+`;
+
+const ArrowIcon = styled.div`
+  display: flex;
+  align-items: center;
+
+  svg {
+    font-size: 22px;
+
+    @media ${device.mobile} {
+      font-size: 30px;
+    }
+  }
+`;
+
 const Title = styled.span`
   font-size: 17px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
+
+  @media ${device.mobile} {
+    font-size: 1.5rem;
+  }
 `;
 
 const Options = styled.div`
@@ -87,4 +121,8 @@ const Option = styled.div`
   color: ${({ isSelected }) => (isSelected ? "white" : "#333")};
   cursor: pointer;
   white-space: nowrap;
+
+  @media ${device.mobile} {
+    font-size: 1.1rem;
+  }
 `;
