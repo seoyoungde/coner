@@ -1,7 +1,7 @@
 import React from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-
+import { device } from "../../styles/theme";
 import styled from "styled-components";
 
 const CalendarPicker = ({ selectedDate, setSelectedDate }) => {
@@ -29,6 +29,25 @@ const CalendarWrapper = styled.div`
     border-radius: 10px;
     font-weight: bold;
     font-size: 18px;
+    @media ${device.mobile} {
+      font-size: 1.6rem;
+    }
+  }
+
+  .react-calendar__navigation__label {
+    font-size: 20px;
+
+    @media ${device.mobile} {
+      font-size: 24px;
+    }
+  }
+
+  .react-calendar__navigation__arrow {
+    font-size: 20px;
+
+    @media ${device.mobile} {
+      font-size: 28px;
+    }
   }
   .react-calendar__tile:disabled {
     background-color: #f0f0f0 !important;

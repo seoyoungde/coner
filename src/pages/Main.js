@@ -6,6 +6,8 @@ import MyPage from "./MyPage/MyPage";
 import styled from "styled-components";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
 import CleanPage from "../pages/ServicesPage//CleanPage";
 import InstallPage from "../pages/ServicesPage/InstallPage";
 import MovePage from "../pages/ServicesPage/MovePage";
@@ -39,6 +41,15 @@ const Main = () => {
   const headerComponent = headerMap[location.pathname] || null;
   const [showScrollbar, setShowScrollbar] = useState(false);
   const scrollRef = useRef(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsLoggedIn(!!user);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const scrollContainer = scrollRef.current;
@@ -120,7 +131,6 @@ const Main = () => {
     "/repair",
     "/demolish",
     "/installpage2",
-    "/inquirydashboard",
     "/requestbasicinfo",
     "/additionalrequest",
     "/selectservicedate",
@@ -174,7 +184,11 @@ const Main = () => {
           </Routes>
         </MainContent>
 
-        {!hideNavPaths.includes(location.pathname) && <Nav />}
+        {(location.pathname !== "/inquirydashboard" &&
+          !hideNavPaths.includes(location.pathname)) ||
+        (isLoggedIn && location.pathname === "/inquirydashboard") ? (
+          <Nav />
+        ) : null}
       </ContentBox>
       <Helmet>
         <title>Coner - 냉난방기 예약</title>

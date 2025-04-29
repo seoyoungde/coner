@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { RiHomeFill } from "react-icons/ri";
 import { FaSquare, FaCircle } from "react-icons/fa";
 import { device } from "../../styles/theme";
@@ -8,6 +8,11 @@ import { useScaleLayout } from "../../hooks/useScaleLayout";
 
 const Nav = () => {
   const { scale, height, ref } = useScaleLayout();
+  const location = useLocation();
+
+  const isRequestsActive =
+    location.pathname === "/requests" ||
+    location.pathname === "/inquirydashboard";
 
   return (
     <ScaleWrapper
@@ -23,10 +28,13 @@ const Nav = () => {
             <RiHomeFill />
             <p>홈</p>
           </NavItem>
-          <NavItem to="/requests">
+          <StyledNavLink
+            to="/requests"
+            className={isRequestsActive ? "active" : ""}
+          >
             <FaSquare />
             <p>내 의뢰서</p>
-          </NavItem>
+          </StyledNavLink>
           <NavItem to="/mypage">
             <FaCircle />
             <p>고객센터</p>
@@ -113,5 +121,45 @@ const NavItem = styled(NavLink)`
     }
   }
 `;
+const StyledNavLink = styled(NavLink)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  gap: 5px;
+  text-decoration: none;
 
+  p {
+    font-size: 1rem;
+    color: #d9d9d9;
+    @media ${device.mobile} {
+      font-size: 1.2rem;
+    }
+  }
+
+  svg {
+    font-size: 1.3rem;
+    color: #d9d9d9;
+    @media ${device.mobile} {
+      font-size: 1.7rem;
+    }
+  }
+
+  &.active {
+    p {
+      font-size: 1rem;
+      color: #00e5fd;
+      @media ${device.mobile} {
+        font-size: 1.2rem;
+      }
+    }
+    svg {
+      font-size: 1.3rem;
+      color: #00e5fd;
+      @media ${device.mobile} {
+        font-size: 1.7rem;
+      }
+    }
+  }
+`;
 export default Nav;

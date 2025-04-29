@@ -27,6 +27,9 @@ const Wrapper = styled.div`
   margin: auto;
   margin-bottom: 0;
   margin-top: 0;
+  @media ${device.mobile} {
+    width: 92%;
+  }
 `;
 
 const ProgressWrapper = styled.div`

@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import DaumPostcode from "react-daum-postcode";
 import { IoIosArrowBack } from "react-icons/io";
+import { device } from "../../styles/theme";
+import { useScaleLayout } from "../../hooks/useScaleLayout";
 
 const SERVICE_AREAS = [
   "서울 강북구",
@@ -18,21 +20,9 @@ const SERVICE_AREAS = [
 const AddressModal = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [scale, setScale] = useState(1);
+  const { scale, height, ref } = useScaleLayout();
   const [popupMessage, setPopupMessage] = useState("");
   const [postcodeKey, setPostcodeKey] = useState(0);
-
-  useEffect(() => {
-    const updateScale = () => {
-      const baseWidth = 500;
-      const ratio = Math.min(window.innerWidth / baseWidth, 1);
-      setScale(ratio);
-    };
-
-    updateScale();
-    window.addEventListener("resize", updateScale);
-    return () => window.removeEventListener("resize", updateScale);
-  }, []);
 
   const handleAddressSelect = (data) => {
     const selectedAddress = data.address;
@@ -51,28 +41,39 @@ const AddressModal = () => {
       navigate(prevPath, { state: { selectedAddress } });
     }
   };
+
   const handleClosePopup = () => {
     setPopupMessage("");
   };
+
   return (
     <ScaleWrapper
       style={{
         transform: `scale(${scale})`,
         transformOrigin: "top center",
+        height: `${height}px`,
       }}
     >
-      <Container>
+      <Container ref={ref}>
         <Header>
-          <BackButton onClick={() => navigate(-1)}>
-            <IoIosArrowBack size={32} color="#333" />
+          <BackButton
+            onClick={() => navigate(-1, { state: { address: "선택한주소" } })}
+          >
+            <BackIcon />
           </BackButton>
         </Header>
         <PostcodeWrapper>
           <DaumPostcode
             key={postcodeKey}
             onComplete={handleAddressSelect}
-            style={{ height: "100%" }}
+            style={{
+              width: "100%",
+              height: "800px",
+              transform: window.innerWidth <= 500 ? "scale(1.3)" : "scale(1)",
+              transformOrigin: "top center",
+            }}
           />
+
           {popupMessage && (
             <Popup>
               <PopupContent>
@@ -86,12 +87,13 @@ const AddressModal = () => {
     </ScaleWrapper>
   );
 };
+
 const ScaleWrapper = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
 `;
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -105,10 +107,19 @@ const Header = styled.div`
   padding: 10px 20px;
   background-color: white;
 `;
+
 const PostcodeWrapper = styled.div`
+  width: 100%;
   position: relative;
   flex: 1;
+  min-height: 600px;
+
+  @media ${device.mobile} {
+    width: 73%;
+    margin: auto;
+  }
 `;
+
 const BackButton = styled.button`
   background: none;
   border: none;
@@ -117,6 +128,15 @@ const BackButton = styled.button`
   align-items: center;
   justify-content: center;
 `;
+
+const BackIcon = styled(IoIosArrowBack)`
+  font-size: 30px;
+
+  @media ${device.mobile} {
+    font-size: 50px;
+  }
+`;
+
 const Popup = styled.div`
   position: absolute;
   top: 0;
@@ -128,12 +148,14 @@ const Popup = styled.div`
   align-items: center;
   justify-content: center;
 `;
+
 const PopupContent = styled.div`
   background: white;
   border-radius: 10px;
   text-align: center;
   width: 300px;
 `;
+
 const PopupMessage = styled.p`
   font-size: 15px;
   padding: 30px 30px 70px 30px;
@@ -152,4 +174,5 @@ const CloseButton = styled.button`
   border-radius: 0px 0px 10px 10px;
   cursor: pointer;
 `;
+
 export default AddressModal;

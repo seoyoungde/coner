@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { device } from "../../styles/theme";
 
 const CompletedRequests = ({ requestData }) => {
   if (!requestData) {
@@ -25,7 +26,11 @@ const CompletedRequests = ({ requestData }) => {
   );
 };
 
-const CenteredContent = styled.div``;
+const CenteredContent = styled.div`
+  @media ${device.mobile} {
+    font-size: 1.4rem;
+  }
+`;
 const RequestList = styled.div`
   display: flex;
   flex-direction: column;
@@ -47,16 +52,25 @@ const RequestHeader = styled.div`
   gap: 10px;
   align-items: center;
   margin-bottom: 18px;
+  @media ${device.mobile} {
+    gap: 15px;
+  }
 `;
 
 const Date = styled.div`
   font-size: 14px;
   color: #a0a0a0;
+  @media ${device.mobile} {
+    font-size: 1.5rem;
+  }
 `;
 
 const Technician = styled.div`
   font-size: 14px;
   color: #a0a0a0;
+  @media ${device.mobile} {
+    font-size: 1.5rem;
+  }
 `;
 
 const RequestDetails = styled.div`
@@ -77,6 +91,10 @@ const Category = styled.div`
   border-radius: 20px;
   padding: 5px 10px;
   font-weight: bold;
+  @media ${device.mobile} {
+    font-size: 1.3rem;
+    padding: 8px 14px;
+  }
 `;
 
 const Service = styled.div`
@@ -86,12 +104,19 @@ const Service = styled.div`
   border-radius: 20px;
   padding: 5px 10px;
   font-weight: bold;
+  @media ${device.mobile} {
+    font-size: 1.3rem;
+    padding: 8px 14px;
+  }
 `;
 
 const Address = styled.div`
   font-size: 14px;
   color: #333;
   padding: 5px 10px;
+  @media ${device.mobile} {
+    font-size: 1.4rem;
+  }
 `;
 
 export default CompletedRequests;

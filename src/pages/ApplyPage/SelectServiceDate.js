@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CalendarPicker from "../../components/Apply/CalendarPicker";
 import TimeSlotPicker from "../../components/Apply/TimeSlotPicker";
@@ -10,26 +10,16 @@ import { AiOutlineClockCircle } from "react-icons/ai";
 import { useRequest } from "../../context/context";
 import { IoIosArrowBack } from "react-icons/io";
 import StepProgressBar from "../../components/Apply/StepProgressBar";
+import { useScaleLayout } from "../../hooks/useScaleLayout";
+import { device } from "../../styles/theme";
 
 const SelectServiceDate = () => {
   const navigate = useNavigate();
   const { updateRequestData } = useRequest();
-  const [scale, setScale] = useState(1);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-
-  useEffect(() => {
-    const updateScale = () => {
-      const baseWidth = 500;
-      const ratio = Math.min(window.innerWidth / baseWidth, 1);
-      setScale(ratio);
-    };
-
-    updateScale();
-    window.addEventListener("resize", updateScale);
-    return () => window.removeEventListener("resize", updateScale);
-  }, []);
+  const { scale, height, ref } = useScaleLayout();
 
   const handleNext = () => {
     if (!selectedDate || !selectedTime) {
@@ -59,15 +49,19 @@ const SelectServiceDate = () => {
       style={{
         transform: `scale(${scale})`,
         transformOrigin: "top center",
+        height: `${height}px`,
       }}
     >
-      <Container>
+      <Container ref={ref}>
         <Header>
           <BackButton onClick={() => navigate(-1)}>
-            <IoIosArrowBack size={32} color="#333" />
+            <BackIcon>
+              <IoIosArrowBack size={32} color="#333" />
+            </BackIcon>
           </BackButton>
         </Header>
         <StepProgressBar currentStep={2} totalSteps={4} />
+
         <FormLayout
           title="서비스 희망 날짜 선택"
           subtitle="원하시는 서비스 날짜를 선택해주세요."
@@ -77,7 +71,9 @@ const SelectServiceDate = () => {
 
           <DateBox>
             <SelectedContainer>
-              <GrFormCalendar size="22" />
+              <CalendarIcon>
+                <GrFormCalendar />
+              </CalendarIcon>
               <SelectedText>{formatDate(selectedDate)}</SelectedText>
             </SelectedContainer>
             <CalendarPicker
@@ -87,7 +83,9 @@ const SelectServiceDate = () => {
           </DateBox>
           <TimeBox>
             <SelectedContainer>
-              <AiOutlineClockCircle size="18" />
+              <TimeIcon>
+                <AiOutlineClockCircle />
+              </TimeIcon>
               <SelectedText>
                 {selectedTime || "시간을 선택해주세요"}
               </SelectedText>
@@ -136,9 +134,18 @@ const BackButton = styled.button`
   padding-left: 20px;
   padding-top: 10px;
 `;
+const BackIcon = styled(IoIosArrowBack)`
+  font-size: 30px;
+  @media ${device.mobile}{
+  font-size:50px;
+`;
 const InfoText = styled.p`
   font-size: 14px;
   color: #888;
+  @media ${device.mobile} {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
 `;
 
 const DateBox = styled.div`
@@ -162,7 +169,18 @@ const TimeBox = styled.div`
   display: flex;
   flex-direction: column;
 `;
-
+const TimeIcon = styled(AiOutlineClockCircle)`
+  font-size: 1.3rem;
+  @media ${device.mobile} {
+    font-size: 2.1rem;
+  }
+`;
+const CalendarIcon = styled(GrFormCalendar)`
+  font-size: 1.8rem;
+  @media ${device.mobile} {
+    font-size: 3rem;
+  }
+`;
 const SelectedContainer = styled.div`
   display: flex;
   align-items: center;
@@ -174,6 +192,9 @@ const SelectedText = styled.div`
   font-size: 17px;
   font-weight: bold;
   color: #333;
+  @media ${device.mobile} {
+    font-size: 1.5rem;
+  }
 `;
 
 const PopupText = styled.p`

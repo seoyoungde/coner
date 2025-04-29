@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-
 import { HiOutlineChevronUp, HiOutlineChevronDown } from "react-icons/hi";
 import { MdOutlineComment } from "react-icons/md";
+import { device } from "../../styles/theme";
 
 const AdditionalDropSelected = ({
   options,
@@ -35,7 +35,9 @@ const AdditionalDropSelected = ({
         <DropdownContainer>
           <DropdownHeader onClick={() => setIsDropdownOpen((prev) => !prev)}>
             <DropdownLabelBox>
-              <MdOutlineComment size={23} />
+              <CommentIcon>
+                <MdOutlineComment size={23} />
+              </CommentIcon>
               <DropdownLabel>
                 {isMultiSelect
                   ? selectedOptions.join(", ") || placeholderText
@@ -96,7 +98,11 @@ const DropdownContainer = styled.div`
   border-radius: 9px;
   background-color: white;
 `;
-
+const CommentIcon = styled(MdOutlineComment)`
+  @media ${device.mobile} {
+    font-size: 1.7rem;
+  }
+`;
 const DropdownHeader = styled.div`
   padding: 25px 20px 5px 20px;
   font-size: 17px;
@@ -117,8 +123,10 @@ const DropdownLabelBox = styled.div`
 const DropdownLabel = styled.div`
   color: #333;
   margin-left: 10px;
-
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  @media ${device.mobile} {
+    font-size: 1.5rem;
+  }
 `;
 
 const DropdownIcon = styled.div`
@@ -131,6 +139,10 @@ const DropdownContent = styled.div`
   gap: 10px;
   padding: 12px;
   margin-bottom: 10px;
+  @media ${device.mobile} {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 const OptionBox = styled.div`
@@ -145,4 +157,7 @@ const OptionBox = styled.div`
   color: ${({ isSelected }) => (isSelected ? "white" : "#333")};
   cursor: pointer;
   white-space: nowrap;
+  @media ${device.mobile} {
+    font-size: 1.2rem;
+  }
 `;

@@ -5,12 +5,14 @@ import styled from "styled-components";
 import { useRequest } from "../../context/context";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import StepProgressBar from "../../components/Apply/StepProgressBar";
+import { useScaleLayout } from "../../hooks/useScaleLayout";
+import { device } from "../../styles/theme";
 
 const AddressForm = ({ title, description, buttonText }) => {
   const navigate = useNavigate();
   const { updateRequestData } = useRequest();
   const location = useLocation();
-  const [scale, setScale] = useState(1);
+  const { scale, height, ref } = useScaleLayout();
   const [formData, setFormData] = useState({
     clientAddress: "",
     clientDetailedAddress: "",
@@ -18,18 +20,6 @@ const AddressForm = ({ title, description, buttonText }) => {
     clientPhone: "",
   });
   const [popupMessage, setPopupMessage] = useState("");
-
-  useEffect(() => {
-    const updateScale = () => {
-      const baseWidth = 500;
-      const ratio = Math.min(window.innerWidth / baseWidth, 1);
-      setScale(ratio);
-    };
-
-    updateScale();
-    window.addEventListener("resize", updateScale);
-    return () => window.removeEventListener("resize", updateScale);
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -79,12 +69,18 @@ const AddressForm = ({ title, description, buttonText }) => {
 
   return (
     <ScaleWrapper
-      style={{ transform: `scale(${scale})`, transformOrigin: "top center" }}
+      style={{
+        transform: `scale(${scale})`,
+        transformOrigin: "top center",
+        height: `${height}px`,
+      }}
     >
-      <Container>
+      <Container ref={ref}>
         <Header>
           <BackButton onClick={() => navigate(-1)}>
-            <IoIosArrowBack size={32} color="#333" />
+            <BackIcon>
+              <IoIosArrowBack size={32} color="#333" />
+            </BackIcon>
           </BackButton>
         </Header>
         <StepProgressBar currentStep={1} totalSteps={4} />
@@ -96,7 +92,9 @@ const AddressForm = ({ title, description, buttonText }) => {
           <Field>
             <Label>주소</Label>
             <HelperTextBox>
-              <HiOutlineExclamationCircle color=" #a5a5a5" size="18" />
+              <HelperIcon>
+                <HiOutlineExclamationCircle color=" #a5a5a5" size="18" />
+              </HelperIcon>
               <HelperText>
                 현재 서비스 제공 지역은 서울 강북권 일부로 제한되어 있습니다.
                 <br></br>
@@ -163,12 +161,12 @@ const AddressForm = ({ title, description, buttonText }) => {
 };
 const ScaleWrapper = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
 `;
 const Container = styled.div`
   width: 100%;
-  padding: 16px;
   box-sizing: border-box;
 `;
 
@@ -182,11 +180,14 @@ const BackButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding-left: 20px;
+  padding-top: 10px;
 `;
-
+const BackIcon = styled(IoIosArrowBack)`
+  font-size: 30px;
+  @media ${device.mobile}{
+  font-size:50px;
+`;
 const TitleSection = styled.div`
   margin-top: 38px;
   margin-bottom: 35px;
@@ -197,15 +198,26 @@ const Title = styled.h2`
   font-size: ${({ theme }) => theme.fonts.sizes.large};
   margin-bottom: 3px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  @media ${device.mobile} {
+    font-size: 1.8rem;
+  }
 `;
 
 const Description = styled.p`
   font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  @media ${device.mobile} {
+    font-size: 1.4rem;
+    font-weight: 500;
+  }
 `;
 
 const Form = styled.form`
   width: 100%;
+  @media ${device.mobile} {
+    width: 86%;
+    margin: auto;
+  }
 `;
 
 const Field = styled.div`
@@ -217,6 +229,9 @@ const Label = styled.label`
   margin-bottom: 10px;
   font-size: 18px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  @media ${device.mobile} {
+    font-size: 1.4rem;
+  }
 `;
 
 const CustomSelect = styled.div`
@@ -238,10 +253,16 @@ const HelperText = styled.p`
   font-weight: 500;
   font-size: 15px;
   padding: 0px 0px 15px 5px;
+  @media ${device.mobile} {
+    font-size: 1rem;
+  }
 `;
 const HelperTextBox = styled.div`
   display: flex;
   padding-left: 5px;
+`;
+const HelperIcon = styled(HiOutlineExclamationCircle)`
+  font-size: 1.5rem;
 `;
 const Input = styled.input`
   width: 100%;
@@ -259,6 +280,15 @@ const Input = styled.input`
   &::placeholder {
     color: #a0a0a0;
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
+    @media ${device.mobile} {
+      font-size: 1.4rem;
+    }
+  }
+  @media ${device.mobile} {
+    height: 62px;
+    padding: 20px;
+    margin-top: 5px;
+    font-size: 1.3rem;
   }
 `;
 
@@ -275,6 +305,12 @@ const SubmitButton = styled.button`
   margin-top: 45px;
   &:hover {
     background: linear-gradient(to right, #00ddf6, #00dbf2, #53cfce);
+  }
+  @media ${device.mobile} {
+    height: 70px;
+    margin-top: 20px;
+    font-size: 1.6rem;
+    font-weight: 900;
   }
 `;
 
