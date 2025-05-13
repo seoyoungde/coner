@@ -8,6 +8,7 @@ import { useRequest } from "../../context/context";
 import StepProgressBar from "../../components/Apply/StepProgressBar";
 import { device } from "../../styles/theme";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
+import Popup from "../Apply/Popup";
 
 const AirConditionerForm = ({
   options,
@@ -105,11 +106,9 @@ const AirConditionerForm = ({
         </Form>
 
         {popupMessage && (
-          <Popup>
-            <PopupContent>
-              <PopupMessage>{popupMessage}</PopupMessage>
-              <CloseButton onClick={closePopup}>닫기</CloseButton>
-            </PopupContent>
+          <Popup onClose={closePopup}>
+            <PopupMessage>{popupMessage}</PopupMessage>
+            <CloseButton onClick={closePopup}>닫기</CloseButton>
           </Popup>
         )}
       </Container>
@@ -123,6 +122,7 @@ const ScaleWrapper = styled.div`
 `;
 const Container = styled.div`
   width: 100%;
+
   box-sizing: border-box;
 `;
 
@@ -172,6 +172,8 @@ const Form = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 95%;
+  margin: auto;
   @media ${device.mobile} {
     width: 86%;
     margin: auto;
@@ -265,29 +267,9 @@ const SubmitButton = styled.button`
   }
 `;
 
-const Popup = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-`;
-
-const PopupContent = styled.div`
-  background: white;
-  border-radius: 10px;
-  text-align: center;
-  width: 300px;
-`;
-
 const PopupMessage = styled.p`
   font-size: 15px;
-  padding: 30px 30px 70px 30px;
+  padding: 30px 30px 50px 30px;
   margin-bottom: 20px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
 `;

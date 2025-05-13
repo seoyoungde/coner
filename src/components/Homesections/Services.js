@@ -71,8 +71,10 @@ const Services = () => {
 
   return (
     <ServiceContainer>
-      <h1>간편하게 신청하고 바로 연결!</h1>
-      <h1>필요한 에어컨 서비스는 무엇인가요?</h1>
+      <h1>간편하게 서비스 예약하고, 3시간 안에 배정받으세요!</h1>
+      <p class="subtitle">
+        누적 120건+,만족도 98%의 냉난방기 전문가 지금 배정 받으세요.
+      </p>
 
       <ServiceList>
         {[...serviceData, { id: "empty", hidden: true }].map((service) =>
@@ -85,7 +87,7 @@ const Services = () => {
               isSelected={selectedService === service.title}
             >
               <img src={service.icon} alt={`${service.title} 아이콘`} />
-              <p>{service.title}</p>
+              <p class="service_title">{service.title}</p>
             </ServiceItem>
           )
         )}
@@ -112,6 +114,27 @@ const ServiceContainer = styled.section`
   h1:nth-child(2) {
     margin-bottom: 35px;
   }
+  p.subtitle {
+    font-size: ${({ theme }) => theme.fonts.sizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.medium};
+    color: ${({ theme }) => theme.colors.subtext};
+    margin: 5px 0px 32px 17px;
+
+    @media ${device.mobile} {
+      font-size: 1.5rem;
+      padding-left: 14px;
+    }
+  }
+  p:last-child {
+    font-size: ${({ theme }) => theme.fonts.sizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.medium};
+    color: ${({ theme }) => theme.colors.subtext};
+
+    @media ${device.mobile} {
+      font-size: 1.5rem;
+      padding-left: 14px;
+    }
+  }
 `;
 
 const ServiceList = styled.ul`
@@ -132,7 +155,6 @@ const ServiceItem = styled.li`
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
   cursor: pointer;
   margin-bottom: 20px;
   height: 90px;

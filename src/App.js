@@ -11,7 +11,6 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <GlobalStyle />
       <RequestProvider>
-        {/* ✅ RequestProvider로 감싸기 */}
         <Router>
           <Routes>
             <Route path="/*" element={<Main />} />

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Services from "../components/Homesections/Services";
 import ServicesType from "../components/Homesections/ServicesType";
 import { useScaleLayout } from "../hooks/useScaleLayout";
+import Qna from "../components/Homesections/Qna";
 
 const Home = () => {
   const { scale, height, ref } = useScaleLayout();
@@ -22,6 +23,7 @@ const Home = () => {
         <MainContent>
           <Services />
           <ServicesType />
+          <Qna />
         </MainContent>
       </Container>
     </ScaleWrapper>

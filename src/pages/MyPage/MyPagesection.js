@@ -3,16 +3,10 @@ import styled from "styled-components";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
-import { auth, db } from "../../firebase";
-import { signOut, onAuthStateChanged } from "firebase/auth";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  doc,
-  getDoc,
-} from "firebase/firestore";
+import { db } from "../../firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase";
 
 const sections = [
   {
@@ -41,41 +35,37 @@ const sections = [
 
 const MyPageSection = () => {
   const { scale, height, ref } = useScaleLayout();
-  const location = useLocation();
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [userInfo, setUserInfo] = useState(null);
+  const location = useLocation();
+
+  // const uid = currentUser?.uid;
+  // const isLoggedIn = !!currentUser;
+
+  // const [userInfo, setUserInfo] = useState(location.state?.user || null);
+  // const [uid, setUid] = useState(location.state?.uid || null);
   const [requests, setRequests] = useState([]);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
+  // const isLoggedIn = !!userInfo;
 
-        const clientRef = doc(db, "testclients", currentUser.uid);
-        const clientSnap = await getDoc(clientRef);
-        if (clientSnap.exists()) {
-          setUserInfo(clientSnap.data());
-        }
+  // useEffect(() => {
+  //   const fetchRequests = async () => {
+  //     if (!uid) return;
+  //     const q = query(
+  //       collection(db, "testservice"),
+  //       where("clientid", "==", uid)
+  //     );
+  //     const snapshot = await getDocs(q);
+  //     const fetchedRequests = snapshot.docs.map((doc) => doc.data());
+  //     setRequests(fetchedRequests);
+  //   };
+  //   if (userInfo?.isDeleted) return;
+  //   fetchRequests();
+  // }, [uid]);
 
-        const q = query(
-          collection(db, "testservice"),
-          where("clientId", "==", currentUser.uid)
-        );
-        const snapshot = await getDocs(q);
-        const fetchedRequests = snapshot.docs.map((doc) => doc.data());
-        setRequests(fetchedRequests);
-      } else {
-        setUser(null);
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
-  const handleLogout = async () => {
-    await signOut(auth);
-    navigate("/loginpage");
-  };
+  // const handleLogout = async () => {
+  //   await signOut(auth);
+  //   navigate("/loginpage");
+  // };
 
   const requestStates = [
     {
@@ -105,27 +95,18 @@ const MyPageSection = () => {
     >
       <Container ref={ref}>
         <UserBox>
-          <h1>반가워요 {userInfo?.clientname || "고객"}님</h1>
+          {/* <h1>반가워요 {userInfo?.clientname || "고객"}님</h1>
           <Link to="/infomodify">내 정보 수정하기</Link>
-          {user ? (
-            <button
-              onClick={handleLogout}
-              style={{
-                border: "none",
-                backgroundColor: "#ffffff",
-                cursor: "pointer",
-              }}
-            >
-              로그아웃
-            </button>
+          {isLoggedIn ? (
+            <button onClick={handleLogout}>로그아웃</button>
           ) : (
             <Link to="/loginpage">로그인하기</Link>
-          )}
+          )} */}
         </UserBox>
         <Content>
           <ProfileSection>
             <Logo src="../conerlogo3.png" alt="앱 로고" />
-            <p>{userInfo?.clientname || "고객"}님</p>
+            {/* <p>{userInfo?.clientname || "고객"}님</p> */}
           </ProfileSection>
 
           <UserRequestNumber>
@@ -136,8 +117,7 @@ const MyPageSection = () => {
                   isLast={i === requestStates.length - 1}
                   onClick={() =>
                     navigate("/inquirydashboard", {
-                      status: state.stateValue,
-                      clientId: user?.uid,
+                      // state: { status: state.stateValue, clientId: uid },
                     })
                   }
                 >

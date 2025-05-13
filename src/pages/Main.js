@@ -26,8 +26,6 @@ import Charge from "./ServicesPage/Charge";
 import Header from "../components/layout/Header";
 import LoginPage from "./Login/LoginPage";
 import CreatAcount from "./Login/CreatAcount";
-import IdSearch from "./Login/IdSearch";
-import PasswordSearch from "./Login/PasswordSearch";
 import InfoModify from "./MyPage/InfoModify";
 import Withdraw from "./MyPage/Withdraw";
 
@@ -99,10 +97,6 @@ const Main = () => {
       case "/loginpage":
         return "#ffffff";
       case "/createacount":
-        return "#ffffff";
-      case "/idsearch":
-        return "#ffffff";
-      case "/passwordsearch":
         return "#ffffff";
       case "/infomodify":
         return "#ffffff";
@@ -177,8 +171,6 @@ const Main = () => {
             <Route path="/charge" element={<Charge />} />
             <Route path="/loginpage" element={<LoginPage />}></Route>
             <Route path="/createacount" element={<CreatAcount />}></Route>
-            <Route path="/idsearch" element={<IdSearch />} />
-            <Route path="/passwordsearch" element={<PasswordSearch />} />
             <Route path="/infomodify" element={<InfoModify />} />
             <Route path="/withdraw" element={<Withdraw />} />
           </Routes>

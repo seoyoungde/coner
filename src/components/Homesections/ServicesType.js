@@ -33,7 +33,7 @@ const types = [
 const ServicesType = () => {
   return (
     <TypeCards>
-      <h1>서비스 가능한 에어컨</h1>
+      <h1>서비스 가능한 기기</h1>
       <p>창문형은 설치 서비스를 제공하지 않아요</p>
       <TypeList>
         {types.map((type) => (
@@ -51,6 +51,7 @@ const TypeCards = styled.section`
   cursor: default;
   background-color: #ffffff;
   padding-top: 22px;
+  margin-bottom: 20px;
 
   @media ${device.mobile} {
     margin-bottom: 19px;

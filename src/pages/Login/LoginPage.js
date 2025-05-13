@@ -3,54 +3,87 @@ import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
-import { auth, db } from "../../firebase";
-import {
-  signInWithEmailAndPassword,
-  setPersistence,
-  browserLocalPersistence,
-  browserSessionPersistence,
-} from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../../firebase";
+import axios from "axios";
+
+const normalizePhone = (value) =>
+  value.replace(/\D/g, "").replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
 
 const LoginPage = () => {
   const { scale, height, ref } = useScaleLayout();
-  const [email, setEamil] = useState("");
-  const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [code, setCode] = useState("");
+  const [sentCode, setSentCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  const generateRandomCode = () =>
+    Math.floor(100000 + Math.random() * 900000).toString();
+
+  const handlePhoneChange = (e) => {
+    let value = e.target.value.replace(/\D/g, "");
+    if (value.length >= 4) value = value.slice(0, 3) + "-" + value.slice(3);
+    if (value.length >= 9) value = value.slice(0, 8) + "-" + value.slice(8);
+    if (value.length > 13) value = value.slice(0, 13);
+    setPhone(value);
+  };
+
+  const handleSendVerificationCode = async () => {
+    alert("000000");
+    // const formattedPhone = normalizePhone(phone);
+    // if (!formattedPhone) return alert("전화번호를 입력해주세요");
+
+    // const newCode = generateRandomCode();
+    // setSentCode(newCode);
+
+    // try {
+    //   await axios.post("http://3.34.179.158:3000/send-sms", {
+    //     to: formattedPhone,
+    //     text: `인증번호는 ${newCode}입니다.`,
+    //   });
+    //   alert("인증번호가 전송되었습니다");
+    // } catch (error) {
+    //   console.error(error);
+    //   alert("인증번호 전송 실패: " + error.message);
+    // }
+  };
+
   const handleLogin = async () => {
     try {
-      if (!email.includes("@")) {
-        alert("이메일을 정확하게 입력해주세요");
-        return;
-      }
-      if (!password) {
-        alert("비밀번호를 입력해주세요");
-        return;
-      }
-      setIsLoading(true);
-      await setPersistence(auth, browserSessionPersistence);
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-      const userDocRef = doc(db, "testclients", user.uid);
-      const userSnap = await getDoc(userDocRef);
+      if (!phone || phone.length < 10)
+        return alert("전화번호를 정확히 입력해주세요");
+      if (!code) return alert("인증번호를 입력해주세요");
+      // if (code !== sentCode) return alert("인증번호가 일치하지 않습니다");
+      if (code !== "000000") return alert("인증번호가 일치하지 않습니다");
 
-      if (!userSnap.exists()) {
-        alert("회원 정보를 찾을 수 없습니다");
+      setIsLoading(true);
+      const formattedPhone = normalizePhone(phone);
+      const q = query(
+        collection(db, "testclients"),
+        where("clientphone", "==", formattedPhone)
+      );
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        alert("해당 전화번호로 가입된 회원이 없습니다.");
         return;
       }
-      const userData = userSnap.data();
+
+      const docData = snapshot.docs[0].data();
+      const uid = snapshot.docs[0].id;
+
+      if (docData.isDeleted) {
+        alert("탈퇴한 회원입니다. 다시 가입해주세요.");
+        return;
+      }
 
       alert("로그인 성공!");
-      navigate("/mypage", { state: { user: userData, uid: user.uid } });
+      navigate("/mypage", { state: { user: docData, uid } });
+      setSentCode(""); // 인증번호 재사용 방지
     } catch (error) {
       console.error(error);
-      alert("로그인 실패:" + error.message);
+      alert("로그인 실패: " + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -67,35 +100,22 @@ const LoginPage = () => {
       <Container ref={ref}>
         <img src="../conerloginbanner.png"></img>
         <InputBox>
-          <UserId
-            value={email}
-            onChange={(e) => setEamil(e.target.value)}
-          ></UserId>
-          <Userpassword
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          ></Userpassword>
+          <UserPhoneNum value={phone} onChange={handlePhoneChange} />
+          <div style={{ width: "100%", display: "flex" }}>
+            <Userpassword
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+            />
+            <PassBtn type="button" onClick={handleSendVerificationCode}>
+              인증번호받기
+            </PassBtn>
+          </div>
         </InputBox>
-        {/* <CheckBox>
-          <CheckInput />
-          로그인상태유지
-        </CheckBox> */}
+
         <LoginButton onClick={handleLogin} disabled={isLoading}>
           {isLoading ? "로딩중..." : "로그인"}
         </LoginButton>
         <SearchSection>
-          <Link
-            to="/idsearch"
-            style={{ textDecoration: "none", color: " #aaa" }}
-          >
-            아이디찾기
-          </Link>
-          <Link
-            to="/passwordsearch"
-            style={{ textDecoration: "none", color: " #aaa" }}
-          >
-            비밀번호찾기
-          </Link>
           <Link
             to="/createacount"
             style={{ textDecoration: "none", color: " #aaa" }}
@@ -132,9 +152,9 @@ const InputBox = styled.div`
   margin-top: 40px;
 `;
 
-const UserId = styled.input.attrs({
-  type: "email",
-  placeholder: "이메일주소입력",
+const UserPhoneNum = styled.input.attrs({
+  type: "tel",
+  placeholder: "전화번호입력",
 })`
   width: 100%;
   padding: 16px;
@@ -156,12 +176,13 @@ const UserId = styled.input.attrs({
 
 const Userpassword = styled.input.attrs({
   type: "password",
-  placeholder: "비밀번호 입력",
+  placeholder: "휴대폰인증번호입력",
 })`
   padding: 16px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   font-size: 16px;
+  width: 80%;
   &:focus {
     outline: none;
     border: 1px solid #00e5fd;
@@ -171,29 +192,6 @@ const Userpassword = styled.input.attrs({
     padding: 20px;
     margin-top: 5px;
     font-size: 1.3rem;
-  }
-`;
-
-const CheckBox = styled.label`
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  color: #444;
-  margin: 12px 0;
-  gap: 6px;
-  justify-content: flex-start;
-  @media ${device.mobile} {
-    font-size: 1.2rem;
-    margin: 18px 0;
-  }
-`;
-
-const CheckInput = styled.input.attrs({ type: "checkbox" })`
-  width: 16px;
-  height: 16px;
-  @media ${device.mobile} {
-    width: 25px;
-    height: 25px;
   }
 `;
 
@@ -216,7 +214,11 @@ const LoginButton = styled.button`
     font-weight: 900;
   }
 `;
-
+const PassBtn = styled.button`
+  width: 20%;
+  border: none;
+  border-radius: 8px;
+`;
 const SearchSection = styled.div`
   display: flex;
   justify-content: center;
