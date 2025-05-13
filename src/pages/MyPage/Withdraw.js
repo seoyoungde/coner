@@ -4,12 +4,16 @@ import { useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
+import { updateDoc, doc } from "firebase/firestore";
+import { signOut } from "firebase/auth";
+import { db, auth } from "../../firebase";
 
 const Withdraw = () => {
   const navigate = useNavigate();
+  const { scale, height, ref } = useScaleLayout();
   const [confirmChecked, setConfirmChecked] = useState(false);
   const [reasons, setReasons] = useState([]);
-  const { scale, height, ref } = useScaleLayout();
+  const [details, setDetails] = useState("");
 
   const handleReasonToggle = (reason) => {
     setReasons((prev) =>
@@ -17,6 +21,32 @@ const Withdraw = () => {
         ? prev.filter((r) => r !== reason)
         : [...prev, reason]
     );
+  };
+
+  const handleWithdraw = async () => {
+    if (!confirmChecked) return;
+
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        alert("로그인된 사용자만 탈퇴할 수 있습니다.");
+        return;
+      }
+
+      const userRef = doc(db, "testclients", currentUser.uid);
+      await updateDoc(userRef, {
+        isDeleted: true,
+        withdrawReasons: reasons,
+        withdrawDetail: details,
+      });
+
+      await signOut(auth);
+      alert("회원 탈퇴가 완료되었습니다.");
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      alert("탈퇴 처리 중 오류가 발생했습니다.");
+    }
   };
 
   return (
@@ -97,7 +127,9 @@ const Withdraw = () => {
         </ContentBox>
 
         <ButtonRow>
-          <WithdrawBtn disabled={!confirmChecked}>탈퇴신청</WithdrawBtn>
+          <WithdrawBtn disabled={!confirmChecked} onClick={handleWithdraw}>
+            탈퇴신청
+          </WithdrawBtn>
           <CancelBtn onClick={() => navigate(-1)}>취소하기</CancelBtn>
         </ButtonRow>
       </Container>

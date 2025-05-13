@@ -4,99 +4,71 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../firebase";
+import axios from "axios";
+import { signInAnonymously } from "firebase/auth";
+import { auth } from "../../firebase";
 
 const CreatAcount = () => {
   const navigate = useNavigate();
   const { scale, height, ref } = useScaleLayout();
   const location = useLocation();
-  // const AddressInputClick = () => {
-  //   navigate("/addressmodal", {
-  //     state: {
-  //       prevPath: location.pathname,
-  //     },
-  //   });
-  // };
   const [email, setEmail] = useState("");
-  const [password, setPasswrod] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
   const [job, setJob] = useState("");
   const [birth, setBirth] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [passPhone, setPassPhone] = useState("");
-  // const isFormValid =
-  //   email &&
-  //   password &&
-  //   confirmPassword &&
-  //   name &&
-  //   job &&
-  //   birth &&
-  //   address &&
-  //   phone &&
-  //   passPhone;
+  const [sentCode, setSentCode] = useState("");
+  const [detailAddress, setDetailAddress] = useState("");
+
+  const generateRandomCode = () =>
+    Math.floor(100000 + Math.random() * 900000).toString();
+
+  const handleSendVerificationCode = async () => {
+    if (!phone) return alert("전화번호를 입력해주세요.");
+
+    const code = generateRandomCode();
+    setSentCode(code);
+
+    try {
+      await axios.post("http://3.34.179.158:3000/send-sms", {
+        to: phone,
+        text: `인증번호는 ${code}입니다.`,
+      });
+      alert("인증번호가 전송되었습니다.");
+    } catch (error) {
+      console.error(error);
+      alert("인증번호 전송 실패: " + error.message);
+    }
+  };
+
   const handleCreataccount = async () => {
     try {
-      if (!email.includes("@")) {
-        alert("올바른 이메일형식을 입력하세요");
-        return;
-      }
-      if (!name) {
-        alert("이름을 입력하세요");
-        return;
-      }
-      if (!password) {
-        alert("비밀번호를 입력하세요");
-        return;
-      }
-      if (password !== confirmPassword) {
-        alert("비밀번호가 일치하지 않습니다");
-        return;
-      }
-      if (!job) {
-        alert("직업을 선택하세요");
-        return;
-      }
-      if (birth.length !== 10) {
-        alert("생년월일은 8자리로 입력하세요.");
-        return;
-      }
-      if (!address) {
-        alert("거주지를 입력해주세요");
-        return;
-      }
-      if (phone.length !== 13) {
-        alert("휴대폰번호를 확인해주세요");
-        return;
-      }
-      if (!passPhone) {
-        alert("인증번호를 입력해주세요");
-        return;
-      }
-      if (passPhone !== "000000") {
-        alert("인증번호를 다시 입력해주세요");
-        return;
-      }
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-      await setDoc(doc(db, "testclients", user.uid), {
+      if (!email.includes("@")) return alert("이메일을 입력하세요.");
+      if (!name || !job || !birth || !address || !detailAddress)
+        return alert("모든 정보를 입력해주세요.");
+      if (!phone || !passPhone)
+        return alert("전화번호와 인증번호를 입력해주세요.");
+
+      if (passPhone !== sentCode) return alert("인증번호가 일치하지 않습니다.");
+
+      const userCredential = await signInAnonymously(auth);
+      const uid = userCredential.user.uid;
+
+      const newUser = {
         clientemail: email,
-        clientpassword: password,
         clientname: name,
         clientjob: job,
         clientbirth: birth,
         clientaddress: address,
+        clientdetailaddress: detailAddress,
         clientphone: phone,
-      });
+        clientId: uid,
+      };
+      await addDoc(collection(db, "testclients"), newUser);
       alert("회원가입 완료");
       navigate("/loginpage");
     } catch (error) {
@@ -104,49 +76,22 @@ const CreatAcount = () => {
       alert("회원가입 실패:" + error.message);
     }
   };
-  // useEffect(() => {
-  //   if (location.state?.selectedAddress) {
-  //     setAddress(location.state.selectedAddress);
-  //   }
-  // }, [location.state]);
-  const handleSendVerificationCode = () => {
-    alert("인증번호를 전송했습니다");
-  };
+
   const handleBirthChange = (e) => {
     let value = e.target.value.replace(/\D/g, "");
-
-    if (value.length >= 5) {
-      value = value.slice(0, 4) + "-" + value.slice(4);
-    }
-    if (value.length >= 8) {
-      value = value.slice(0, 7) + "-" + value.slice(7);
-    }
-
-    if (value.length > 10) {
-      value = value.slice(0, 10);
-    }
-
+    if (value.length >= 5) value = value.slice(0, 4) + "-" + value.slice(4);
+    if (value.length >= 8) value = value.slice(0, 7) + "-" + value.slice(7);
+    if (value.length > 10) value = value.slice(0, 10);
     setBirth(value);
   };
 
   const handlePhoneChange = (e) => {
     let value = e.target.value.replace(/\D/g, "");
-    if (value.length >= 4) {
-      value = value.slice(0, 3) + "-" + value.slice(3);
-    }
-    if (value.length >= 9) {
-      value = value.slice(0, 8) + "-" + value.slice(8);
-    }
-    if (value.length > 13) {
-      value = value.slice(0, 13);
-    }
+    if (value.length >= 4) value = value.slice(0, 3) + "-" + value.slice(3);
+    if (value.length >= 9) value = value.slice(0, 8) + "-" + value.slice(8);
+    if (value.length > 13) value = value.slice(0, 13);
     setPhone(value);
   };
-
-  // const handlePhoneChange = (e) => {
-  //   const onlyPhoneNumbers = e.target.value.replace(/\D/g, "");
-  //   setPhone(onlyPhoneNumbers);
-  // };
 
   return (
     <ScaleWrapper
@@ -177,33 +122,7 @@ const CreatAcount = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </FormGroup>
-            <FormGroup>
-              <Label>비밀번호</Label>
-              <div style={{ display: "flex" }}>
-                <PasswordInput
-                  type={showPassword ? "text" : "password"}
-                  placeholder="비밀번호입력"
-                  value={password}
-                  onChange={(e) => setPasswrod(e.target.value)}
-                ></PasswordInput>
-                <button
-                  onClick={() => setShowPassword(!showPassword)}
-                  style={{ width: "10%", border: "none" }}
-                >
-                  {showPassword ? "숨기기" : "보기"}
-                </button>
-              </div>
-              <Hint>*영문, 숫자, 특수기호 포함 6~12자리</Hint>
-            </FormGroup>
-            <FormGroup>
-              <Label>비밀번호 확인</Label>
-              <Input
-                type="password"
-                placeholder="비밀번호확인"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </FormGroup>
+
             <FormGroup>
               <Label>이름</Label>
               <Input
@@ -256,7 +175,13 @@ const CreatAcount = () => {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder="클릭하여 주소 검색"
-                // onClick={AddressInputClick}
+              />
+              <Input
+                name="clientDetailAddress"
+                value={detailAddress}
+                onChange={(e) => setDetailAddress(e.target.value)}
+                placeholder="상세주소입력"
+                style={{ marginTop: "10px" }}
               />
             </FormGroup>
             <FormGroup>
@@ -275,7 +200,7 @@ const CreatAcount = () => {
             <FormGroup>
               <Label>인증번호</Label>
               <Input
-                placeholder="인증번호를 입력하세요."
+                placeholder="6자리 인증번호 입력"
                 value={passPhone}
                 onChange={(e) => setPassPhone(e.target.value)}
               />
@@ -283,12 +208,8 @@ const CreatAcount = () => {
           </FormBox>
         </FormSection>
 
-        <SubmitButton
-          // disabled={!isFormValid}
-          onClick={handleCreataccount}
-        >
-          가입하기
-        </SubmitButton>
+        <SubmitButton onClick={handleCreataccount}>가입하기</SubmitButton>
+        <div id="recaptcha-container"></div>
       </Container>
     </ScaleWrapper>
   );
@@ -397,29 +318,6 @@ const Input = styled.input`
     margin-top: 5px;
     font-size: 1.3rem;
   }
-`;
-const PasswordInput = styled.input`
-  width: 90%;
-  padding: 10px 14px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
-  outline: none;
-
-  &:focus {
-    border-color: #333;
-  }
-  @media ${device.mobile} {
-    height: 62px;
-    padding: 20px;
-    margin-top: 5px;
-    font-size: 1.3rem;
-  }
-`;
-const Hint = styled.p`
-  font-size: 12px;
-  color: #666;
-  margin-top: 4px;
 `;
 
 const JobButtonBox = styled.div`

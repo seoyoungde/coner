@@ -7,30 +7,45 @@ import { HiOutlineExclamationCircle } from "react-icons/hi";
 import StepProgressBar from "../../components/Apply/StepProgressBar";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
+import { auth } from "../../firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../firebase";
 
 const AddressForm = ({ title, description, buttonText }) => {
   const navigate = useNavigate();
-  const { updateRequestData } = useRequest();
   const location = useLocation();
+  const { updateRequestData } = useRequest();
   const { scale, height, ref } = useScaleLayout();
+  const [popupMessage, setPopupMessage] = useState("");
+  const [user, setUser] = useState(null);
+  const [memberInfo, setMemberInfo] = useState(null);
+
   const [formData, setFormData] = useState({
     clientAddress: "",
     clientDetailedAddress: "",
-    // clientId: "",
     clientPhone: "",
   });
-  const [popupMessage, setPopupMessage] = useState("");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name === "clientPhone") {
-      const onlyNumbers = value.replace(/\D/g, "");
-      if (onlyNumbers.length > 11) return;
-      setFormData((prev) => ({ ...prev, [name]: onlyNumbers }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+        const docRef = doc(db, "testclients", currentUser.uid);
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          const data = snap.data();
+          setMemberInfo(data);
+          setFormData((prev) => ({
+            ...prev,
+            clientAddress: data.clientaddress || "",
+            clientDetailedAddress: data.clientdetailedaddress || "",
+            clientPhone: data.clientphone || "",
+          }));
+        }
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (location.state?.selectedAddress) {
@@ -41,30 +56,40 @@ const AddressForm = ({ title, description, buttonText }) => {
     }
   }, [location.state]);
 
-  const AddressInputClick = () => {
-    navigate("/addressmodal", { state: { prevPath: location.pathname } });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (user) return;
+    if (name === "clientPhone") {
+      const onlyNumbers = value.replace(/\D/g, "");
+      if (onlyNumbers.length > 11) return;
+      setFormData((prev) => ({ ...prev, [name]: onlyNumbers }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.clientAddress) {
-      setPopupMessage("주소를 선택해주세요.");
-      return;
-    }
-    if (!formData.clientDetailedAddress) {
-      setPopupMessage("상세주소를 입력해주세요.");
-      return;
-    }
-    if (!formData.clientPhone) {
-      setPopupMessage("전화번호를 입력해주세요.");
-      return;
-    }
+    if (!formData.clientAddress) return setPopupMessage("주소를 선택해주세요.");
+    if (!formData.clientDetailedAddress)
+      return setPopupMessage("상세주소를 입력해주세요.");
+    if (!formData.clientPhone)
+      return setPopupMessage("전화번호를 입력해주세요.");
+
     updateRequestData("clientAddress", formData.clientAddress);
     updateRequestData("clientDetailedAddress", formData.clientDetailedAddress);
-    // updateRequestData("clientId", formData.clientId);
     updateRequestData("clientPhone", formData.clientPhone);
 
     navigate("/selectservicedate");
+  };
+
+  const goToAddressSearch = () => {
+    if (!user)
+      navigate("/addressmodal", { state: { prevPath: location.pathname } });
+  };
+
+  const goToModifyInfo = () => {
+    navigate("/infomodify");
   };
 
   return (
@@ -90,7 +115,15 @@ const AddressForm = ({ title, description, buttonText }) => {
         </TitleSection>
         <Form onSubmit={handleSubmit}>
           <Field>
-            <Label>주소</Label>
+            <Label>
+              주소
+              {user && (
+                <ModifyLink onClick={goToModifyInfo}>
+                  내 정보 수정하러가기
+                </ModifyLink>
+              )}
+            </Label>
+
             <HelperTextBox>
               <HelperIcon>
                 <HiOutlineExclamationCircle color=" #a5a5a5" size="18" />
@@ -109,7 +142,7 @@ const AddressForm = ({ title, description, buttonText }) => {
                 placeholder="클릭하여 주소 검색"
                 style={{ border: "none" }}
                 value={formData.clientAddress}
-                onClick={AddressInputClick}
+                onClick={goToAddressSearch}
                 readOnly
               />
             </CustomSelect>
@@ -120,27 +153,27 @@ const AddressForm = ({ title, description, buttonText }) => {
               placeholder="상세주소"
               value={formData.clientDetailedAddress}
               onChange={handleChange}
+              readOnly={!!user}
               style={{ marginTop: "10px" }}
             />
           </Field>
-          {/* <Field>
-          <Label>이름</Label>
-          <Input
-            type="text"
-            name="clientId"
-            placeholder="이름"
-            value={formData.clientId}
-            onChange={handleChange}
-          />
-        </Field> */}
+
           <Field>
-            <Label>연락처</Label>
+            <Label>
+              연락처
+              {user && (
+                <ModifyLink onClick={goToModifyInfo}>
+                  내 정보 수정하러가기
+                </ModifyLink>
+              )}
+            </Label>
             <Input
               type="tel"
               name="clientPhone"
               placeholder="전화번호"
               value={formData.clientPhone}
               onChange={handleChange}
+              readOnly={!!user}
             />
           </Field>
           <SubmitButton type="submit">{buttonText}</SubmitButton>
@@ -213,7 +246,8 @@ const Description = styled.p`
 `;
 
 const Form = styled.form`
-  width: 100%;
+  width: 95%;
+  margin: auto;
   @media ${device.mobile} {
     width: 86%;
     margin: auto;
@@ -352,5 +386,5 @@ const CloseButton = styled.button`
   border-radius: 0px 0px 10px 10px;
   cursor: pointer;
 `;
-
+const ModifyLink = styled.a``;
 export default AddressForm;

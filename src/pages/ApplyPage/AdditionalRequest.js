@@ -38,9 +38,15 @@ const AdditionalRequest = () => {
         formattedDetailInfo =
           `${selectedDropdownOption}\n${additionalInfo}`.trim();
       }
-      updateRequestData("selectedDropdownOption", selectedDropdownOption);
 
       const user = auth.currentUser;
+      const clientId = user?.uid || "";
+
+      updateRequestData("selectedDropdownOption", selectedDropdownOption);
+      updateRequestData("detailInfo", formattedDetailInfo);
+      if (clientId) {
+        updateRequestData("clientId", clientId);
+      }
 
       await new Promise((resolve) => {
         updateRequestData("detailInfo", formattedDetailInfo);
@@ -50,12 +56,11 @@ const AdditionalRequest = () => {
       const requestId = await submitRequest({
         ...requestData,
         detailInfo: formattedDetailInfo,
-        clientId: user ? user.uid : "",
+        clientId: clientId,
       });
 
       navigate("/inquirydashboard", {
         state: {
-          // clientId: requestData.clientId,
           clientPhone: requestData.clientPhone,
           requestId: requestId,
         },

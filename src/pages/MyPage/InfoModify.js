@@ -1,14 +1,66 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
+import { auth, db } from "../../firebase";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 const InfoModify = () => {
   const navigate = useNavigate();
   const { scale, height, ref } = useScaleLayout();
+  const [originalData, setOriginalData] = useState({});
+  const [formData, setFormData] = useState({});
+  const user = auth.currentUser;
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (user) {
+        const ref = doc(db, "testclients", user.uid);
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          const data = snap.data();
+          setOriginalData(data);
+          setFormData(data);
+        }
+      }
+    };
+    fetchUser();
+  }, [user]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async () => {
+    if (!user) return;
+
+    const updates = {};
+    for (let key in formData) {
+      if (formData[key] !== originalData[key]) {
+        updates[key] = formData[key];
+      }
+    }
+
+    if (Object.keys(updates).length === 0) {
+      alert("수정된 내용이 없습니다.");
+      return;
+    }
+
+    try {
+      const ref = doc(db, "testclients", user.uid);
+      await updateDoc(ref, updates);
+      alert("정보가 수정되었습니다.");
+      navigate("/mypage");
+    } catch (err) {
+      console.error(err);
+      alert("수정 실패: " + err.message);
+    }
+  };
+
   return (
     <ScaleWrapper
       style={{
@@ -32,7 +84,11 @@ const InfoModify = () => {
           <FormBox>
             <FormGroup>
               <Label>이메일</Label>
-              <Input placeholder="직접입력" />
+              <Input
+                name="clientemail"
+                value={formData.clientemail || ""}
+                onChange={handleChange}
+              />
             </FormGroup>
             <FormGroup>
               <Label>비밀번호</Label>
@@ -45,35 +101,49 @@ const InfoModify = () => {
             </FormGroup>
             <FormGroup>
               <Label>이름</Label>
-              <Input placeholder="이름을 입력하세요." />
+              <Input
+                name="clientname"
+                value={formData.clientname || ""}
+                onChange={handleChange}
+              />
             </FormGroup>
             <FormGroup>
               <Label>직업</Label>
               <JobButtonBox>
-                <JobButton>개인사업자</JobButton>
-                <JobButton>법인사업자</JobButton>
-                <JobButton>프리랜서</JobButton>
-                <JobButton>회사원</JobButton>
+                {["개인사업자", "법인사업자", "프리랜서", "회사원"].map(
+                  (job) => (
+                    <JobButton
+                      key={job}
+                      isSelected={formData.clientjob === job}
+                      onClick={() =>
+                        setFormData((prev) => ({ ...prev, clientjob: job }))
+                      }
+                    >
+                      {job}
+                    </JobButton>
+                  )
+                )}
               </JobButtonBox>
             </FormGroup>
             <FormGroup>
               <Label>생년월일 8자리</Label>
-              <Input placeholder="생년월일을 입력하세요." />
+              <Input
+                name="clientbirth"
+                value={formData.clientbirth || ""}
+                onChange={handleChange}
+              />
             </FormGroup>
             <FormGroup>
               <Label>거주지</Label>
               <Input placeholder="주소지검색하기" />
             </FormGroup>
             <FormGroup>
-              <LabelRow>
-                <span>휴대전화번호</span>
-                <SmallButton>인증번호받기</SmallButton>
-              </LabelRow>
-              <Input placeholder="전화번호를 입력해주세요" />
-            </FormGroup>
-            <FormGroup>
-              <Label>인증번호</Label>
-              <Input placeholder="인증번호를 입력하세요." />
+              <Label>전화번호</Label>
+              <Input
+                name="clientphone"
+                value={formData.clientphone || ""}
+                onChange={handleChange}
+              />
             </FormGroup>
           </FormBox>
         </FormSection>
@@ -82,7 +152,7 @@ const InfoModify = () => {
           <Link to="/withdraw">회원탈퇴하기</Link>
           <Link to="/">로그아웃</Link>
         </LinkSection>
-        <SubmitButton disabled>수정완료</SubmitButton>
+        <SubmitButton onClick={handleSubmit}>수정완료</SubmitButton>
       </Container>
     </ScaleWrapper>
   );
@@ -142,7 +212,23 @@ const SectionTitle = styled.h2`
     font-size: 1.6rem;
   }
 `;
+const JobButton = styled.button`
+  border: 1px solid ${({ isSelected }) => (isSelected ? "#00e6fd" : "#f9f9f9")};
+  border-radius: 6px;
+  padding: 10px 0;
+  background: ${({ isSelected }) => (isSelected ? "#b8f8ff" : "#f2f2f2")};
+  color: black;
+  font-size: 14px;
+  cursor: pointer;
 
+  &:hover {
+    background: ${({ isSelected }) => (isSelected ? "#d0eff3" : "#eee")};
+  }
+  @media ${device.mobile} {
+    padding: 20px 0;
+    font-size: 1.2rem;
+  }
+`;
 const FormBox = styled.div`
   border: 1px solid #eee;
   border-radius: 8px;
@@ -207,23 +293,6 @@ const JobButtonBox = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 8px;
   margin-top: 8px;
-`;
-
-const JobButton = styled.button`
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 10px 0;
-  background: #f9f9f9;
-  font-size: 14px;
-  cursor: pointer;
-
-  &:hover {
-    background: #eee;
-  }
-  @media ${device.mobile} {
-    padding: 20px 0;
-    font-size: 1.2rem;
-  }
 `;
 
 const SmallButton = styled.button`
