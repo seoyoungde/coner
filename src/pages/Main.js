@@ -28,6 +28,7 @@ import LoginPage from "./Login/LoginPage";
 import CreatAcount from "./Login/CreatAcount";
 import InfoModify from "./MyPage/InfoModify";
 import Withdraw from "./MyPage/Withdraw";
+import PricingPage from "./PricingPage";
 
 const headerMap = {
   "/": <Header />,
@@ -102,6 +103,8 @@ const Main = () => {
         return "#ffffff";
       case "/withdraw":
         return "#ffffff";
+      case "/pricing":
+        return "#ffffff";
       default:
         return "#f9f9f9";
     }
@@ -136,6 +139,7 @@ const Main = () => {
     "/passwordsearch",
     "/infomodify",
     "/withdraw",
+    "/pricing",
   ];
   return (
     <Container style={{ height: `${windowHeight}px` }}>
@@ -173,6 +177,7 @@ const Main = () => {
             <Route path="/createacount" element={<CreatAcount />}></Route>
             <Route path="/infomodify" element={<InfoModify />} />
             <Route path="/withdraw" element={<Withdraw />} />
+            <Route path="/pricing" element={<PricingPage />} />
           </Routes>
         </MainContent>
 

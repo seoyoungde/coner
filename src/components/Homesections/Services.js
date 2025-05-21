@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRequest } from "../../context/context";
 import { device } from "../../styles/theme";
 
@@ -91,6 +91,17 @@ const Services = () => {
             </ServiceItem>
           )
         )}
+        <Link
+          to="/pricing"
+          style={{
+            marginLeft: "30px",
+            marginBottom: "10px",
+            color: "#A0A0A0",
+            fontSize: "0.9rem",
+          }}
+        >
+          서비스비용이 궁금하신가요?
+        </Link>
       </ServiceList>
     </ServiceContainer>
   );
@@ -132,7 +143,6 @@ const ServiceContainer = styled.section`
 
     @media ${device.mobile} {
       font-size: 1.5rem;
-      padding-left: 14px;
     }
   }
 `;

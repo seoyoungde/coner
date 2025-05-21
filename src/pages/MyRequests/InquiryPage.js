@@ -17,6 +17,7 @@ import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebase";
+import { useAuth } from "../../context/AuthProvider";
 
 const InquiryPage = () => {
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ const InquiryPage = () => {
   const [requestDataList, setRequestDataList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("progress");
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -132,11 +134,15 @@ const InquiryPage = () => {
       <Container ref={ref}>
         <Header>
           <InnerWrapper>
-            <BackButton onClick={handleGoBack}>
-              <BackIcon>
-                <IoIosArrowBack size={32} color="#333" />
-              </BackIcon>
-            </BackButton>
+            {!currentUser ? (
+              <BackButton onClick={handleGoBack}>
+                <BackIcon>
+                  <IoIosArrowBack size={32} color="#333" />
+                </BackIcon>
+              </BackButton>
+            ) : (
+              <Spacer />
+            )}
 
             <Title>고객님의 의뢰서</Title>
             <Spacer />
@@ -211,6 +217,7 @@ const InnerWrapper = styled.div`
 `;
 const Spacer = styled.div`
   width: 22px;
+  margin-top: 40px;
 `;
 const Header = styled.div`
   margin-top: 10px;

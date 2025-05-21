@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
 import { db } from "../../firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase";
+import { useAuth } from "../../context/AuthProvider";
 
 const sections = [
   {
@@ -36,37 +37,30 @@ const sections = [
 const MyPageSection = () => {
   const { scale, height, ref } = useScaleLayout();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // const uid = currentUser?.uid;
-  // const isLoggedIn = !!currentUser;
-
-  // const [userInfo, setUserInfo] = useState(location.state?.user || null);
-  // const [uid, setUid] = useState(location.state?.uid || null);
+  const { currentUser, userInfo, setUserInfo } = useAuth();
   const [requests, setRequests] = useState([]);
 
-  // const isLoggedIn = !!userInfo;
+  useEffect(() => {
+    const fetchRequests = async () => {
+      if (!currentUser?.uid) return;
+      const q = query(
+        collection(db, "testservice"),
+        where("clientId", "==", currentUser.uid)
+      );
+      const snapshot = await getDocs(q);
+      const fetchedRequests = snapshot.docs.map((doc) => doc.data());
+      setRequests(fetchedRequests);
+    };
+    if (userInfo?.isDeleted) return;
 
-  // useEffect(() => {
-  //   const fetchRequests = async () => {
-  //     if (!uid) return;
-  //     const q = query(
-  //       collection(db, "testservice"),
-  //       where("clientid", "==", uid)
-  //     );
-  //     const snapshot = await getDocs(q);
-  //     const fetchedRequests = snapshot.docs.map((doc) => doc.data());
-  //     setRequests(fetchedRequests);
-  //   };
-  //   if (userInfo?.isDeleted) return;
-  //   fetchRequests();
-  // }, [uid]);
+    fetchRequests();
+  }, [currentUser, userInfo]);
 
-  // const handleLogout = async () => {
-  //   await signOut(auth);
-  //   navigate("/loginpage");
-  // };
-
+  const handleLogout = async () => {
+    await signOut(auth);
+    setUserInfo(null);
+    navigate("/loginpage");
+  };
   const requestStates = [
     {
       label: "진행예정",
@@ -95,18 +89,21 @@ const MyPageSection = () => {
     >
       <Container ref={ref}>
         <UserBox>
-          {/* <h1>반가워요 {userInfo?.clientname || "고객"}님</h1>
-          <Link to="/infomodify">내 정보 수정하기</Link>
-          {isLoggedIn ? (
-            <button onClick={handleLogout}>로그아웃</button>
+          <h1>반가워요 {userInfo?.clientname || "고객"}님</h1>
+
+          {currentUser ? (
+            <div>
+              <Link to="/infomodify">내 정보 수정하기</Link>
+              <button onClick={handleLogout}>로그아웃</button>
+            </div>
           ) : (
             <Link to="/loginpage">로그인하기</Link>
-          )} */}
+          )}
         </UserBox>
         <Content>
           <ProfileSection>
             <Logo src="../conerlogo3.png" alt="앱 로고" />
-            {/* <p>{userInfo?.clientname || "고객"}님</p> */}
+            <p>{userInfo?.clientname || "고객"}님</p>
           </ProfileSection>
 
           <UserRequestNumber>
@@ -117,7 +114,10 @@ const MyPageSection = () => {
                   isLast={i === requestStates.length - 1}
                   onClick={() =>
                     navigate("/inquirydashboard", {
-                      // state: { status: state.stateValue, clientId: uid },
+                      state: {
+                        status: state.stateValue,
+                        clientId: currentUser?.uid,
+                      },
                     })
                   }
                 >

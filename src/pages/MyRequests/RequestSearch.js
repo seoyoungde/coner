@@ -15,6 +15,13 @@ const RequestSearch = () => {
   const [loading, setLoading] = useState(false);
   const { scale, height, ref } = useScaleLayout();
 
+  const formatPhoneToInternational = (phone) => {
+    const onlyNumbers = phone.replace(/\D/g, "");
+    return onlyNumbers.startsWith("0")
+      ? "+82" + onlyNumbers.slice(1)
+      : onlyNumbers;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "phoneNumber" && isNaN(value)) return;
@@ -29,12 +36,14 @@ const RequestSearch = () => {
     setErrorMessage("");
     setLoading(true);
 
-    const requests = await fetchRequestByClient(formData.phoneNumber);
+    const formattedPhone = formatPhoneToInternational(formData.phoneNumber);
+
+    const requests = await fetchRequestByClient(formattedPhone);
     setLoading(false);
 
     if (requests && requests.length > 0) {
       navigate("/inquirydashboard", {
-        state: { clientPhone: formData.phoneNumber },
+        state: { clientPhone: formattedPhone },
       });
     } else {
       setErrorMessage("일치하는 의뢰서를 찾을 수 없습니다.");

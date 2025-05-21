@@ -4,11 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "../../firebase";
-import axios from "axios";
-
-const normalizePhone = (value) =>
-  value.replace(/\D/g, "").replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+import { db, auth } from "../../firebase";
+import { useAuth } from "../../context/AuthProvider";
+import {
+  signInWithCustomToken,
+  setPersistence,
+  browserLocalPersistence,
+} from "firebase/auth";
 
 const LoginPage = () => {
   const { scale, height, ref } = useScaleLayout();
@@ -17,6 +19,9 @@ const LoginPage = () => {
   const [sentCode, setSentCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { setUserInfo, setCurrentUser } = useAuth();
+  const [timer, setTimer] = useState(0);
+  const [timerId, setTimerId] = useState(null);
 
   const generateRandomCode = () =>
     Math.floor(100000 + Math.random() * 900000).toString();
@@ -30,19 +35,35 @@ const LoginPage = () => {
   };
 
   const handleSendVerificationCode = async () => {
-    alert("000000");
-    // const formattedPhone = normalizePhone(phone);
-    // if (!formattedPhone) return alert("전화번호를 입력해주세요");
+    if (!phone) return alert("전화번호를 입력해주세요.");
 
-    // const newCode = generateRandomCode();
-    // setSentCode(newCode);
+    // const code = generateRandomCode();
+    const code = "000000";
+    setSentCode(code);
+
+    setTimer(180);
+
+    if (timerId) clearInterval(timerId);
+
+    const id = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(id);
+          setSentCode("");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    setTimerId(id);
 
     // try {
     //   await axios.post("http://3.34.179.158:3000/send-sms", {
-    //     to: formattedPhone,
-    //     text: `인증번호는 ${newCode}입니다.`,
+    //     to: phone,
+    //     text: `인증번호는 ${code}입니다.`,
     //   });
-    //   alert("인증번호가 전송되었습니다");
+    //   alert("인증번호가 전송되었습니다.");
     // } catch (error) {
     //   console.error(error);
     //   alert("인증번호 전송 실패: " + error.message);
@@ -58,7 +79,8 @@ const LoginPage = () => {
       if (code !== "000000") return alert("인증번호가 일치하지 않습니다");
 
       setIsLoading(true);
-      const formattedPhone = normalizePhone(phone);
+      const formattedPhone = phone.replace(/\D/g, "").replace(/^0/, "+82");
+
       const q = query(
         collection(db, "testclients"),
         where("clientphone", "==", formattedPhone)
@@ -69,7 +91,6 @@ const LoginPage = () => {
         alert("해당 전화번호로 가입된 회원이 없습니다.");
         return;
       }
-
       const docData = snapshot.docs[0].data();
       const uid = snapshot.docs[0].id;
 
@@ -78,9 +99,21 @@ const LoginPage = () => {
         return;
       }
 
+      const tokenRes = await fetch("/generateCustomToken", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: formattedPhone }),
+      });
+
+      const { token } = await tokenRes.json();
+
+      await setPersistence(auth, browserLocalPersistence);
+      await signInWithCustomToken(auth, token);
+
       alert("로그인 성공!");
-      navigate("/mypage", { state: { user: docData, uid } });
-      setSentCode(""); // 인증번호 재사용 방지
+
+      navigate("/mypage");
+      setSentCode("");
     } catch (error) {
       console.error(error);
       alert("로그인 실패: " + error.message);
@@ -110,6 +143,12 @@ const LoginPage = () => {
               인증번호받기
             </PassBtn>
           </div>
+          {timer > 0 && (
+            <p style={{ color: "#999", fontSize: "13px", marginTop: "4px" }}>
+              인증번호 유효 시간: {Math.floor(timer / 60)}:
+              {String(timer % 60).padStart(2, "0")}
+            </p>
+          )}
         </InputBox>
 
         <LoginButton onClick={handleLogin} disabled={isLoading}>
