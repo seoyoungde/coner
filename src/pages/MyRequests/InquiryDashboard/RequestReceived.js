@@ -175,7 +175,7 @@ const RequestReceived = ({ requestData }) => {
           ...doc.data(),
         }));
 
-        setRequests([...updatedRequests]); // 🔥 상태 변경 감지하여 즉시 반영
+        setRequests([...updatedRequests]);
 
         const updatedRequest = updatedRequests.find(
           (req) => req.id === requestData?.id
@@ -183,10 +183,9 @@ const RequestReceived = ({ requestData }) => {
         if (updatedRequest) {
           console.log("🔁 requestData 변경 감지:", updatedRequest);
           updateRequestData(updatedRequest.id, updatedRequest);
-          setRequestDataState(updatedRequest); // 🔥 상태 업데이트하여 UI 반영
+          setRequestDataState(updatedRequest);
         }
 
-        // 🔥 강제 리렌더링 실행
         setForceUpdate((prev) => prev + 1);
       }
     );
@@ -620,7 +619,6 @@ const ContentBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
-  margin-top: 30px;
 `;
 const TechnicianCard = styled.div`
   background: #f9f9f9;
@@ -781,7 +779,6 @@ const ButtonGroup = styled.div`
   gap: 10px;
   width: 100%;
   margin-top: 15px;
-  margin-bottom: 15px;
 `;
 
 const CancelButton = styled.button`
@@ -852,21 +849,21 @@ const PopupOverlay = styled.div`
   top: 0;
   left: 0;
   width: 100%;
+  height: calc(var(--vh, 1vh) * 100);
   background: rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 9999;
 `;
 
 const PopupContainer = styled.div`
   background: white;
   border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  max-width: 90%;
+  min-width: 280px;
   text-align: center;
-  width: 300px;
-  min-height: 150px; /* ✅ 최소 높이 지정 */
-  z-index: 10000;
-  overflow: hidden;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 `;
 
 const PopupText = styled.p`

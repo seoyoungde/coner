@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
@@ -7,8 +7,9 @@ import { device } from "../../styles/theme";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import axios from "axios";
-import { signInAnonymously } from "firebase/auth";
 import { auth } from "../../firebase";
+import { signInWithCustomToken } from "firebase/auth";
+import { query, where, getDocs } from "firebase/firestore";
 
 const CreatAcount = () => {
   const navigate = useNavigate();
@@ -23,39 +24,109 @@ const CreatAcount = () => {
   const [passPhone, setPassPhone] = useState("");
   const [sentCode, setSentCode] = useState("");
   const [detailAddress, setDetailAddress] = useState("");
+  const [timer, setTimer] = useState(0);
+  const [timerId, setTimerId] = useState(null);
 
+  useEffect(() => {
+    const selected = location.state?.selectedAddress;
+    if (selected) {
+      setAddress(selected);
+
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.state, navigate, location.pathname]);
   const generateRandomCode = () =>
     Math.floor(100000 + Math.random() * 900000).toString();
 
   const handleSendVerificationCode = async () => {
     if (!phone) return alert("전화번호를 입력해주세요.");
 
-    const code = generateRandomCode();
+    // const code = generateRandomCode();
+    const code = "000000";
     setSentCode(code);
 
-    try {
-      await axios.post("http://3.34.179.158:3000/send-sms", {
-        to: phone,
-        text: `인증번호는 ${code}입니다.`,
+    setTimer(180);
+
+    if (timerId) clearInterval(timerId);
+
+    const id = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(id);
+          setSentCode("");
+          return 0;
+        }
+        return prev - 1;
       });
-      alert("인증번호가 전송되었습니다.");
-    } catch (error) {
-      console.error(error);
-      alert("인증번호 전송 실패: " + error.message);
-    }
+    }, 1000);
+
+    setTimerId(id);
+
+    // try {
+    //   await axios.post("http://3.34.179.158:3000/send-sms", {
+    //     to: phone,
+    //     text: `인증번호는 ${code}입니다.`,
+    //   });
+    //   alert("인증번호가 전송되었습니다.");
+    // } catch (error) {
+    //   console.error(error);
+    //   alert("인증번호 전송 실패: " + error.message);
+    // }
   };
 
   const handleCreataccount = async () => {
     try {
-      if (!email.includes("@")) return alert("이메일을 입력하세요.");
-      if (!name || !job || !birth || !address || !detailAddress)
+      if (!name || !job || !birth || !address || !detailAddress) {
         return alert("모든 정보를 입력해주세요.");
-      if (!phone || !passPhone)
+      }
+      if (!phone || !passPhone) {
         return alert("전화번호와 인증번호를 입력해주세요.");
+      }
+      if (!sentCode) {
+        return alert("인증번호가 만료되었습니다. 다시 요청해주세요.");
+      }
+      if (passPhone !== sentCode) {
+        return alert("인증번호가 일치하지 않습니다.");
+      }
+      const isValidBirth = (str) => {
+        const [y, m, d] = str.split("-");
+        return (
+          str.length === 10 &&
+          +y > 1900 &&
+          +y < 2100 &&
+          +m >= 1 &&
+          +m <= 12 &&
+          +d >= 1 &&
+          +d <= 31
+        );
+      };
+      if (!isValidBirth(birth)) {
+        return alert("올바른 생년월일 형식이 아닙니다. 예: 1990-01-01");
+      }
 
-      if (passPhone !== sentCode) return alert("인증번호가 일치하지 않습니다.");
+      const formattedPhone = phone.startsWith("+82")
+        ? phone
+        : phone.replace(/\D/g, "").replace(/^0/, "+82");
 
-      const userCredential = await signInAnonymously(auth);
+      const q = query(
+        collection(db, "testclients"),
+        where("clientphone", "==", formattedPhone)
+      );
+      const snapshot = await getDocs(q);
+      if (!snapshot.empty) {
+        return alert("이미 가입된 전화번호입니다.");
+      }
+
+      const res = await axios.post(
+        "/generateCustomToken",
+        { phone: formattedPhone },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      const token = res.data.token;
+      const userCredential = await signInWithCustomToken(auth, token);
       const uid = userCredential.user.uid;
 
       const newUser = {
@@ -65,15 +136,17 @@ const CreatAcount = () => {
         clientbirth: birth,
         clientaddress: address,
         clientdetailaddress: detailAddress,
-        clientphone: phone,
+        clientphone: formattedPhone,
         clientId: uid,
       };
       await addDoc(collection(db, "testclients"), newUser);
-      alert("회원가입 완료");
+      console.log("📞 보내는 전화번호:", formattedPhone);
+
+      alert("회원가입이 완료되었습니다. 로그인해주세요.");
       navigate("/loginpage");
     } catch (error) {
-      console.log(error);
-      alert("회원가입 실패:" + error.message);
+      console.error("회원가입 실패:", error);
+      alert("회원가입 실패: " + error.message);
     }
   };
 
@@ -117,7 +190,7 @@ const CreatAcount = () => {
             <FormGroup>
               <Label>이메일</Label>
               <Input
-                placeholder="직접입력"
+                placeholder="이메일입력은 선택사항입니다"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -150,13 +223,7 @@ const CreatAcount = () => {
                   isSelected={job === "프리랜서"}
                   onClick={() => setJob("프리랜서")}
                 >
-                  프리랜서
-                </JobButton>
-                <JobButton
-                  isSelected={job === "회사원"}
-                  onClick={() => setJob("회사원")}
-                >
-                  회사원
+                  개인
                 </JobButton>
               </JobButtonBox>
             </FormGroup>
@@ -173,7 +240,11 @@ const CreatAcount = () => {
               <Input
                 name="clientAddress"
                 value={address}
-                onChange={(e) => setAddress(e.target.value)}
+                onClick={() =>
+                  navigate("/addressmodal", {
+                    state: { prevPath: "/createacount" },
+                  })
+                }
                 placeholder="클릭하여 주소 검색"
               />
               <Input
@@ -204,6 +275,14 @@ const CreatAcount = () => {
                 value={passPhone}
                 onChange={(e) => setPassPhone(e.target.value)}
               />
+              {timer > 0 && (
+                <p
+                  style={{ color: "#999", fontSize: "13px", marginTop: "4px" }}
+                >
+                  인증번호 유효 시간: {Math.floor(timer / 60)}:
+                  {String(timer % 60).padStart(2, "0")}
+                </p>
+              )}
             </FormGroup>
           </FormBox>
         </FormSection>

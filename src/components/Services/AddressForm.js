@@ -1,51 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { IoIosArrowBack } from "react-icons/io";
 import styled from "styled-components";
+import { IoIosArrowBack } from "react-icons/io";
 import { useRequest } from "../../context/context";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import StepProgressBar from "../../components/Apply/StepProgressBar";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
-import { auth } from "../../firebase";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../firebase";
+import Popup from "../Apply/Popup";
+import { useAuth } from "../../context/AuthProvider";
 
 const AddressForm = ({ title, description, buttonText }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { updateRequestData } = useRequest();
   const { scale, height, ref } = useScaleLayout();
-  const [popupMessage, setPopupMessage] = useState("");
-  const [user, setUser] = useState(null);
-  const [memberInfo, setMemberInfo] = useState(null);
+  const { currentUser, userInfo, loading } = useAuth();
 
+  const isLoggedIn = !!currentUser;
+  const isReadOnly = isLoggedIn && !!userInfo;
+
+  const [popupMessage, setPopupMessage] = useState("");
   const [formData, setFormData] = useState({
     clientAddress: "",
     clientDetailedAddress: "",
     clientPhone: "",
   });
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-        const docRef = doc(db, "testclients", currentUser.uid);
-        const snap = await getDoc(docRef);
-        if (snap.exists()) {
-          const data = snap.data();
-          setMemberInfo(data);
-          setFormData((prev) => ({
-            ...prev,
-            clientAddress: data.clientaddress || "",
-            clientDetailedAddress: data.clientdetailedaddress || "",
-            clientPhone: data.clientphone || "",
-          }));
-        }
-      }
-    });
-    return () => unsubscribe();
-  }, []);
 
   useEffect(() => {
     if (location.state?.selectedAddress) {
@@ -56,9 +36,19 @@ const AddressForm = ({ title, description, buttonText }) => {
     }
   }, [location.state]);
 
+  useEffect(() => {
+    if (userInfo) {
+      setFormData({
+        clientAddress: userInfo.clientaddress || "",
+        clientDetailedAddress: userInfo.clientdetailedaddress || "",
+        clientPhone: userInfo.clientphone || "",
+      });
+    }
+  }, [userInfo]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (user) return;
+    if (isReadOnly) return;
     if (name === "clientPhone") {
       const onlyNumbers = value.replace(/\D/g, "");
       if (onlyNumbers.length > 11) return;
@@ -66,6 +56,13 @@ const AddressForm = ({ title, description, buttonText }) => {
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
+  };
+
+  const formatPhoneToInternational = (phone) => {
+    const onlyNumbers = phone.replace(/\D/g, "");
+    return onlyNumbers.startsWith("0")
+      ? "+82" + onlyNumbers.slice(1)
+      : onlyNumbers;
   };
 
   const handleSubmit = (e) => {
@@ -76,21 +73,29 @@ const AddressForm = ({ title, description, buttonText }) => {
     if (!formData.clientPhone)
       return setPopupMessage("전화번호를 입력해주세요.");
 
+    const formattedPhone = formatPhoneToInternational(formData.clientPhone);
     updateRequestData("clientAddress", formData.clientAddress);
     updateRequestData("clientDetailedAddress", formData.clientDetailedAddress);
-    updateRequestData("clientPhone", formData.clientPhone);
+    updateRequestData("clientPhone", formattedPhone);
 
     navigate("/selectservicedate");
   };
 
   const goToAddressSearch = () => {
-    if (!user)
+    if (!isReadOnly) {
       navigate("/addressmodal", { state: { prevPath: location.pathname } });
+    }
   };
 
   const goToModifyInfo = () => {
     navigate("/infomodify");
   };
+
+  const closePopup = () => {
+    setPopupMessage("");
+  };
+
+  if (loading) return <div>로딩 중...</div>;
 
   return (
     <ScaleWrapper
@@ -103,36 +108,35 @@ const AddressForm = ({ title, description, buttonText }) => {
       <Container ref={ref}>
         <Header>
           <BackButton onClick={() => navigate(-1)}>
-            <BackIcon>
-              <IoIosArrowBack size={32} color="#333" />
-            </BackIcon>
+            <IoIosArrowBack size={32} color="#333" />
           </BackButton>
         </Header>
+
         <StepProgressBar currentStep={1} totalSteps={4} />
         <TitleSection>
           <Title>{title}</Title>
           <Description>{description}</Description>
         </TitleSection>
+
         <Form onSubmit={handleSubmit}>
           <Field>
             <Label>
               주소
-              {user && (
+              {isReadOnly && (
                 <ModifyLink onClick={goToModifyInfo}>
                   내 정보 수정하러가기
                 </ModifyLink>
               )}
             </Label>
-
             <HelperTextBox>
               <HelperIcon>
                 <HiOutlineExclamationCircle color=" #a5a5a5" size="18" />
               </HelperIcon>
               <HelperText>
                 현재 서비스 제공 지역은 서울 강북권 일부로 제한되어 있습니다.
-                <br></br>
+                <br />
                 강북구, 광진구, 노원구, 동대문구, 성북구, 도봉구, 은평구,
-                중량구, 종로구
+                중랑구, 종로구
               </HelperText>
             </HelperTextBox>
             <CustomSelect>
@@ -142,8 +146,8 @@ const AddressForm = ({ title, description, buttonText }) => {
                 placeholder="클릭하여 주소 검색"
                 style={{ border: "none" }}
                 value={formData.clientAddress}
-                onClick={goToAddressSearch}
-                readOnly
+                onClick={!isReadOnly ? goToAddressSearch : undefined}
+                readOnly={isReadOnly}
               />
             </CustomSelect>
 
@@ -153,7 +157,7 @@ const AddressForm = ({ title, description, buttonText }) => {
               placeholder="상세주소"
               value={formData.clientDetailedAddress}
               onChange={handleChange}
-              readOnly={!!user}
+              readOnly={isReadOnly}
               style={{ marginTop: "10px" }}
             />
           </Field>
@@ -161,7 +165,7 @@ const AddressForm = ({ title, description, buttonText }) => {
           <Field>
             <Label>
               연락처
-              {user && (
+              {isReadOnly && (
                 <ModifyLink onClick={goToModifyInfo}>
                   내 정보 수정하러가기
                 </ModifyLink>
@@ -173,25 +177,24 @@ const AddressForm = ({ title, description, buttonText }) => {
               placeholder="전화번호"
               value={formData.clientPhone}
               onChange={handleChange}
-              readOnly={!!user}
+              readOnly={isReadOnly}
             />
           </Field>
+
           <SubmitButton type="submit">{buttonText}</SubmitButton>
         </Form>
+
         {popupMessage && (
-          <Popup>
-            <PopupContent>
-              <PopupMessage>{popupMessage}</PopupMessage>
-              <CloseButton onClick={() => setPopupMessage("")}>
-                닫기
-              </CloseButton>
-            </PopupContent>
+          <Popup onClose={closePopup}>
+            <PopupMessage>{popupMessage}</PopupMessage>
+            <CloseButton onClick={closePopup}>닫기</CloseButton>
           </Popup>
         )}
       </Container>
     </ScaleWrapper>
   );
 };
+
 const ScaleWrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -346,26 +349,6 @@ const SubmitButton = styled.button`
     font-size: 1.6rem;
     font-weight: 900;
   }
-`;
-
-const Popup = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-`;
-
-const PopupContent = styled.div`
-  background: white;
-  border-radius: 10px;
-  text-align: center;
-  width: 300px;
 `;
 
 const PopupMessage = styled.p`
