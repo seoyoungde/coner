@@ -29,6 +29,7 @@ import CreatAcount from "./Login/CreatAcount";
 import InfoModify from "./MyPage/InfoModify";
 import Withdraw from "./MyPage/Withdraw";
 import PricingPage from "./PricingPage";
+import AddressForm from "../components/Services/AddressForm";
 
 const headerMap = {
   "/": <Header />,
@@ -105,6 +106,7 @@ const Main = () => {
         return "#ffffff";
       case "/pricing":
         return "#ffffff";
+
       default:
         return "#f9f9f9";
     }
@@ -178,6 +180,7 @@ const Main = () => {
             <Route path="/infomodify" element={<InfoModify />} />
             <Route path="/withdraw" element={<Withdraw />} />
             <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/addressform" element={<AddressForm />} />
           </Routes>
         </MainContent>
 

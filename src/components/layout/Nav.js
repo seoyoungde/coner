@@ -24,7 +24,7 @@ const Nav = () => {
     >
       <Container ref={ref}>
         <NavbarContainer>
-          <NavItem to="/" exact>
+          <NavItem to="/">
             <RiHomeFill />
             <p>홈</p>
           </NavItem>

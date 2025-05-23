@@ -219,11 +219,7 @@ const BackButton = styled.button`
   padding-left: 20px;
   padding-top: 10px;
 `;
-const BackIcon = styled(IoIosArrowBack)`
-  font-size: 30px;
-  @media ${device.mobile}{
-  font-size:50px;
-`;
+
 const TitleSection = styled.div`
   margin-top: 38px;
   margin-bottom: 35px;

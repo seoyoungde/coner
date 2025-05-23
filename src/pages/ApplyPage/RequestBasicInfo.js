@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import FormLayout from "../../components/Apply/FormLayout";
 import DropdownSelector from "../../components/Apply/DropdownSelector";
 import styled from "styled-components";
@@ -10,6 +10,36 @@ import StepProgressBar from "../../components/Apply/StepProgressBar";
 import { IoIosArrowBack } from "react-icons/io";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
+
+const priceMap = {
+  "청소-벽걸이형-삼성전자": 50000,
+  "청소-벽걸이형-LG전자": 52000,
+  "청소-벽걸이형-캐리어": 48000,
+  "청소-벽걸이형-센추리": 47000,
+  "청소-스탠드형-삼성전자": 50000,
+  "청소-스탠드형-LG전자": 52000,
+  "청소-스탠드형-캐리어": 48000,
+  "청소-스탠드형-센추리": 47000,
+  "청소-천장형-삼성전자": 50000,
+  "청소-천장형-LG전자": 52000,
+  "청소-천장형-캐리어": 48000,
+  "청소-천장형-센추리": 47000,
+
+  "설치-벽걸이형-삼성전자": 50000,
+  "설치-벽걸이형-LG전자": 52000,
+  "설치-벽걸이형-캐리어": 48000,
+  "설치-벽걸이형-센추리": 47000,
+
+  "설치-스탠드형-삼성전자": 70000,
+  "설치-스탠드형-LG전자": 72000,
+  "설치-스탠드형-캐리어": 69000,
+  "설치-스탠드형-센추리": 68000,
+
+  "설치-천장형-삼성전자": 50000,
+  "설치-천장형-LG전자": 52000,
+  "설치-천장형-캐리어": 48000,
+  "설치-천장형-센추리": 47000,
+};
 
 const RequestBasicInfo = () => {
   const navigate = useNavigate();
@@ -26,6 +56,7 @@ const RequestBasicInfo = () => {
   const [isServiceOpen, setIsServiceOpen] = useState(true);
   const [isTypeOpen, setIsTypeOpen] = useState(true);
   const [isBrandOpen, setIsBrandOpen] = useState(true);
+  const from = location.state?.from;
 
   useEffect(() => {
     if (selectedService) {
@@ -55,7 +86,7 @@ const RequestBasicInfo = () => {
     >
       <Container ref={ref}>
         <Header>
-          <BackButton onClick={() => navigate(-1)}>
+          <BackButton onClick={() => navigate("/selectservicedate")}>
             <BackIcon>
               <IoIosArrowBack size={32} color="#333" />
             </BackIcon>
@@ -116,7 +147,33 @@ const RequestBasicInfo = () => {
               "150px",
             ]}
           />
-
+          <Link
+            to="/pricing"
+            className="link"
+            state={{ from: "request-basic-info" }}
+            style={{
+              marginLeft: "30px",
+              marginBottom: "10px",
+              color: "#A0A0A0",
+              fontSize: "0.9rem",
+            }}
+          >
+            서비스비용보러가기
+          </Link>
+          {selectedService &&
+            selectedType &&
+            selectedBrand &&
+            priceMap[`${selectedService}-${selectedType}-${selectedBrand}`] && (
+              <PriceBox>
+                예상 견적:{" "}
+                <strong>
+                  {priceMap[
+                    `${selectedService}-${selectedType}-${selectedBrand}`
+                  ].toLocaleString()}
+                  원
+                </strong>
+              </PriceBox>
+            )}
           {isPopupOpen && (
             <Popup onClose={() => setIsPopupOpen(false)}>
               <PopupText>모든 옵션을 선택해주세요.</PopupText>
@@ -177,4 +234,16 @@ const BackIcon = styled(IoIosArrowBack)`
   font-size: 30px;
   @media ${device.mobile}{
   font-size:50px;
+`;
+const PriceBox = styled.div`
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  padding-left: 10px;
+
+  @media ${device.mobile} {
+    font-size: 1.5rem;
+    padding-left: 0;
+  }
 `;

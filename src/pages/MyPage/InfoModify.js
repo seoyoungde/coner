@@ -248,18 +248,6 @@ const Label = styled.p`
   }
 `;
 
-const LabelRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-  margin-bottom: 6px;
-  span {
-    @media ${device.mobile} {
-      font-size: 1.4rem;
-    }
-  }
-`;
-
 const Input = styled.input`
   width: 100%;
   padding: 10px 14px;
@@ -295,16 +283,6 @@ const JobButtonBox = styled.div`
   margin-top: 8px;
 `;
 
-const SmallButton = styled.button`
-  font-size: 13px;
-  color: #2b3ea3;
-  background: none;
-  border: none;
-  cursor: pointer;
-  @media ${device.mobile} {
-    font-size: 1.2rem;
-  }
-`;
 const LinkSection = styled.div`\
 display:flex;
   gap: 10px;

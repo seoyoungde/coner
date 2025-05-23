@@ -118,14 +118,14 @@ const CreatAcount = () => {
       }
 
       const res = await axios.post(
-        "/generateCustomToken",
+        "http://3.34.179.158:3000/auth/login",
         { phone: formattedPhone },
         {
           headers: { "Content-Type": "application/json" },
         }
       );
 
-      const token = res.data.token;
+      const token = res.data.customToken;
       const userCredential = await signInWithCustomToken(auth, token);
       const uid = userCredential.user.uid;
 
@@ -146,7 +146,9 @@ const CreatAcount = () => {
       navigate("/loginpage");
     } catch (error) {
       console.error("회원가입 실패:", error);
-      alert("회원가입 실패: " + error.message);
+      alert(
+        "회원가입 실패: " + (error.response?.data?.message || error.message)
+      );
     }
   };
 
@@ -208,19 +210,19 @@ const CreatAcount = () => {
               <Label>직업</Label>
               <JobButtonBox>
                 <JobButton
-                  isSelected={job === "개인사업자"}
+                  $isSelected={job === "개인사업자"}
                   onClick={() => setJob("개인사업자")}
                 >
                   개인사업자
                 </JobButton>
                 <JobButton
-                  isSelected={job === "법인사업자"}
+                  $isSelected={job === "법인사업자"}
                   onClick={() => setJob("법인사업자")}
                 >
                   법인사업자
                 </JobButton>
                 <JobButton
-                  isSelected={job === "프리랜서"}
+                  $isSelected={job === "프리랜서"}
                   onClick={() => setJob("프리랜서")}
                 >
                   개인
@@ -407,10 +409,11 @@ const JobButtonBox = styled.div`
 `;
 
 const JobButton = styled.button`
-  border: 1px solid ${({ isSelected }) => (isSelected ? "#00e6fd" : "#f9f9f9")};
+  border: 1px solid
+    ${({ $isSelected }) => ($isSelected ? "#00e6fd" : "#f9f9f9")};
   border-radius: 6px;
   padding: 10px 0;
-  background: ${({ isSelected }) => (isSelected ? "#b8f8ff" : "#f2f2f2")};
+  background: ${({ $isSelected }) => ($isSelected ? "#b8f8ff" : "#f2f2f2")};
   color: black;
   font-size: 14px;
   cursor: pointer;

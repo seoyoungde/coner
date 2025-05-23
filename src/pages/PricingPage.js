@@ -1,10 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useScaleLayout } from "../hooks/useScaleLayout";
+import { IoIosArrowBack } from "react-icons/io";
+import { device } from "../styles/theme";
 
 const PricingPage = () => {
   const { scale, height, ref } = useScaleLayout();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from;
+  const [showExtraImage, setShowExtraImage] = useState(false);
 
+  const handleGoBack = () => {
+    if (from === "request-basic-info") {
+      navigate("/requestbasicinfo", { state: { selectedService: "..." } });
+    } else {
+      navigate("/");
+    }
+  };
+
+  const handleShowExtra = () => {
+    if (!showExtraImage) setShowExtraImage(true);
+  };
+  const handleClose = () => {
+    navigate("/requestbasicinfo", {
+      state: { selectedService: location.state?.selectedService || "" },
+    });
+  };
   return (
     <ScaleWrapper
       style={{
@@ -15,11 +38,31 @@ const PricingPage = () => {
     >
       <Container ref={ref}>
         <InnerWrapper>
-          <h1 style={{ textAlign: "center" }}>서비스 비용 안내</h1>
+          {from === "request-basic-info" ? (
+            <CloseButton onClick={handleClose}>x</CloseButton>
+          ) : (
+            <BackButton onClick={() => navigate(-1)}>
+              <BackIcon>
+                <IoIosArrowBack size={32} color="#333" />
+              </BackIcon>
+            </BackButton>
+          )}
+          <Spacer />
+          <Title>서비스 비용 안내</Title>
+          <Spacer />
         </InnerWrapper>
+
         <ImageWrapper>
           <img src="../pricing-chart.png" alt="서비스 비용 도표" />
         </ImageWrapper>
+
+        <ExtraButton onClick={handleShowExtra}>추가비용안내</ExtraButton>
+
+        {showExtraImage && (
+          <ImageWrapper>
+            <img src="../pricing-chart-options.png" alt="추가 비용 도표" />
+          </ImageWrapper>
+        )}
       </Container>
     </ScaleWrapper>
   );
@@ -27,32 +70,84 @@ const PricingPage = () => {
 
 export default PricingPage;
 
+// Styled Components
 const ScaleWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
 `;
-const InnerWrapper = styled.div`
-  width: 100%;
-  border-bottom: 1px solid #d4d4d4;
-  padding: 15px;
-`;
 const Container = styled.div`
   width: 100%;
-
-  h1 {
-    font-size: ${({ theme }) => theme.fonts.sizes.HeaderText || "16px"};
-    font-weight: ${({ theme }) => theme.fonts.weights.bold || 600};
+`;
+const InnerWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  position: relative;
+  margin-top: 10px;
+  box-sizing: border-box;
+  @media ${device.mobile} {
+    width: 95%;
   }
 `;
-
-const ImageWrapper = styled.div`
+const Spacer = styled.div`
+  width: 22px;
   margin-top: 40px;
+`;
+const Title = styled.h1`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: ${({ theme }) => theme.fonts.sizes.HeaderText || "16px"};
+  font-weight: ${({ theme }) => theme.fonts.weights.bold || 600};
+  margin: 0;
+  @media ${device.mobile} {
+    font-size: 1.6rem;
+  }
+`;
+const ImageWrapper = styled.div`
+  margin-top: 20px;
+  padding: 20px;
   text-align: center;
 
   img {
-    max-width: 100%;
+    width: 100%;
     height: auto;
     border-radius: 10px;
   }
+`;
+const BackButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const BackIcon = styled(IoIosArrowBack)`
+  font-size: 30px;
+  @media ${device.mobile} {
+    font-size: 50px;
+  }
+`;
+
+const ExtraButton = styled.button`
+  background: none;
+  border: none;
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  margin-left: 30px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  text-decoration: underline;
+`;
+const CloseButton = styled.button`
+  background: none;
+  border: none;
+  color: #a0a0a0;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-left: 10px;
 `;

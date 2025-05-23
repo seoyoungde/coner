@@ -34,7 +34,9 @@ const SelectServiceDate = () => {
 
     updateRequestData("hopeDate", formattedDate);
     updateRequestData("hopeTime", selectedTime);
-    navigate("/requestbasicinfo", { state: { selectedDate, selectedTime } });
+    navigate("/requestbasicinfo", {
+      state: { selectedDate, selectedTime },
+    });
   };
 
   const formatDate = (date) =>
@@ -54,7 +56,7 @@ const SelectServiceDate = () => {
     >
       <Container ref={ref}>
         <Header>
-          <BackButton onClick={() => navigate(-1)}>
+          <BackButton onClick={() => navigate("/addressform")}>
             <BackIcon>
               <IoIosArrowBack size={32} color="#333" />
             </BackIcon>
