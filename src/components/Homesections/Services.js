@@ -66,9 +66,15 @@ const Services = () => {
   const handleServiceClick = (service) => {
     updateRequestData("service", service.title);
     setSelectedService(service.title);
-    navigate(service.path, { state: { selectedService: service.title } });
-  };
 
+    if (service.title === "설치") {
+      navigate("/install");
+    } else {
+      navigate(`/addresspage?service=${service.title}`, {
+        state: { selectedService: service.title },
+      });
+    }
+  };
   return (
     <ServiceContainer>
       <h1>간편하게 서비스 예약하고, 3시간 안에 배정받으세요!</h1>

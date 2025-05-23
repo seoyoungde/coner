@@ -20,6 +20,7 @@ const SelectServiceDate = () => {
   const [selectedTime, setSelectedTime] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { scale, height, ref } = useScaleLayout();
+  const { requestData } = useRequest();
 
   const handleNext = () => {
     if (!selectedDate || !selectedTime) {
@@ -34,7 +35,13 @@ const SelectServiceDate = () => {
 
     updateRequestData("hopeDate", formattedDate);
     updateRequestData("hopeTime", selectedTime);
-    navigate("/requestbasicinfo", { state: { selectedDate, selectedTime } });
+    navigate("/requestbasicinfo", {
+      state: {
+        selectedDate,
+        selectedTime,
+        selectedService: requestData.service,
+      },
+    });
   };
 
   const formatDate = (date) =>
@@ -54,7 +61,7 @@ const SelectServiceDate = () => {
     >
       <Container ref={ref}>
         <Header>
-          <BackButton onClick={() => navigate(-1)}>
+          <BackButton onClick={() => navigate("/addresspage")}>
             <BackIcon>
               <IoIosArrowBack size={32} color="#333" />
             </BackIcon>
