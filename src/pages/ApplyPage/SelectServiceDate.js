@@ -36,11 +36,13 @@ const SelectServiceDate = () => {
     updateRequestData("hopeDate", formattedDate);
     updateRequestData("hopeTime", selectedTime);
     navigate("/requestbasicinfo", {
+
       state: {
         selectedDate,
         selectedTime,
         selectedService: requestData.service,
       },
+
     });
   };
 
@@ -61,7 +63,9 @@ const SelectServiceDate = () => {
     >
       <Container ref={ref}>
         <Header>
+
           <BackButton onClick={() => navigate("/addresspage")}>
+
             <BackIcon>
               <IoIosArrowBack size={32} color="#333" />
             </BackIcon>

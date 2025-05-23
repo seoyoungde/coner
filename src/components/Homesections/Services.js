@@ -78,7 +78,7 @@ const Services = () => {
   return (
     <ServiceContainer>
       <h1>간편하게 서비스 예약하고, 3시간 안에 배정받으세요!</h1>
-      <p class="subtitle">
+      <p className="subtitle">
         누적 120건+,만족도 98%의 냉난방기 전문가 지금 배정 받으세요.
       </p>
 
@@ -90,15 +90,16 @@ const Services = () => {
             <ServiceItem
               key={service.id}
               onClick={() => handleServiceClick(service)}
-              isSelected={selectedService === service.title}
+              $isSelected={selectedService === service.title}
             >
               <img src={service.icon} alt={`${service.title} 아이콘`} />
-              <p class="service_title">{service.title}</p>
+              <p className="service_title">{service.title}</p>
             </ServiceItem>
           )
         )}
         <Link
           to="/pricing"
+          className="link"
           style={{
             marginLeft: "30px",
             marginBottom: "10px",
