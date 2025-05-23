@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import { IoIosArrowBack } from "react-icons/io";
 import { useRequest } from "../../context/context";
@@ -13,6 +13,8 @@ import { useAuth } from "../../context/AuthProvider";
 const AddressForm = ({ title, description, buttonText }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+
   const { updateRequestData } = useRequest();
   const { scale, height, ref } = useScaleLayout();
   const { currentUser, userInfo, loading } = useAuth();
@@ -26,6 +28,15 @@ const AddressForm = ({ title, description, buttonText }) => {
     clientDetailedAddress: "",
     clientPhone: "",
   });
+
+  useEffect(() => {
+    const restoredService =
+      location.state?.selectedService || searchParams.get("service");
+    if (restoredService) {
+      console.log("서비스 저장됨:", restoredService);
+      updateRequestData("service", restoredService);
+    }
+  }, [location.state, searchParams]);
 
   useEffect(() => {
     if (location.state?.selectedAddress) {
@@ -77,13 +88,17 @@ const AddressForm = ({ title, description, buttonText }) => {
     updateRequestData("clientAddress", formData.clientAddress);
     updateRequestData("clientDetailedAddress", formData.clientDetailedAddress);
     updateRequestData("clientPhone", formattedPhone);
-
-    navigate("/selectservicedate");
+    navigate(`/selectservicedate?service=${searchParams.get("service")}`);
   };
 
   const goToAddressSearch = () => {
     if (!isReadOnly) {
-      navigate("/addressmodal", { state: { prevPath: location.pathname } });
+      navigate("/addressmodal", {
+        state: {
+          prevPath: location.pathname,
+          selectedService: searchParams.get("service"),
+        },
+      });
     }
   };
 
@@ -107,14 +122,14 @@ const AddressForm = ({ title, description, buttonText }) => {
     >
       <Container ref={ref}>
         <Header>
-          <BackButton onClick={() => navigate(-1)}>
+          <BackButton onClick={() => navigate("/")}>
             <IoIosArrowBack size={32} color="#333" />
           </BackButton>
         </Header>
 
         <StepProgressBar currentStep={1} totalSteps={4} />
         <TitleSection>
-          <Title>{title}</Title>
+          <Title>{title || `${searchParams.get("service")} 서비스 신청`}</Title>
           <Description>{description}</Description>
         </TitleSection>
 

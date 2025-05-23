@@ -8,11 +8,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
-import CleanPage from "../pages/ServicesPage//CleanPage";
 import InstallPage from "../pages/ServicesPage/InstallPage";
-import MovePage from "../pages/ServicesPage/MovePage";
-import RepairPage from "../pages/ServicesPage/RepairPage";
-import DemolishPage from "../pages/ServicesPage/DemolishPage";
 import InstallPage2 from "../pages/ServicesPage/InstallPage2";
 import InquiryPage from "../pages/MyRequests/InquiryPage";
 import CompletedRequests from "../pages/MyRequests/CompletedRequests";
@@ -21,15 +17,17 @@ import RequestBasicInfo from "./ApplyPage/RequestBasicInfo";
 import SelectServiceDate from "./ApplyPage/SelectServiceDate";
 import AdditionalRequest from "./ApplyPage/AdditionalRequest";
 import AddressModal from "../components/Services/AddressModal";
-import Inspection from "./ServicesPage/Inspection";
-import Charge from "./ServicesPage/Charge";
 import Header from "../components/layout/Header";
 import LoginPage from "./Login/LoginPage";
 import CreatAcount from "./Login/CreatAcount";
 import InfoModify from "./MyPage/InfoModify";
 import Withdraw from "./MyPage/Withdraw";
 import PricingPage from "./PricingPage";
+
+import AddressPage from "./ServicesPage/AddressPage";
+
 import AddressForm from "../components/Services/AddressForm";
+
 
 const headerMap = {
   "/": <Header />,
@@ -72,22 +70,13 @@ const Main = () => {
     switch (pathname) {
       case "/requests":
         return "#ffffff";
-      case "/inspection":
-        return "#ffffff";
-      case "/clean":
+      case "/addresspage":
         return "#ffffff";
       case "/install":
         return "#ffffff";
       case "/installpage2":
         return "#ffffff";
-      case "/move":
-        return "#ffffff";
-      case "/charge":
-        return "#ffffff";
-      case "/repair":
-        return "#ffffff";
-      case "/demolish":
-        return "#ffffff";
+
       case "/inquirydashboard":
         return "#ffffff";
       case "/selectservicedate":
@@ -124,18 +113,12 @@ const Main = () => {
     };
   }, []);
   const hideNavPaths = [
-    "/clean",
     "/install",
-    "/move",
-    "/repair",
-    "/demolish",
     "/installpage2",
     "/requestbasicinfo",
     "/additionalrequest",
     "/selectservicedate",
     "/addressmodal",
-    "/inspection",
-    "/charge",
     "/createacount",
     "/idsearch",
     "/passwordsearch",
@@ -157,11 +140,7 @@ const Main = () => {
           className={showScrollbar ? "show-scrollbar" : ""}
         >
           <Routes>
-            <Route path="/clean" element={<CleanPage />} />
             <Route path="/install" element={<InstallPage />} />
-            <Route path="/move" element={<MovePage />} />
-            <Route path="/repair" element={<RepairPage />} />
-            <Route path="/demolish" element={<DemolishPage />} />
             <Route path="/" element={<Home />} />
             <Route path="/requests" element={<Requests />} />
             <Route path="/mypage" element={<MyPage />} />
@@ -173,14 +152,16 @@ const Main = () => {
             <Route path="/selectservicedate" element={<SelectServiceDate />} />
             <Route path="/additionalrequest" element={<AdditionalRequest />} />
             <Route path="/addressmodal" element={<AddressModal />} />
-            <Route path="/inspection" element={<Inspection />} />
-            <Route path="/charge" element={<Charge />} />
             <Route path="/loginpage" element={<LoginPage />}></Route>
             <Route path="/createacount" element={<CreatAcount />}></Route>
             <Route path="/infomodify" element={<InfoModify />} />
             <Route path="/withdraw" element={<Withdraw />} />
             <Route path="/pricing" element={<PricingPage />} />
+
+            <Route path="/addresspage" element={<AddressPage />}></Route>
+
             <Route path="/addressform" element={<AddressForm />} />
+
           </Routes>
         </MainContent>
 

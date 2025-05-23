@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import {
+  useNavigate,
+  useLocation,
+  Link,
+  useSearchParams,
+} from "react-router-dom";
 import FormLayout from "../../components/Apply/FormLayout";
 import DropdownSelector from "../../components/Apply/DropdownSelector";
 import styled from "styled-components";
@@ -44,20 +49,21 @@ const priceMap = {
 const RequestBasicInfo = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const { requestData, updateRequestData } = useRequest();
   const { scale, height, ref } = useScaleLayout();
+
+  const serviceParam = searchParams.get("service");
   const [selectedService, setSelectedService] = useState(
-    requestData.service || location.state?.selectedService
+    location.state?.selectedService || serviceParam || requestData.service || ""
   );
-  const [selectedType, setSelectedType] = useState("");
-  const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedType, setSelectedType] = useState(requestData.aircon || "");
+  const [selectedBrand, setSelectedBrand] = useState(requestData.brand || "");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const [isServiceOpen, setIsServiceOpen] = useState(true);
   const [isTypeOpen, setIsTypeOpen] = useState(true);
   const [isBrandOpen, setIsBrandOpen] = useState(true);
-  const from = location.state?.from;
-
   useEffect(() => {
     if (selectedService) {
       updateRequestData("service", selectedService);
@@ -73,7 +79,13 @@ const RequestBasicInfo = () => {
     updateRequestData("aircon", selectedType);
     updateRequestData("brand", selectedBrand);
 
-    navigate("/additionalrequest");
+    navigate("/additionalrequest", {
+      state: {
+        service: selectedService,
+        aircon: selectedType,
+        brand: selectedBrand,
+      },
+    });
   };
 
   return (
