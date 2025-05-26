@@ -5,23 +5,19 @@ import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db, auth } from "../../firebase";
-import { useAuth } from "../../context/AuthProvider";
-import {
-  signInWithCustomToken,
-  setPersistence,
-  browserLocalPersistence,
-} from "firebase/auth";
+import axios from "axios";
+import * as firebaseAuth from "firebase/auth";
 
 const LoginPage = () => {
   const { scale, height, ref } = useScaleLayout();
-  const [phone, setPhone] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [code, setCode] = useState("");
   const [sentCode, setSentCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { setUserInfo, setCurrentUser } = useAuth();
   const [timer, setTimer] = useState(0);
   const [timerId, setTimerId] = useState(null);
+  const API = "http://3.34.179.158:3000";
 
   const generateRandomCode = () =>
     Math.floor(100000 + Math.random() * 900000).toString();
@@ -31,11 +27,11 @@ const LoginPage = () => {
     if (value.length >= 4) value = value.slice(0, 3) + "-" + value.slice(3);
     if (value.length >= 9) value = value.slice(0, 8) + "-" + value.slice(8);
     if (value.length > 13) value = value.slice(0, 13);
-    setPhone(value);
+    setPhoneNumber(value);
   };
 
   const handleSendVerificationCode = async () => {
-    if (!phone) return alert("전화번호를 입력해주세요.");
+    if (!phoneNumber) return alert("전화번호를 입력해주세요.");
 
     // const code = generateRandomCode();
     const code = "000000";
@@ -72,14 +68,16 @@ const LoginPage = () => {
 
   const handleLogin = async () => {
     try {
-      if (!phone || phone.length < 10)
+      if (!phoneNumber || phoneNumber.length < 10)
         return alert("전화번호를 정확히 입력해주세요");
       if (!code) return alert("인증번호를 입력해주세요");
       // if (code !== sentCode) return alert("인증번호가 일치하지 않습니다");
       if (code !== "000000") return alert("인증번호가 일치하지 않습니다");
 
       setIsLoading(true);
-      const formattedPhone = phone.replace(/\D/g, "").replace(/^0/, "+82");
+      const formattedPhone = phoneNumber
+        .replace(/\D/g, "")
+        .replace(/^0/, "+82");
 
       const q = query(
         collection(db, "testclients"),
@@ -92,26 +90,20 @@ const LoginPage = () => {
         return;
       }
       const docData = snapshot.docs[0].data();
-      const uid = snapshot.docs[0].id;
 
-      if (docData.isDeleted) {
+      if (docData.isDeleted || docData.state === 0) {
         alert("탈퇴한 회원입니다. 다시 가입해주세요.");
         return;
       }
 
-      const tokenRes = await fetch("/generateCustomToken", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone: formattedPhone }),
+      const response = await axios.post(`${API}/auth/login`, {
+        phoneNumber: formattedPhone,
       });
 
-      const { token } = await tokenRes.json();
-
-      await setPersistence(auth, browserLocalPersistence);
-      await signInWithCustomToken(auth, token);
+      const token = response.data.customToken;
+      const result = await firebaseAuth.signInWithCustomToken(auth, token);
 
       alert("로그인 성공!");
-
       navigate("/mypage");
       setSentCode("");
     } catch (error) {
@@ -133,7 +125,7 @@ const LoginPage = () => {
       <Container ref={ref}>
         <img src="../conerloginbanner.png"></img>
         <InputBox>
-          <UserPhoneNum value={phone} onChange={handlePhoneChange} />
+          <UserPhoneNum value={phoneNumber} onChange={handlePhoneChange} />
           <div style={{ width: "100%", display: "flex" }}>
             <Userpassword
               value={code}

@@ -5,8 +5,8 @@ import Requests from "./MyRequests/Requests";
 import MyPage from "./MyPage/MyPage";
 import styled from "styled-components";
 import { Routes, Route, useLocation } from "react-router-dom";
-import { Helmet } from "react-helmet";
-import { onAuthStateChanged } from "firebase/auth";
+import { HelmetProvider } from "react-helmet-async";
+import * as firebaseAuth from "firebase/auth";
 import { auth } from "../firebase";
 import InstallPage from "../pages/ServicesPage/InstallPage";
 import InstallPage2 from "../pages/ServicesPage/InstallPage2";
@@ -27,7 +27,7 @@ import PricingPage from "./PricingPage";
 import AddressPage from "./ServicesPage/AddressPage";
 
 import AddressForm from "../components/Services/AddressForm";
-
+import CreateAddressModal from "../components/Services/CreateAddressModal";
 
 const headerMap = {
   "/": <Header />,
@@ -42,7 +42,7 @@ const Main = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = firebaseAuth.onAuthStateChanged(auth, (user) => {
       setIsLoggedIn(!!user);
     });
 
@@ -125,6 +125,7 @@ const Main = () => {
     "/infomodify",
     "/withdraw",
     "/pricing",
+    "/createaddressmodal",
   ];
   return (
     <Container style={{ height: `${windowHeight}px` }}>
@@ -133,7 +134,7 @@ const Main = () => {
         <img src="../mainimage2.jpg" alt="Coner 로고" />
       </ImageBox>
       {/* 오른쪽 콘텐츠 박스 */}
-      <ContentBox backgroundColor={getBackgroundColor(location.pathname)}>
+      <ContentBox $backgroundColor={getBackgroundColor(location.pathname)}>
         {headerComponent && <HeaderBox>{headerComponent}</HeaderBox>}
         <MainContent
           ref={scrollRef}
@@ -162,6 +163,10 @@ const Main = () => {
 
             <Route path="/addressform" element={<AddressForm />} />
 
+            <Route
+              path="/createaddressmodal"
+              element={<CreateAddressModal />}
+            />
           </Routes>
         </MainContent>
 
@@ -171,14 +176,14 @@ const Main = () => {
           <Nav />
         ) : null}
       </ContentBox>
-      <Helmet>
+      <HelmetProvider>
         <title>Coner - 냉난방기 예약</title>
         <meta name="description" content="쉽고 편리한 냉난방기 예약 서비스" />
         <meta
           name="keywords"
           content="냉난방기, 예약, 서비스, 청소, 설치, 수리"
         />
-      </Helmet>
+      </HelmetProvider>
     </Container>
   );
 };

@@ -15,7 +15,7 @@ import CompletedRequests from "../MyRequests/CompletedRequests";
 import RequestReceived from "../MyRequests/InquiryDashboard/RequestReceived";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
-import { onAuthStateChanged } from "firebase/auth";
+import * as firebaseAuth from "firebase/auth";
 import { auth } from "../../firebase";
 import { useAuth } from "../../context/AuthProvider";
 
@@ -35,7 +35,7 @@ const InquiryPage = () => {
   const { currentUser } = useAuth();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = firebaseAuth.onAuthStateChanged(auth, (currentUser) => {
       if (!clientId && currentUser) {
         setClientId(currentUser.uid);
       }
