@@ -1,7 +1,7 @@
 // src/context/AuthProvider.jsx
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "../firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import * as firebaseAuth from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
 const AuthContext = createContext();
@@ -12,14 +12,12 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = firebaseAuth.onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
-
       if (user) {
-        const q = doc(db, "testclients", user.uid);
-        const snap = await getDoc(q);
-        if (snap.exists()) {
-          setUserInfo(snap.data());
+        const docSnap = await getDoc(doc(db, "testclients", user.uid));
+        if (docSnap.exists()) {
+          setUserInfo(docSnap.data());
         }
       } else {
         setUserInfo(null);
@@ -33,7 +31,12 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ currentUser, userInfo, setUserInfo, setCurrentUser }}
+      value={{
+        currentUser,
+        userInfo,
+        setUserInfo,
+        loading,
+      }}
     >
       {!loading && children}
     </AuthContext.Provider>

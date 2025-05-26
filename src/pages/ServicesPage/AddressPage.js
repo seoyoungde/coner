@@ -10,7 +10,7 @@ const AddressPage = () => {
   return (
     <Container>
       <AddressForm
-        title={`${service} 서비스 신청`}
+        title={`서비스 신청`}
         description="기사님께 제공할 주소와 연락처를 입력해주세요."
         buttonText="의뢰 시작하기"
         service={service}

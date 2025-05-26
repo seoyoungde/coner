@@ -4,12 +4,17 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "../../firebase";
+import {
+  doc,
+  collection,
+  setDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+import { db, auth } from "../../firebase";
 import axios from "axios";
-import { auth } from "../../firebase";
 import { signInWithCustomToken } from "firebase/auth";
-import { query, where, getDocs } from "firebase/firestore";
 
 const CreatAcount = () => {
   const navigate = useNavigate();
@@ -20,7 +25,7 @@ const CreatAcount = () => {
   const [job, setJob] = useState("");
   const [birth, setBirth] = useState("");
   const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [passPhone, setPassPhone] = useState("");
   const [sentCode, setSentCode] = useState("");
   const [detailAddress, setDetailAddress] = useState("");
@@ -28,18 +33,25 @@ const CreatAcount = () => {
   const [timerId, setTimerId] = useState(null);
 
   useEffect(() => {
-    const selected = location.state?.selectedAddress;
-    if (selected) {
-      setAddress(selected);
+    const state = location.state;
+    if (state?.selectedAddress) {
+      setAddress(state.selectedAddress);
 
-      navigate(location.pathname, { replace: true });
+      if (state.name) setName(state.name);
+      if (state.email) setEmail(state.email);
+      if (state.job) setJob(state.job);
+      if (state.birth) setBirth(state.birth);
+      if (state.detailAddress) setDetailAddress(state.detailAddress);
+      if (state.phoneNumber) setPhoneNumber(state.phoneNumber);
+      if (state.passPhone) setPassPhone(state.passPhone);
     }
-  }, [location.state, navigate, location.pathname]);
-  const generateRandomCode = () =>
-    Math.floor(100000 + Math.random() * 900000).toString();
+  }, [location.state]);
+
+  // const generateRandomCode = () =>
+  //   Math.floor(100000 + Math.random() * 900000).toString();
 
   const handleSendVerificationCode = async () => {
-    if (!phone) return alert("전화번호를 입력해주세요.");
+    if (!phoneNumber) return alert("전화번호를 입력해주세요.");
 
     // const code = generateRandomCode();
     const code = "000000";
@@ -64,7 +76,7 @@ const CreatAcount = () => {
 
     // try {
     //   await axios.post("http://3.34.179.158:3000/send-sms", {
-    //     to: phone,
+    //     to: phoneNumber,
     //     text: `인증번호는 ${code}입니다.`,
     //   });
     //   alert("인증번호가 전송되었습니다.");
@@ -79,7 +91,7 @@ const CreatAcount = () => {
       if (!name || !job || !birth || !address || !detailAddress) {
         return alert("모든 정보를 입력해주세요.");
       }
-      if (!phone || !passPhone) {
+      if (!phoneNumber || !passPhone) {
         return alert("전화번호와 인증번호를 입력해주세요.");
       }
       if (!sentCode) {
@@ -104,28 +116,24 @@ const CreatAcount = () => {
         return alert("올바른 생년월일 형식이 아닙니다. 예: 1990-01-01");
       }
 
-      const formattedPhone = phone.startsWith("+82")
-        ? phone
-        : phone.replace(/\D/g, "").replace(/^0/, "+82");
+      const formattedPhone = phoneNumber
+        .replace(/\D/g, "")
+        .replace(/^0/, "+82");
 
       const q = query(
         collection(db, "testclients"),
         where("clientphone", "==", formattedPhone)
       );
       const snapshot = await getDocs(q);
-      if (!snapshot.empty) {
+      if (snapshot.docs.find((doc) => !doc.data().isDeleted)) {
         return alert("이미 가입된 전화번호입니다.");
       }
 
-      const res = await axios.post(
-        "http://3.34.179.158:3000/auth/login",
-        { phone: formattedPhone },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
+      const res = await axios.post("http://3.34.179.158:3000/auth/login", {
+        phoneNumber: formattedPhone,
+      });
       const token = res.data.customToken;
+
       const userCredential = await signInWithCustomToken(auth, token);
       const uid = userCredential.user.uid;
 
@@ -135,12 +143,14 @@ const CreatAcount = () => {
         clientjob: job,
         clientbirth: birth,
         clientaddress: address,
-        clientdetailaddress: detailAddress,
+        clientDetailedAddress: detailAddress,
         clientphone: formattedPhone,
-        clientId: uid,
+        state: 1,
+        isDeleted: false,
+        createdAt: new Date(),
       };
-      await addDoc(collection(db, "testclients"), newUser);
-      console.log("📞 보내는 전화번호:", formattedPhone);
+
+      await setDoc(doc(db, "testclients", uid), newUser);
 
       alert("회원가입이 완료되었습니다. 로그인해주세요.");
       navigate("/loginpage");
@@ -165,7 +175,7 @@ const CreatAcount = () => {
     if (value.length >= 4) value = value.slice(0, 3) + "-" + value.slice(3);
     if (value.length >= 9) value = value.slice(0, 8) + "-" + value.slice(8);
     if (value.length > 13) value = value.slice(0, 13);
-    setPhone(value);
+    setPhoneNumber(value);
   };
 
   return (
@@ -242,9 +252,19 @@ const CreatAcount = () => {
               <Input
                 name="clientAddress"
                 value={address}
+                readOnly
                 onClick={() =>
-                  navigate("/addressmodal", {
-                    state: { prevPath: "/createacount" },
+                  navigate("/createaddressmodal", {
+                    state: {
+                      prevPath: "/createacount",
+                      name,
+                      email,
+                      job,
+                      birth,
+                      detailAddress,
+                      phoneNumber,
+                      passPhone,
+                    },
                   })
                 }
                 placeholder="클릭하여 주소 검색"
@@ -266,7 +286,7 @@ const CreatAcount = () => {
               </LabelRow>
               <Input
                 placeholder="전화번호를 입력해주세요"
-                value={phone}
+                value={phoneNumber}
                 onChange={handlePhoneChange}
               />
             </FormGroup>

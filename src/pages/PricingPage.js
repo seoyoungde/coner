@@ -12,14 +12,6 @@ const PricingPage = () => {
   const from = location.state?.from;
   const [showExtraImage, setShowExtraImage] = useState(false);
 
-  const handleGoBack = () => {
-    if (from === "request-basic-info") {
-      navigate("/requestbasicinfo", { state: { selectedService: "..." } });
-    } else {
-      navigate("/");
-    }
-  };
-
   const handleShowExtra = () => {
     if (!showExtraImage) setShowExtraImage(true);
   };

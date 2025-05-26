@@ -25,26 +25,19 @@ const AirConditionerForm = ({
   const [popupMessage, setPopupMessage] = useState("");
   const { updateRequestData } = useRequest();
 
-  const handleOptionClick = (option) => {
-    setSelectedOption(option);
-  };
-
   const handleSubmit = async () => {
     if (!selectedOption) {
       setPopupMessage("에어컨 보유 여부를 선택해주세요.");
       return;
     }
+
     updateRequestData("detailInfo", selectedOption);
 
+    if (onSubmit) {
+      onSubmit(selectedOption);
+    }
+
     navigate("/installpage2");
-  };
-
-  const handleGoBack = () => {
-    navigate(-1);
-  };
-
-  const closePopup = () => {
-    setPopupMessage("");
   };
 
   return (
@@ -57,44 +50,42 @@ const AirConditionerForm = ({
     >
       <Container ref={ref}>
         <Header>
-          <BackButton onClick={handleGoBack}>
-            <BackIcon>
-              <IoIosArrowBack size={32} color="#333" />
-            </BackIcon>
+          <BackButton onClick={() => navigate(-1)}>
+            <IoIosArrowBack size={32} color="#333" />
           </BackButton>
         </Header>
+
         <StepProgressBar currentStep={0} totalSteps={4} />
+
         <TitleSection>
           <Title>{title}</Title>
           <Description>{description}</Description>
         </TitleSection>
+
         <Form>
           <DropdownContainer>
             <DropdownHeader onClick={() => setIsDropdownOpen((prev) => !prev)}>
               <DropdownLabelBox>
-                <IconBox>
-                  <MdOutlineComment size={23} />
-                </IconBox>
+                <MdOutlineComment size={23} />
                 <DropdownLabel>
                   {selectedOption || "에어컨 보유 여부 선택하기"}
                 </DropdownLabel>
               </DropdownLabelBox>
-              <DropdownIcon>
-                {isDropdownOpen ? (
-                  <HiOutlineChevronUp size={25} color="#333" />
-                ) : (
-                  <HiOutlineChevronDown size={25} color="#333" />
-                )}
-              </DropdownIcon>
+              {isDropdownOpen ? (
+                <HiOutlineChevronUp size={25} />
+              ) : (
+                <HiOutlineChevronDown size={25} />
+              )}
             </DropdownHeader>
+
             {isDropdownOpen && (
               <DropdownContent>
                 {options.map((option, index) => (
                   <OptionBox
                     key={index}
-                    isSelected={selectedOption === option}
-                    onClick={() => handleOptionClick(option)}
-                    width={boxWidths[index] || "45%"}
+                    $isSelected={selectedOption === option}
+                    onClick={() => setSelectedOption(option)}
+                    $width={boxWidths[index] || "45%"}
                   >
                     {option}
                   </OptionBox>
@@ -102,13 +93,14 @@ const AirConditionerForm = ({
               </DropdownContent>
             )}
           </DropdownContainer>
+
           <SubmitButton onClick={handleSubmit}>{buttonText}</SubmitButton>
         </Form>
 
         {popupMessage && (
-          <Popup onClose={closePopup}>
+          <Popup onClose={() => setPopupMessage("")}>
             <PopupMessage>{popupMessage}</PopupMessage>
-            <CloseButton onClick={closePopup}>닫기</CloseButton>
+            <CloseButton onClick={() => setPopupMessage("")}>닫기</CloseButton>
           </Popup>
         )}
       </Container>
@@ -210,14 +202,6 @@ const DropdownLabelBox = styled.div`
   display: flex;
   flex-direction: row;
 `;
-const IconBox = styled(MdOutlineComment)`
-  font-size: 30px;
-`;
-
-const DropdownIcon = styled.div`
-  margin-left: 10px;
-  color: #a0a0a0;
-`;
 
 const DropdownContent = styled.div`
   display: flex;
@@ -228,16 +212,18 @@ const DropdownContent = styled.div`
 `;
 
 const OptionBox = styled.div`
-  width: ${({ width }) => width};
+  width: ${({ $width }) => $width};
   padding: 10px;
   border: 1.5px solid rgb(235, 235, 235);
   border-radius: 20px;
   text-align: center;
   font-size: 14px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
-  background-color: ${({ isSelected }) => (isSelected ? "#01e6ff" : "#ffffff")};
-  color: ${({ isSelected }) => (isSelected ? "white" : "#333")};
+  background-color: ${({ $isSelected }) =>
+    $isSelected ? "#01e6ff" : "#ffffff"};
+  color: ${({ $isSelected }) => ($isSelected ? "white" : "#333")};
   cursor: pointer;
+
   @media ${device.mobile} {
     width: 350px;
     font-size: 1.2rem;

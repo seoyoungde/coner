@@ -202,7 +202,7 @@ const RequestReceived = ({ requestData }) => {
         <ProgressBar>
           {steps.map((step, index) => (
             <ProgressStep key={index}>
-              <Circle isActive={index + 1 <= requestData.state} />
+              <Circle $isActive={index + 1 <= requestData.state} />
               <StepLabel isActive={index + 1 === requestData.state}>
                 {step.label}
               </StepLabel>
@@ -588,7 +588,7 @@ const Circle = styled.div`
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background-color: ${({ isActive }) => (isActive ? "#00e6fd" : "#ddd")};
+  background-color: ${({ $isActive }) => ($isActive ? "#00e6fd" : "#ddd")};
   @media ${device.mobile} {
     width: 15px;
     height: 15px;

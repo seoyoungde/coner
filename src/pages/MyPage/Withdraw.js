@@ -5,7 +5,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
 import { updateDoc, doc } from "firebase/firestore";
-import { signOut } from "firebase/auth";
+import * as firebaseAuth from "firebase/auth";
 import { db, auth } from "../../firebase";
 
 const Withdraw = () => {
@@ -36,11 +36,12 @@ const Withdraw = () => {
       const userRef = doc(db, "testclients", currentUser.uid);
       await updateDoc(userRef, {
         isDeleted: true,
+        state: 0,
         withdrawReasons: reasons,
         withdrawDetail: details,
       });
 
-      await signOut(auth);
+      await firebaseAuth.signOut(auth);
       alert("회원 탈퇴가 완료되었습니다.");
       navigate("/");
     } catch (error) {
@@ -123,7 +124,11 @@ const Withdraw = () => {
               도움이 됩니다
             </SubText>
           </Label>
-          <Textarea placeholder="선택하신 항목에 대한 자세한 이유를 남겨주세요" />
+          <Textarea
+            placeholder="선택하신 항목에 대한 자세한 이유를 남겨주세요"
+            value={details}
+            onChange={(e) => setDetails(e.target.value)}
+          />
         </ContentBox>
 
         <ButtonRow>
@@ -233,7 +238,7 @@ const Required = styled.span`
   }
 `;
 
-const Label = styled.p`
+const Label = styled.div`
   margin-top: 24px;
   font-weight: 500;
 `;

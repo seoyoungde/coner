@@ -53,11 +53,11 @@ const AdditionalDropSelected = ({
             </DropdownIcon>
           </DropdownHeader>
           {isDropdownOpen && (
-            <DropdownContent boxPerRow={boxPerRow}>
+            <DropdownContent $boxPerRow={boxPerRow}>
               {options.map((option, index) => (
                 <OptionBox
                   key={index}
-                  isSelected={
+                  $isSelected={
                     isMultiSelect
                       ? selectedOptions.includes(option)
                       : selectedOption === option
@@ -135,7 +135,7 @@ const DropdownIcon = styled.div`
 
 const DropdownContent = styled.div`
   display: grid;
-  grid-template-columns: repeat(${({ boxPerRow }) => boxPerRow}, 1fr);
+  grid-template-columns: repeat(${({ $boxPerRow }) => $boxPerRow}, 1fr);
   gap: 10px;
   padding: 12px;
   margin-bottom: 10px;
@@ -144,7 +144,6 @@ const DropdownContent = styled.div`
     flex-direction: column;
   }
 `;
-
 const OptionBox = styled.div`
   padding: 10px;
   width: ${({ width }) => width};
@@ -153,8 +152,9 @@ const OptionBox = styled.div`
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   text-align: center;
   border: 1px solid #d6d6d6;
-  background: ${({ isSelected }) => (isSelected ? "#00E5FD" : "white")};
-  color: ${({ isSelected }) => (isSelected ? "white" : "#333")};
+
+  background: ${({ $isSelected }) => ($isSelected ? "#00E5FD" : "white")};
+  color: ${({ $isSelected }) => ($isSelected ? "white" : "#333")};
   cursor: pointer;
   white-space: nowrap;
   @media ${device.mobile} {

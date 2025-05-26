@@ -16,7 +16,7 @@ const TimeSlotPicker = ({ selectedTime, setSelectedTime }) => {
       {timeSlots.map((time) => (
         <TimeSlotButton
           key={time}
-          isSelected={selectedTime === time}
+          $isSelected={selectedTime === time}
           onClick={() => setSelectedTime(time)}
         >
           {time}
@@ -45,10 +45,10 @@ const TimeSlotButton = styled.button`
   border-radius: 20px;
   font-size: 14px;
   font-weight: bold;
-  border: ${({ isSelected }) =>
-    isSelected ? "2px solid #00e6fd" : "1px solid #d6d6d6"};
-  background: ${({ isSelected }) => (isSelected ? "#00e6fd" : "white")};
-  color: ${({ isSelected }) => (isSelected ? "white" : "#333")};
+  border: ${({ $isSelected }) =>
+    $isSelected ? "2px solid #00e6fd" : "1px solid #d6d6d6"};
+  background: ${({ $isSelected }) => ($isSelected ? "#00e6fd" : "white")};
+  color: ${({ $isSelected }) => ($isSelected ? "white" : "#333")};
   cursor: pointer;
   text-align: center;
   @media ${device.mobile} {

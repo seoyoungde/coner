@@ -5,9 +5,10 @@ import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
 import { db } from "../../firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { signOut } from "firebase/auth";
+import * as firebaseAuth from "firebase/auth";
 import { auth } from "../../firebase";
 import { useAuth } from "../../context/AuthProvider";
+import { onSnapshot } from "firebase/firestore";
 
 const sections = [
   {
@@ -41,23 +42,22 @@ const MyPageSection = () => {
   const [requests, setRequests] = useState([]);
 
   useEffect(() => {
-    const fetchRequests = async () => {
-      if (!currentUser?.uid) return;
-      const q = query(
-        collection(db, "testservice"),
-        where("clientId", "==", currentUser.uid)
-      );
-      const snapshot = await getDocs(q);
+    if (!currentUser?.uid || userInfo?.isDeleted) return;
+
+    const q = query(
+      collection(db, "testservice"),
+      where("clientId", "==", currentUser.uid)
+    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
       const fetchedRequests = snapshot.docs.map((doc) => doc.data());
       setRequests(fetchedRequests);
-    };
-    if (userInfo?.isDeleted) return;
+    });
 
-    fetchRequests();
+    return () => unsubscribe();
   }, [currentUser, userInfo]);
 
   const handleLogout = async () => {
-    await signOut(auth);
+    await firebaseAuth.signOut(auth);
     setUserInfo(null);
     navigate("/loginpage");
   };
@@ -88,19 +88,24 @@ const MyPageSection = () => {
       }}
     >
       <Container ref={ref}>
-        <UserBox>
-          <h1>반가워요 {userInfo?.clientname || "고객"}님</h1>
-
-          {currentUser ? (
-            <div>
-              <Link to="/infomodify">내 정보 수정하기</Link>
-              <button onClick={handleLogout}>로그아웃</button>
-            </div>
-          ) : (
-            <Link to="/loginpage">로그인하기</Link>
-          )}
-        </UserBox>
         <Content>
+          <UserBox>
+            <h1>반가워요 {userInfo?.clientname || "고객"}님</h1>
+
+            {currentUser ? (
+              <div>
+                <Link to="/infomodify">내 정보 수정하기</Link>
+                <button
+                  onClick={handleLogout}
+                  style={{ border: "none", backgroundColor: "#f9f9f9" }}
+                >
+                  로그아웃하기
+                </button>
+              </div>
+            ) : (
+              <Link to="/loginpage">로그인하기</Link>
+            )}
+          </UserBox>
           <ProfileSection>
             <Logo src="../conerlogo3.png" alt="앱 로고" />
             <p>{userInfo?.clientname || "고객"}님</p>
@@ -111,7 +116,7 @@ const MyPageSection = () => {
               {requestStates.map((state, i) => (
                 <StateItem
                   key={i}
-                  isLast={i === requestStates.length - 1}
+                  $isLast={i === requestStates.length - 1}
                   onClick={() =>
                     navigate("/inquirydashboard", {
                       state: {
@@ -202,7 +207,7 @@ const StateBox = styled.div`
 const StateItem = styled.div`
   flex: 1;
   line-height: 1.5;
-  border-right: ${({ isLast }) => (isLast ? "none" : "1px solid #b5b3b3")};
+  border-right: ${({ $isLast }) => ($isLast ? "none" : "1px solid #b5b3b3")};
 
   p:nth-child(1) {
     font-weight: bold;

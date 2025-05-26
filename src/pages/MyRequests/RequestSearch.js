@@ -5,7 +5,7 @@ import { useRequest } from "../../context/context";
 import { device } from "../../styles/theme";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { auth } from "../../firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import * as firebaseAuth from "firebase/auth";
 
 const RequestSearch = () => {
   const navigate = useNavigate();
@@ -29,6 +29,7 @@ const RequestSearch = () => {
   };
 
   const handleSearch = async () => {
+    if (loading) return;
     if (!formData.phoneNumber) {
       setErrorMessage("전화번호를 입력해주세요.");
       return;
@@ -51,7 +52,7 @@ const RequestSearch = () => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = firebaseAuth.onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         navigate("/inquirydashboard", {
           state: { clientId: currentUser.uid },
@@ -59,7 +60,7 @@ const RequestSearch = () => {
       }
     });
     return () => unsubscribe();
-  });
+  }, []);
 
   return (
     <ScaleWrapper
@@ -93,7 +94,6 @@ const RequestSearch = () => {
                 maxLength={11}
                 type="tel"
                 inputMode="numeric"
-                autoFocus
               />
             </InputWrapper>
             {errorMessage && <ErrorText>{errorMessage}</ErrorText>}

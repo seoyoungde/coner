@@ -29,7 +29,7 @@ const DropdownSelector = ({
           {options.map((option, index) => (
             <Option
               key={option}
-              isSelected={selected === option}
+              $isSelected={selected === option}
               onClick={() => setSelected(option)}
               width={optionWidths[index] || "auto"}
             >
@@ -111,14 +111,14 @@ const Options = styled.div`
 
 const Option = styled.div`
   padding: 10px;
-  width: ${({ width }) => width};
+  width: ${({ $width }) => $width};
   border-radius: 20px;
   font-size: 15px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   text-align: center;
   border: 1px solid #d6d6d6;
-  background: ${({ isSelected }) => (isSelected ? "#00E5FD" : "white")};
-  color: ${({ isSelected }) => (isSelected ? "white" : "#333")};
+  background: ${({ $isSelected }) => ($isSelected ? "#00E5FD" : "white")};
+  color: ${({ $isSelected }) => ($isSelected ? "white" : "#333")};
   cursor: pointer;
   white-space: nowrap;
 

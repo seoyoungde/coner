@@ -49,44 +49,35 @@ const priceMap = {
 const RequestBasicInfo = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
   const { requestData, updateRequestData } = useRequest();
   const { scale, height, ref } = useScaleLayout();
 
-  const serviceParam = searchParams.get("service");
-  const [selectedService, setSelectedService] = useState(
-    location.state?.selectedService || serviceParam || requestData.service || ""
-  );
-  const [selectedType, setSelectedType] = useState(requestData.aircon || "");
-  const [selectedBrand, setSelectedBrand] = useState(requestData.brand || "");
+  const [searchParams] = useSearchParams();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-
-  const [isServiceOpen, setIsServiceOpen] = useState(true);
   const [isTypeOpen, setIsTypeOpen] = useState(true);
   const [isBrandOpen, setIsBrandOpen] = useState(true);
+
   useEffect(() => {
-    if (selectedService) {
-      updateRequestData("service", selectedService);
+    const restoredService =
+      location.state?.selectedService || searchParams.get("service");
+
+    if (restoredService && !requestData.service) {
+      updateRequestData("service", restoredService);
     }
-  }, [selectedService]);
+  }, [location.state, searchParams]);
 
   const handleNext = () => {
-    if (!selectedService || !selectedType || !selectedBrand) {
+    const { service, aircon, brand } = requestData;
+    if (!service || !aircon || !brand) {
       setIsPopupOpen(true);
       return;
     }
-    updateRequestData("service", selectedService);
-    updateRequestData("aircon", selectedType);
-    updateRequestData("brand", selectedBrand);
-
     navigate("/additionalrequest", {
-      state: {
-        service: selectedService,
-        aircon: selectedType,
-        brand: selectedBrand,
-      },
+      state: { service, aircon, brand },
     });
   };
+
+  const priceKey = `${requestData.service}-${requestData.aircon}-${requestData.brand}`;
 
   return (
     <ScaleWrapper
@@ -106,18 +97,20 @@ const RequestBasicInfo = () => {
         </Header>
         <StepProgressBar currentStep={3} totalSteps={4} />
         <FormLayout
-          title={`"의뢰서 기본 정보"- ${selectedService || "서비스 미선택"}`}
+          title={`"의뢰서 기본 정보"- ${
+            requestData.service || "서비스 미선택"
+          }`}
           subtitle="희망 서비스와 에어컨 종류를 선택해주세요."
           onNext={handleNext}
         >
           <DropdownSelector
-            title={selectedService}
+            title={requestData.service || "서비스 선택"}
             icon={<GrUserSettings />}
             options={["청소", "설치", "이전", "수리", "철거"]}
-            selected={selectedService}
-            setSelected={setSelectedService}
+            selected={requestData.service}
+            setSelected={(value) => updateRequestData("service", value)}
             isOpen={false}
-            setIsOpen={setIsServiceOpen}
+            setIsOpen={() => {}}
             optionWidths={["70px", "70px", "70px", "70px", "70px"]}
             disabled
           />
@@ -126,8 +119,8 @@ const RequestBasicInfo = () => {
             title="에어컨 종류 선택하기"
             icon={<GrApps />}
             options={["벽걸이형", "스탠드형", "천장형", "창문형", "항온항습기"]}
-            selected={selectedType}
-            setSelected={setSelectedType}
+            selected={requestData.aircon}
+            setSelected={(value) => updateRequestData("aircon", value)}
             isOpen={isTypeOpen}
             setIsOpen={setIsTypeOpen}
             optionWidths={["90px", "90px", "90px", "90px", "110px"]}
@@ -145,8 +138,8 @@ const RequestBasicInfo = () => {
               "SK매직",
               "기타(추천 또는 모름)",
             ]}
-            selected={selectedBrand}
-            setSelected={setSelectedBrand}
+            selected={requestData.brand}
+            setSelected={(value) => updateRequestData("brand", value)}
             isOpen={isBrandOpen}
             setIsOpen={setIsBrandOpen}
             optionWidths={[
@@ -172,20 +165,12 @@ const RequestBasicInfo = () => {
           >
             서비스비용보러가기
           </Link>
-          {selectedService &&
-            selectedType &&
-            selectedBrand &&
-            priceMap[`${selectedService}-${selectedType}-${selectedBrand}`] && (
-              <PriceBox>
-                예상 견적:{" "}
-                <strong>
-                  {priceMap[
-                    `${selectedService}-${selectedType}-${selectedBrand}`
-                  ].toLocaleString()}
-                  원
-                </strong>
-              </PriceBox>
-            )}
+          {priceMap[priceKey] && (
+            <PriceBox>
+              예상 견적:{" "}
+              <strong>{priceMap[priceKey].toLocaleString()}원</strong>
+            </PriceBox>
+          )}
           {isPopupOpen && (
             <Popup onClose={() => setIsPopupOpen(false)}>
               <PopupText>모든 옵션을 선택해주세요.</PopupText>

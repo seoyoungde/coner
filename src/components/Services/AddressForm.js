@@ -51,7 +51,7 @@ const AddressForm = ({ title, description, buttonText }) => {
     if (userInfo) {
       setFormData({
         clientAddress: userInfo.clientaddress || "",
-        clientDetailedAddress: userInfo.clientdetailedaddress || "",
+        clientDetailedAddress: userInfo.clientDetailedAddress || "",
         clientPhone: userInfo.clientphone || "",
       });
     }
@@ -135,14 +135,7 @@ const AddressForm = ({ title, description, buttonText }) => {
 
         <Form onSubmit={handleSubmit}>
           <Field>
-            <Label>
-              주소
-              {isReadOnly && (
-                <ModifyLink onClick={goToModifyInfo}>
-                  내 정보 수정하러가기
-                </ModifyLink>
-              )}
-            </Label>
+            <Label>주소</Label>
             <HelperTextBox>
               <HelperIcon>
                 <HiOutlineExclamationCircle color=" #a5a5a5" size="18" />
@@ -154,6 +147,11 @@ const AddressForm = ({ title, description, buttonText }) => {
                 중랑구, 종로구
               </HelperText>
             </HelperTextBox>
+            {isReadOnly && (
+              <ModifyLink onClick={goToModifyInfo}>
+                내 정보 (주소 / 전화번호) 수정하러가기
+              </ModifyLink>
+            )}
             <CustomSelect>
               <Input
                 type="text"
@@ -161,8 +159,9 @@ const AddressForm = ({ title, description, buttonText }) => {
                 placeholder="클릭하여 주소 검색"
                 style={{ border: "none" }}
                 value={formData.clientAddress}
-                onClick={!isReadOnly ? goToAddressSearch : undefined}
                 readOnly={isReadOnly}
+                onChange={isReadOnly ? undefined : handleChange}
+                onClick={!isReadOnly ? goToAddressSearch : undefined}
               />
             </CustomSelect>
 
@@ -178,14 +177,7 @@ const AddressForm = ({ title, description, buttonText }) => {
           </Field>
 
           <Field>
-            <Label>
-              연락처
-              {isReadOnly && (
-                <ModifyLink onClick={goToModifyInfo}>
-                  내 정보 수정하러가기
-                </ModifyLink>
-              )}
-            </Label>
+            <Label>연락처</Label>
             <Input
               type="tel"
               name="clientPhone"
@@ -288,6 +280,7 @@ const CustomSelect = styled.div`
   align-items: center;
   border: 1px solid #a5a5a5;
   border-radius: 9px;
+  margin-top: 10px;
 
   svg {
     position: absolute;
@@ -380,5 +373,12 @@ const CloseButton = styled.button`
   border-radius: 0px 0px 10px 10px;
   cursor: pointer;
 `;
-const ModifyLink = styled.a``;
+const ModifyLink = styled.a`
+  font-size: 13px;
+  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  text-decoration: underline;
+  color: #a2a2a2;
+  padding: 10px;
+  cursor: pointer;
+`;
 export default AddressForm;
