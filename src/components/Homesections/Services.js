@@ -3,49 +3,56 @@ import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import { useRequest } from "../../context/context";
 import { device } from "../../styles/theme";
+import installIcon from "../../assets/images/services/services_install.png";
+import inspectionIcon from "../../assets/images/services/services_inspection.png";
+import cleanIcon from "../../assets/images/services/services_clean.png";
+import repairIcon from "../../assets/images/services/services_repair.png";
+import chargeIcon from "../../assets/images/services/services_charge.png";
+import moveIcon from "../../assets/images/services/services_move.png";
+import demolishIcon from "../../assets/images/services/services_demolish.png";
 
 const serviceData = [
   {
     id: 1,
     title: "설치",
-    icon: "../servicesimage/services_install.png",
+    icon: installIcon,
     path: "/install",
   },
   {
     id: 2,
     title: "점검",
-    icon: "../servicesimage/services_inspection.png",
+    icon: inspectionIcon,
     path: "/inspection",
   },
   {
     id: 3,
     title: "청소",
-    icon: "../servicesimage/services_clean.png",
+    icon: cleanIcon,
     path: "/clean",
   },
   {
     id: 4,
     title: "수리",
-    icon: "../servicesimage/services_repair.png",
+    icon: repairIcon,
     path: "/repair",
   },
   {
     id: 5,
     title: "냉매 충전",
-    icon: "../servicesimage/services_charge.png",
+    icon: chargeIcon,
     path: "/charge",
   },
   {
     id: 6,
     title: "이전",
-    icon: "../servicesimage/services_move.png",
+    icon: moveIcon,
     path: "/move",
   },
 
   {
     id: 7,
     title: "철거",
-    icon: "../servicesimage/services_demolish.png",
+    icon: demolishIcon,
     path: "/demolish",
   },
 ];

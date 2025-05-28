@@ -4,6 +4,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useScaleLayout } from "../hooks/useScaleLayout";
 import { IoIosArrowBack } from "react-icons/io";
 import { device } from "../styles/theme";
+import pricingchartIcon from "../assets/images/price/pricing-chart.png";
+import pricingchartoptionsIcon from "../assets/images/price/pricing-chart-options.png";
 
 const PricingPage = () => {
   const { scale, height, ref } = useScaleLayout();
@@ -45,14 +47,14 @@ const PricingPage = () => {
         </InnerWrapper>
 
         <ImageWrapper>
-          <img src="../pricing-chart.png" alt="서비스 비용 도표" />
+          <img src={pricingchartIcon} alt="서비스 비용 도표" />
         </ImageWrapper>
 
         <ExtraButton onClick={handleShowExtra}>추가비용안내</ExtraButton>
 
         {showExtraImage && (
           <ImageWrapper>
-            <img src="../pricing-chart-options.png" alt="추가 비용 도표" />
+            <img src={pricingchartoptionsIcon} alt="추가 비용 도표" />
           </ImageWrapper>
         )}
       </Container>

@@ -4,13 +4,7 @@ import styled from "styled-components";
 import { useRequest } from "../../../context/context";
 import CalendarPicker from "../../../components/Apply/CalendarPicker";
 import TimeSlotPicker from "../../../components/Apply/TimeSlotPicker";
-import {
-  doc,
-  updateDoc,
-  deleteDoc,
-  onSnapshot,
-  collection,
-} from "firebase/firestore";
+import { doc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
 import DropdownSelector from "../../../components/Apply/DropdownSelector";
 import AdditionalDropSelected from "../../../components/Services/AdditionalDropSelected";
 import RequestDetails from "../../../components/Apply/RequestDetails";
@@ -18,13 +12,13 @@ import { db } from "../../../firebase";
 import { GrApps, GrUserSettings, GrBookmark } from "react-icons/gr";
 import { device } from "../../../styles/theme";
 
-const RequestReceived = ({ requestData }) => {
+const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
   const navigate = useNavigate();
+  const [localRequestData, setLocalRequestData] = useState(requestData);
+
   const { updateRequestData } = useRequest();
   const isMounted = useRef(true);
   const [requests, setRequests] = useState(requestData ? [requestData] : []);
-  const [requestDataState, setRequestDataState] = useState(requestData);
-  const [forceUpdate, setForceUpdate] = useState(0);
   const [editingRequestId, setEditingRequestId] = useState(null);
   const [selectedHopeDate, setSelectedHopeDate] = useState(
     requestData.hopeDate
@@ -56,14 +50,21 @@ const RequestReceived = ({ requestData }) => {
 
   const handleEditClick = (requestId) => {
     setEditingRequestId(requestId);
-    setSelectedDropdownOption("");
-    setSelectedAirconditionerform("");
-    setAdditionalInfo("");
+    setSelectedDropdownOption(requestData.selectedDropdownOption || "");
+    setSelectedAirconditionerform(requestData.selectedairconditionerform || "");
+    setAdditionalInfo(requestData.detailInfo || "");
   };
 
   const handleCancelClick = () => {
     setEditingRequestId(null);
+    setSelectedHopeDate(requestData.hopeDate);
+    setSelectedHopeTime(requestData.hopeTime);
+    setSelectedBrand(requestData.brand);
+    setSelectedService(requestData.service);
+    setSelectedType(requestData.aircon);
     setAdditionalInfo(requestData.detailInfo || "");
+    setSelectedDropdownOption("");
+    setSelectedAirconditionerform("");
   };
 
   useEffect(() => {
@@ -126,11 +127,34 @@ const RequestReceived = ({ requestData }) => {
   };
 
   useEffect(() => {
-    if (requestData && isMounted.current) {
-      setRequests([requestData]);
-      setAdditionalInfo(requestData.detailInfo || "");
-    }
-  }, [requestData]);
+    if (!requestData?.id) return;
+
+    const unsubscribe = onSnapshot(
+      doc(db, "testservice", requestData.id),
+      (snapshot) => {
+        const updatedData = { id: snapshot.id, ...snapshot.data() };
+
+        setLocalRequestData(updatedData);
+        setSelectedHopeDate(updatedData.hopeDate);
+        setSelectedHopeTime(updatedData.hopeTime);
+        setSelectedBrand(updatedData.brand);
+        setSelectedService(updatedData.service);
+        setSelectedType(updatedData.aircon);
+        setAdditionalInfo(updatedData.detailInfo || "");
+        setSelectedDropdownOption(updatedData.selectedDropdownOption || "");
+        setSelectedAirconditionerform(
+          updatedData.selectedairconditionerform || ""
+        );
+
+        // 부모에게 최신 데이터 알림
+        if (typeof onRealtimeUpdate === "function") {
+          onRealtimeUpdate(updatedData);
+        }
+      }
+    );
+
+    return () => unsubscribe();
+  }, [requestData?.id]);
 
   useEffect(() => {
     setRequests((prevRequests) =>
@@ -162,57 +186,23 @@ const RequestReceived = ({ requestData }) => {
     }
   };
 
-  useEffect(() => {
-    console.log("📡 Firestore 실시간 업데이트 감지 시작...");
-
-    const unsubscribe = onSnapshot(
-      collection(db, "testservice"),
-      (snapshot) => {
-        console.log("🔄 Firestore 데이터 변경 감지됨!", snapshot.docs.length);
-
-        const updatedRequests = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        setRequests([...updatedRequests]);
-
-        const updatedRequest = updatedRequests.find(
-          (req) => req.id === requestData?.id
-        );
-        if (updatedRequest) {
-          console.log("🔁 requestData 변경 감지:", updatedRequest);
-          updateRequestData(updatedRequest.id, updatedRequest);
-          setRequestDataState(updatedRequest);
-        }
-
-        setForceUpdate((prev) => prev + 1);
-      }
-    );
-
-    return () => {
-      console.log("🛑 Firestore 실시간 감지 중지됨.");
-      unsubscribe();
-    };
-  }, [forceUpdate]);
-
   return (
     <Container>
       <RequestBox>
         <ProgressBar>
           {steps.map((step, index) => (
             <ProgressStep key={index}>
-              <Circle $isActive={index + 1 <= requestData.state} />
-              <StepLabel isActive={index + 1 === requestData.state}>
+              <Circle $isActive={index + 1 <= localRequestData.state} />
+              <StepLabel $isActive={index + 1 === localRequestData.state}>
                 {step.label}
               </StepLabel>
               {index < steps.length - 1 && (
-                <Line isActive={index + 1 < requestData.state} />
+                <Line $isActive={index + 1 < localRequestData.state} />
               )}
             </ProgressStep>
           ))}
         </ProgressBar>
-        {requestData.state >= 2 && (
+        {localRequestData.state >= 2 && (
           <TechnicianContainer>
             <TechnicianCard>
               <TechnicianTitle>배정된 기사님 정보</TechnicianTitle>
@@ -430,6 +420,7 @@ const RequestReceived = ({ requestData }) => {
                       isMultiSelect={true}
                       onSelect={(option) => setSelectedDropdownOption(option)}
                     />
+                    <Label>추가요청사항</Label>
                     <RequestDetails
                       additionalInfo={additionalInfo}
                       setAdditionalInfo={setAdditionalInfo}
@@ -457,6 +448,7 @@ const RequestReceived = ({ requestData }) => {
                       boxPerRow={2}
                       onSelect={setSelectedDropdownOption}
                     />
+                    <Label>추가요청사항</Label>
                     <RequestDetails
                       additionalInfo={additionalInfo}
                       setAdditionalInfo={setAdditionalInfo}
@@ -474,6 +466,7 @@ const RequestReceived = ({ requestData }) => {
                       boxPerRow={2}
                       onSelect={setSelectedDropdownOption}
                     />
+                    <Label>추가요청사항</Label>
                     <RequestDetails
                       additionalInfo={additionalInfo}
                       setAdditionalInfo={setAdditionalInfo}
@@ -482,9 +475,12 @@ const RequestReceived = ({ requestData }) => {
                 )}
               </>
             ) : (
-              <Value style={{ whiteSpace: "pre-line" }}>
-                {additionalInfo || "없음"}
-              </Value>
+              <div>
+                <Label>추가요청사항</Label>
+                <Value style={{ whiteSpace: "pre-line" }}>
+                  {additionalInfo || "없음"}
+                </Value>
+              </div>
             )}
           </Section>
         </ContentBox>
@@ -554,6 +550,7 @@ const LabelBox = styled.div`
   padding: 20px 10px 30px 20px;
 `;
 const TechnicianContainer = styled.div``;
+
 const TechnicianETC = styled.div`
   font-size: 15px;
   @media ${device.mobile} {
@@ -598,7 +595,7 @@ const Circle = styled.div`
 const Line = styled.div`
   width: 50px;
   height: 2px;
-  background-color: ${({ isActive }) => (isActive ? "#00e6fd" : "#ddd")};
+  background-color: ${({ $isActive }) => ($isActive ? "#00e6fd" : "#ddd")};
   margin: 0 5px;
   @media ${device.mobile} {
     width: 30px;
@@ -607,8 +604,8 @@ const Line = styled.div`
 
 const StepLabel = styled.div`
   font-size: 14px;
-  font-weight: ${({ isActive }) => (isActive ? "bold" : "normal")};
-  color: ${({ isActive }) => (isActive ? "#00e6fd" : "#666")};
+  font-weight: ${({ $isActive }) => ($isActive ? "bold" : "normal")};
+  color: ${({ $isActive }) => ($isActive ? "#00e6fd" : "#666")};
   margin-top: 5px;
   @media ${device.mobile} {
     font-size: 1.2rem;
@@ -863,7 +860,8 @@ const PopupContainer = styled.div`
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   max-width: 90%;
   min-width: 280px;
-  text-align: center;
+text - align: center;
+  
 `;
 
 const PopupText = styled.p`

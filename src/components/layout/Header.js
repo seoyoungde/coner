@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { device } from "../../styles/theme";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
+import conerlogo from "../../assets/images/logo/conerlogo.png";
 
 const Header = () => {
   const { scale, height, ref } = useScaleLayout();
@@ -17,7 +18,7 @@ const Header = () => {
       <Container ref={ref}>
         <HeaderContainer>
           <Title>
-            <img src="../conerlogo.png" alt="Coner 로고" />
+            <img src={conerlogo} alt="Coner 로고" />
           </Title>
         </HeaderContainer>
       </Container>

@@ -31,6 +31,7 @@ const CreatAcount = () => {
   const [detailAddress, setDetailAddress] = useState("");
   const [timer, setTimer] = useState(0);
   const [timerId, setTimerId] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const state = location.state;
@@ -88,6 +89,7 @@ const CreatAcount = () => {
 
   const handleCreataccount = async () => {
     try {
+      setIsSubmitting(true);
       if (!name || !job || !birth || !address || !detailAddress) {
         return alert("모든 정보를 입력해주세요.");
       }
@@ -138,12 +140,13 @@ const CreatAcount = () => {
       const uid = userCredential.user.uid;
 
       const newUser = {
+        clientId: uid,
         clientemail: email,
         clientname: name,
         clientjob: job,
         clientbirth: birth,
         clientaddress: address,
-        clientDetailedAddress: detailAddress,
+        clientdetailaddress: detailAddress,
         clientphone: formattedPhone,
         state: 1,
         isDeleted: false,
@@ -159,6 +162,8 @@ const CreatAcount = () => {
       alert(
         "회원가입 실패: " + (error.response?.data?.message || error.message)
       );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -309,7 +314,9 @@ const CreatAcount = () => {
           </FormBox>
         </FormSection>
 
-        <SubmitButton onClick={handleCreataccount}>가입하기</SubmitButton>
+        <SubmitButton onClick={handleCreataccount} disabled={isSubmitting}>
+          {isSubmitting ? "가입 중..." : "가입하기"}
+        </SubmitButton>
         <div id="recaptcha-container"></div>
       </Container>
     </ScaleWrapper>

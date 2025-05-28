@@ -4,6 +4,7 @@ import Services from "../components/Homesections/Services";
 import ServicesType from "../components/Homesections/ServicesType";
 import { useScaleLayout } from "../hooks/useScaleLayout";
 import Qna from "../components/Homesections/Qna";
+import bannerIcon from "../assets/images/home/banner.jpg";
 
 const Home = () => {
   const { scale, height, ref } = useScaleLayout();
@@ -18,7 +19,7 @@ const Home = () => {
     >
       <Container ref={ref}>
         <BannerSection>
-          <BannerImg src="../banner.jpg" alt="Coner 메인 배너" />
+          <BannerImg src={bannerIcon} alt="Coner 메인 배너" />
         </BannerSection>
         <MainContent>
           <Services />

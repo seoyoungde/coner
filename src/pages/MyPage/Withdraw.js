@@ -5,8 +5,9 @@ import { IoIosArrowBack } from "react-icons/io";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
 import { updateDoc, doc } from "firebase/firestore";
-import * as firebaseAuth from "firebase/auth";
 import { db, auth } from "../../firebase";
+import { deleteUser } from "firebase/auth";
+import { useAuth } from "../../context/AuthProvider";
 
 const Withdraw = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const Withdraw = () => {
   const [confirmChecked, setConfirmChecked] = useState(false);
   const [reasons, setReasons] = useState([]);
   const [details, setDetails] = useState("");
+  const { userInfo } = useAuth();
 
   const handleReasonToggle = (reason) => {
     setReasons((prev) =>
@@ -34,14 +36,16 @@ const Withdraw = () => {
       }
 
       const userRef = doc(db, "testclients", currentUser.uid);
+      const newPhone = userInfo.clientphone + "_deleted";
       await updateDoc(userRef, {
         isDeleted: true,
         state: 0,
         withdrawReasons: reasons,
         withdrawDetail: details,
+        clientphone: newPhone,
       });
 
-      await firebaseAuth.signOut(auth);
+      await deleteUser(currentUser);
       alert("회원 탈퇴가 완료되었습니다.");
       navigate("/");
     } catch (error) {

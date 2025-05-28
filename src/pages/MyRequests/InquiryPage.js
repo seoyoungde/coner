@@ -70,7 +70,6 @@ const InquiryPage = () => {
       if (clientPhone) {
         const q = query(
           collection(db, "testservice"),
-          // where("clientId", "==", clientId),
           where("clientPhone", "==", clientPhone)
         );
         const querySnapshot = await getDocs(q);
@@ -119,7 +118,16 @@ const InquiryPage = () => {
   const handleGoBack = () => {
     navigate("/requests");
   };
+  const handleRealtimeUpdate = (updatedRequest) => {
+    setRequestDataList((prevList) => {
+      const existing = prevList.find((r) => r.id === updatedRequest.id);
+      if (!existing) return prevList;
 
+      return prevList.map((r) =>
+        r.id === updatedRequest.id ? updatedRequest : r
+      );
+    });
+  };
   const completedRequests = requestDataList.filter((req) => req.state === 4);
   const inProgressRequests = requestDataList.filter((req) => req.state < 4);
 
@@ -151,13 +159,13 @@ const InquiryPage = () => {
 
         <TabHeader>
           <Tab
-            isActive={activeTab === "progress"}
+            $isActive={activeTab === "progress"}
             onClick={() => setActiveTab("progress")}
           >
             진행 중
           </Tab>
           <Tab
-            isActive={activeTab === "completed"}
+            $isActive={activeTab === "completed"}
             onClick={() => setActiveTab("completed")}
           >
             완료된
@@ -170,7 +178,11 @@ const InquiryPage = () => {
           ) : activeTab === "progress" ? (
             inProgressRequests.length > 0 ? (
               inProgressRequests.map((req) => (
-                <RequestReceived key={req.id} requestData={req} />
+                <RequestReceived
+                  key={req.id}
+                  requestData={req}
+                  onRealtimeUpdate={handleRealtimeUpdate}
+                />
               ))
             ) : (
               <CenteredContent>아직 진행 중인 의뢰가 없습니다.</CenteredContent>
@@ -261,8 +273,8 @@ const Tab = styled.button`
   flex: 1;
   padding: 15px 0;
   font-size: 16px;
-  font-weight: ${({ isActive }) => (isActive ? "bold" : "normal")};
-  color: ${({ isActive }) => (isActive ? "#00e6fd" : "#333")};
+  font-weight: ${({ $isActive }) => ($isActive ? "bold" : "normal")};
+  color: ${({ $isActive }) => ($isActive ? "#00e6fd" : "#333")};
   text-align: center;
   position: relative;
   border: none;
@@ -274,10 +286,10 @@ const Tab = styled.button`
     position: absolute;
     bottom: 0;
     left: 0;
-    width: ${({ isActive }) => (isActive ? "100%" : "0")};
+    width: ${({ $isActive }) => ($isActive ? "100%" : "0")};
     height: 2px;
-    background-color: ${({ isActive }) =>
-      isActive ? "#00e6fd" : "transparent"};
+    background-color: ${({ $isActive }) =>
+      $isActive ? "#00e6fd" : "transparent"};
     transition: width 0.3s ease;
   }
   @media ${device.mobile} {
