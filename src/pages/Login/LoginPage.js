@@ -7,6 +7,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { db, auth } from "../../firebase";
 import axios from "axios";
 import * as firebaseAuth from "firebase/auth";
+import conerlogobannerIcon from "../../assets/images/logo/conerloginbanner.png";
 
 const LoginPage = () => {
   const { scale, height, ref } = useScaleLayout();
@@ -89,12 +90,6 @@ const LoginPage = () => {
         alert("해당 전화번호로 가입된 회원이 없습니다.");
         return;
       }
-      const docData = snapshot.docs[0].data();
-
-      if (docData.isDeleted || docData.state === 0) {
-        alert("탈퇴한 회원입니다. 다시 가입해주세요.");
-        return;
-      }
 
       const response = await axios.post(`${API}/auth/login`, {
         phoneNumber: formattedPhone,
@@ -123,7 +118,7 @@ const LoginPage = () => {
       }}
     >
       <Container ref={ref}>
-        <img src="../conerloginbanner.png"></img>
+        <img src={conerlogobannerIcon}></img>
         <InputBox>
           <UserPhoneNum value={phoneNumber} onChange={handlePhoneChange} />
           <div style={{ width: "100%", display: "flex" }}>

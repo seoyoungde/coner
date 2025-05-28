@@ -23,11 +23,11 @@ import CreatAcount from "./Login/CreatAcount";
 import InfoModify from "./MyPage/InfoModify";
 import Withdraw from "./MyPage/Withdraw";
 import PricingPage from "./PricingPage";
-
 import AddressPage from "./ServicesPage/AddressPage";
-
 import AddressForm from "../components/Services/AddressForm";
 import CreateAddressModal from "../components/Services/CreateAddressModal";
+import mainimage2Icon from "../assets/images/home/mainimage2.jpg";
+import InfoModifyAddressModal from "../components/Services/InfoModifyAddressModal";
 
 const headerMap = {
   "/": <Header />,
@@ -126,12 +126,13 @@ const Main = () => {
     "/withdraw",
     "/pricing",
     "/createaddressmodal",
+    "/infomodifyaddressmodal",
   ];
   return (
     <Container style={{ height: `${windowHeight}px` }}>
       {/* 왼쪽 민트색 박스 */}
       <ImageBox>
-        <img src="../mainimage2.jpg" alt="Coner 로고" />
+        <img src={mainimage2Icon} alt="Coner 로고" />
       </ImageBox>
       {/* 오른쪽 콘텐츠 박스 */}
       <ContentBox $backgroundColor={getBackgroundColor(location.pathname)}>
@@ -158,14 +159,15 @@ const Main = () => {
             <Route path="/infomodify" element={<InfoModify />} />
             <Route path="/withdraw" element={<Withdraw />} />
             <Route path="/pricing" element={<PricingPage />} />
-
             <Route path="/addresspage" element={<AddressPage />}></Route>
-
             <Route path="/addressform" element={<AddressForm />} />
-
             <Route
               path="/createaddressmodal"
               element={<CreateAddressModal />}
+            />
+            <Route
+              path="/infomodifyaddressmodal"
+              element={<InfoModifyAddressModal />}
             />
           </Routes>
         </MainContent>

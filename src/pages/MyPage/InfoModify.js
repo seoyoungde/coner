@@ -4,7 +4,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
-import { auth, db } from "../../firebase";
 import {
   doc,
   getDoc,
@@ -15,13 +14,17 @@ import {
   getDocs,
   writeBatch,
 } from "firebase/firestore";
+import { auth, db } from "../../firebase";
 import { useAuth } from "../../context/AuthProvider";
+import { Link } from "react-router-dom";
+import InfoModifyAddressModal from "../../components/Services/InfoModifyAddressModal";
 
 const InfoModify = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { scale, height, ref } = useScaleLayout();
   const { setUserInfo, userInfo } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     clientemail: "",
@@ -32,33 +35,45 @@ const InfoModify = () => {
     clientdetailaddress: "",
     clientphone: "",
   });
+  const [clearedFields, setClearedFields] = useState({});
   const [passPhone, setPassPhone] = useState("");
   const [sentCode, setSentCode] = useState("");
   const [timer, setTimer] = useState(0);
   const [timerId, setTimerId] = useState(null);
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
 
   useEffect(() => {
     if (userInfo) {
-      setFormData((prev) => ({
-        ...prev,
-        clientemail: userInfo.clientemail || "",
-        clientname: userInfo.clientname || "",
-        clientjob: userInfo.clientjob || "",
-        clientbirth: userInfo.clientbirth || "",
+      setFormData({
+        clientemail: location.state?.clientemail || userInfo.clientemail || "",
+        clientname: location.state?.clientname || userInfo.clientname || "",
+        clientjob: location.state?.clientjob || userInfo.clientjob || "",
+        clientbirth: location.state?.clientbirth || userInfo.clientbirth || "",
         clientaddress:
-          location.state?.selectedAddress || userInfo.clientaddress || "",
-        clientdetailaddress: userInfo.clientDetailedAddress || "",
-        clientphone: formatPhone(userInfo.clientphone || ""),
-      }));
+          location.state?.selectedAddress ||
+          location.state?.clientaddress ||
+          userInfo.clientaddress ||
+          "",
+        clientdetailaddress:
+          location.state?.clientdetailaddress ||
+          userInfo.clientdetailaddress ||
+          "",
+        clientphone: location.state?.clientphone || userInfo.clientphone || "",
+      });
     }
   }, [userInfo, location.state]);
-
-  const formatPhone = (phone) => {
-    let numbersOnly = phone.replace(/\D/g, "");
-    if (numbersOnly.startsWith("82")) {
-      numbersOnly = "0" + numbersOnly.slice(2);
+  const handleAddressSelect = (selectedAddress) => {
+    setFormData((prev) => ({
+      ...prev,
+      clientaddress: selectedAddress,
+    }));
+    setIsAddressModalOpen(false);
+  };
+  const handleFocusClear = (field) => {
+    if (!clearedFields[field]) {
+      setFormData((prev) => ({ ...prev, [field]: "" }));
+      setClearedFields((prev) => ({ ...prev, [field]: true }));
     }
-    return numbersOnly.replace(/(\d{3})(\d{3,4})(\d{4})/, "$1-$2-$3");
   };
 
   const normalizePhone = (phone) => {
@@ -72,6 +87,7 @@ const InfoModify = () => {
     if (value.length > 10) value = value.slice(0, 10);
     setFormData((prev) => ({ ...prev, clientbirth: value }));
   };
+
   const formatPhoneInput = (e) => {
     let value = e.target.value.replace(/\D/g, "");
     if (value.length >= 4) value = value.slice(0, 3) + "-" + value.slice(3);
@@ -111,6 +127,7 @@ const InfoModify = () => {
       alert("전화번호 인증이 필요합니다.");
       return;
     }
+    setIsSubmitting(true);
     try {
       const newPhone = normalizePhone(formData.clientphone);
       const ref = doc(db, "testclients", auth.currentUser.uid);
@@ -143,8 +160,11 @@ const InfoModify = () => {
     } catch (err) {
       console.error(err);
       alert("수정 실패: " + err.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
   return (
     <ScaleWrapper
       style={{
@@ -171,6 +191,7 @@ const InfoModify = () => {
               <Input
                 name="clientemail"
                 value={formData.clientemail}
+                onFocus={() => handleFocusClear("clientemail")}
                 onChange={handleChange}
               />
             </FormGroup>
@@ -179,6 +200,7 @@ const InfoModify = () => {
               <Input
                 name="clientname"
                 value={formData.clientname}
+                onFocus={() => handleFocusClear("clientname")}
                 onChange={handleChange}
               />
             </FormGroup>
@@ -203,6 +225,7 @@ const InfoModify = () => {
               <Input
                 name="clientbirth"
                 value={formData.clientbirth}
+                onFocus={() => handleFocusClear("clientbirth")}
                 onChange={formatBirthInput}
               />
             </FormGroup>
@@ -211,19 +234,20 @@ const InfoModify = () => {
               <Input
                 name="clientaddress"
                 value={formData.clientaddress}
-                onClick={() =>
-                  navigate("/createaddressmodal", {
-                    state: {
-                      prevPath: "/infomodify",
-                      ...formData,
-                    },
-                  })
-                }
                 readOnly
+                onClick={() => setIsAddressModalOpen(true)}
               />
+
+              {isAddressModalOpen && (
+                <InfoModifyAddressModal
+                  onClose={() => setIsAddressModalOpen(false)}
+                  onSelect={handleAddressSelect}
+                />
+              )}
               <Input
                 name="clientdetailaddress"
                 value={formData.clientdetailaddress}
+                onFocus={() => handleFocusClear("clientdetailaddress")}
                 onChange={handleChange}
                 placeholder="상세주소"
                 style={{ marginTop: "10px" }}
@@ -234,6 +258,7 @@ const InfoModify = () => {
               <Input
                 name="clientphone"
                 value={formData.clientphone}
+                onFocus={() => handleFocusClear("clientphone")}
                 onChange={formatPhoneInput}
               />
               <SmallButton onClick={handleSendVerificationCode}>
@@ -254,10 +279,16 @@ const InfoModify = () => {
                 </p>
               )}
             </FormGroup>
+
+            <Link to="/withdraw" style={{ fontSize: "0.8rem" }}>
+              회원탈퇴하기
+            </Link>
           </FormBox>
         </FormSection>
 
-        <SubmitButton onClick={handleSubmit}>수정완료</SubmitButton>
+        <SubmitButton onClick={handleSubmit} disabled={isSubmitting}>
+          {isSubmitting ? "수정 중..." : "수정완료"}
+        </SubmitButton>
       </Container>
     </ScaleWrapper>
   );

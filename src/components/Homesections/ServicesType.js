@@ -1,32 +1,37 @@
 import React from "react";
 import styled from "styled-components";
 import { device } from "../../styles/theme";
+import Type1Icon from "../../assets/images/services/servicesType_1.png";
+import Type2Icon from "../../assets/images/services/servicesType_2.png";
+import Type3Icon from "../../assets/images/services/servicesType_3.png";
+import Type4Icon from "../../assets/images/services/servicesType_4.png";
+import Type5Icon from "../../assets/images/services/servicesType_5.png";
 
 const types = [
   {
     id: 1,
     title: "벽걸이형",
-    image: "../servicesTypeimage/servicesType_1.png",
+    image: Type1Icon,
   },
   {
     id: 2,
     title: "스탠드형",
-    image: "../servicesTypeimage/servicesType_2.png",
+    image: Type2Icon,
   },
   {
     id: 3,
     title: "천장형",
-    image: "../servicesTypeimage/servicesType_3.png",
+    image: Type3Icon,
   },
   {
     id: 4,
     title: "창문형",
-    image: "../servicesTypeimage/servicesType_4.png",
+    image: Type4Icon,
   },
   {
     id: 5,
     title: "항온항습기",
-    image: "../servicesTypeimage/servicesType_5.png",
+    image: Type5Icon,
   },
 ];
 

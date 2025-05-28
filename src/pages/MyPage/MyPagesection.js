@@ -9,6 +9,7 @@ import * as firebaseAuth from "firebase/auth";
 import { auth } from "../../firebase";
 import { useAuth } from "../../context/AuthProvider";
 import { onSnapshot } from "firebase/firestore";
+import conerlogo3Icon from "../../assets/images/logo/conerlogo3.png";
 
 const sections = [
   {
@@ -42,11 +43,11 @@ const MyPageSection = () => {
   const [requests, setRequests] = useState([]);
 
   useEffect(() => {
-    if (!currentUser?.uid || userInfo?.isDeleted) return;
+    if (!userInfo?.clientphone || userInfo?.isDeleted) return;
 
     const q = query(
       collection(db, "testservice"),
-      where("clientId", "==", currentUser.uid)
+      where("clientPhone", "==", userInfo.clientphone)
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const fetchedRequests = snapshot.docs.map((doc) => doc.data());
@@ -54,7 +55,7 @@ const MyPageSection = () => {
     });
 
     return () => unsubscribe();
-  }, [currentUser, userInfo]);
+  }, [userInfo]);
 
   const handleLogout = async () => {
     await firebaseAuth.signOut(auth);
@@ -107,7 +108,7 @@ const MyPageSection = () => {
             )}
           </UserBox>
           <ProfileSection>
-            <Logo src="../conerlogo3.png" alt="앱 로고" />
+            <Logo src={conerlogo3Icon} alt="앱 로고" />
             <p>{userInfo?.clientname || "고객"}님</p>
           </ProfileSection>
 

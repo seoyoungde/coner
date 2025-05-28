@@ -51,7 +51,7 @@ const AddressForm = ({ title, description, buttonText }) => {
     if (userInfo) {
       setFormData({
         clientAddress: userInfo.clientaddress || "",
-        clientDetailedAddress: userInfo.clientDetailedAddress || "",
+        clientDetailedAddress: userInfo.clientdetailaddress || "",
         clientPhone: userInfo.clientphone || "",
       });
     }
@@ -70,10 +70,23 @@ const AddressForm = ({ title, description, buttonText }) => {
   };
 
   const formatPhoneToInternational = (phone) => {
-    const onlyNumbers = phone.replace(/\D/g, "");
-    return onlyNumbers.startsWith("0")
-      ? "+82" + onlyNumbers.slice(1)
-      : onlyNumbers;
+    const trimmed = phone.trim();
+
+    // 이미 +82로 시작하면 그대로 사용
+    if (trimmed.startsWith("+82")) return trimmed;
+
+    // 01012345678 → +821012345678
+    if (trimmed.startsWith("0")) {
+      return "+82" + trimmed.slice(1);
+    }
+
+    // 821012345678처럼 입력된 경우 → +821012345678
+    if (trimmed.startsWith("82")) {
+      return "+82" + trimmed.slice(2);
+    }
+
+    // fallback: 그냥 +82 붙이기
+    return "+82" + trimmed;
   };
 
   const handleSubmit = (e) => {
@@ -103,9 +116,12 @@ const AddressForm = ({ title, description, buttonText }) => {
   };
 
   const goToModifyInfo = () => {
-    navigate("/infomodify");
+    navigate("/infomodify", {
+      state: {
+        from: "addressform",
+      },
+    });
   };
-
   const closePopup = () => {
     setPopupMessage("");
   };
