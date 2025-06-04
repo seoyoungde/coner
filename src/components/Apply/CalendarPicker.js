@@ -56,7 +56,7 @@ const CalendarWrapper = styled.div`
     border-radius: 0 !important;
   }
   .react-calendar__tile--active {
-    background-color: #01e6ff !important;
+    background-color: #0080ff !important;
     color: white !important;
     border-radius: 10px !important;
   }

@@ -27,31 +27,25 @@ const SelectServiceDate = () => {
       setIsPopupOpen(true);
       return;
     }
-    const formattedDate = selectedDate.toLocaleDateString("ko-KR", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
+    const formattedDate = formatDate(selectedDate);
 
-    updateRequestData("hopeDate", formattedDate);
-    updateRequestData("hopeTime", selectedTime);
+    updateRequestData("service_date", formattedDate);
+    updateRequestData("service_time", selectedTime);
     navigate("/requestbasicinfo", {
-
       state: {
         selectedDate,
         selectedTime,
-        selectedService: requestData.service,
+        selectedService: requestData.service_type,
       },
-
     });
   };
 
-  const formatDate = (date) =>
-    date.toLocaleDateString("ko-KR", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, "0");
+    const day = `${date.getDate()}`.padStart(2, "0");
+    return `${year}년 ${month}월 ${day}일`;
+  };
 
   return (
     <ScaleWrapper
@@ -63,9 +57,7 @@ const SelectServiceDate = () => {
     >
       <Container ref={ref}>
         <Header>
-
           <BackButton onClick={() => navigate("/addresspage")}>
-
             <BackIcon>
               <IoIosArrowBack size={32} color="#333" />
             </BackIcon>
@@ -224,7 +216,7 @@ const PopupButton = styled.button`
   border-radius: 0px 0px 8px 8px;
   font-size: 16px;
   font-weight: bold;
-  background: #00e6fd;
+  background: #0080ff;
   color: white;
   cursor: pointer;
 `;

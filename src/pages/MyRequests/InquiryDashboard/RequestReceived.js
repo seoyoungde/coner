@@ -4,15 +4,20 @@ import styled from "styled-components";
 import { useRequest } from "../../../context/context";
 import CalendarPicker from "../../../components/Apply/CalendarPicker";
 import TimeSlotPicker from "../../../components/Apply/TimeSlotPicker";
-import { doc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
+import { doc, updateDoc, deleteDoc, getDoc } from "firebase/firestore";
 import DropdownSelector from "../../../components/Apply/DropdownSelector";
 import AdditionalDropSelected from "../../../components/Services/AdditionalDropSelected";
 import RequestDetails from "../../../components/Apply/RequestDetails";
 import { db } from "../../../firebase";
 import { GrApps, GrUserSettings, GrBookmark } from "react-icons/gr";
 import { device } from "../../../styles/theme";
+import { MdRefresh } from "react-icons/md";
 
-const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
+const RequestReceived = ({
+  requestData,
+  onRealtimeUpdate,
+  onDeleteRequest,
+}) => {
   const navigate = useNavigate();
   const [localRequestData, setLocalRequestData] = useState(requestData);
 
@@ -20,15 +25,19 @@ const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
   const isMounted = useRef(true);
   const [requests, setRequests] = useState(requestData ? [requestData] : []);
   const [editingRequestId, setEditingRequestId] = useState(null);
-  const [selectedHopeDate, setSelectedHopeDate] = useState(
-    requestData.hopeDate
+  const [selectedService_date, setSelectedService_date] = useState(
+    requestData.service_date
   );
-  const [selectedHopeTime, setSelectedHopeTime] = useState(
-    requestData.hopeTime
+  const [selectedServcie_time, setSelectedService_time] = useState(
+    requestData.service_time
   );
   const [selectedBrand, setSelectedBrand] = useState(requestData.brand);
-  const [selectedService, setSelectedService] = useState(requestData.service);
-  const [selectedType, setSelectedType] = useState(requestData.aircon);
+  const [selectedService_type, setSelectedService_type] = useState(
+    requestData.service_type
+  );
+  const [selectedAircon_type, setSelectedAircon_type] = useState(
+    requestData.aircon_type
+  );
 
   const [isServiceOpen, setIsServiceOpen] = useState(true);
   const [isCancelPopupOpen, setIsCancelPopupOpen] = useState(false);
@@ -57,11 +66,11 @@ const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
 
   const handleCancelClick = () => {
     setEditingRequestId(null);
-    setSelectedHopeDate(requestData.hopeDate);
-    setSelectedHopeTime(requestData.hopeTime);
+    setSelectedService_date(requestData.service_date);
+    setSelectedService_time(requestData.service_time);
     setSelectedBrand(requestData.brand);
-    setSelectedService(requestData.service);
-    setSelectedType(requestData.aircon);
+    setSelectedService_type(requestData.service_type);
+    setSelectedAircon_type(requestData.aircon_type);
     setAdditionalInfo(requestData.detailInfo || "");
     setSelectedDropdownOption("");
     setSelectedAirconditionerform("");
@@ -78,9 +87,9 @@ const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
     if (!request.id) return;
 
     let formattedDetailInfo = "";
-    if (["청소", "철거", "점검", "냉매 충전"].includes(selectedService)) {
+    if (["청소", "철거", "점검", "냉매 충전"].includes(selectedService_type)) {
       formattedDetailInfo = additionalInfo;
-    } else if (selectedService === "설치") {
+    } else if (selectedService_type === "설치") {
       formattedDetailInfo = [
         selectedDropdownOption,
         additionalInfo,
@@ -88,22 +97,22 @@ const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
       ]
         .filter(Boolean)
         .join("\n");
-    } else if (["수리", "이전"].includes(selectedService)) {
+    } else if (["수리", "이전"].includes(selectedService_type)) {
       formattedDetailInfo = [additionalInfo, selectedDropdownOption]
         .filter(Boolean)
         .join("\n");
     }
     const updatedRequest = {
       ...request,
-      hopeDate: selectedHopeDate,
-      hopeTime: selectedHopeTime,
-      service: selectedService,
+      service_date: selectedService_date,
+      service_time: selectedServcie_time,
+      servic_type: selectedService_type,
       brand: selectedBrand,
-      aircon: selectedType,
+      aircon_type: selectedAircon_type,
       detailInfo: formattedDetailInfo,
     };
     try {
-      const docRef = doc(db, "testservice", request.id);
+      const docRef = doc(db, "Request", request.id);
       await updateDoc(docRef, updatedRequest);
 
       if (isMounted.current) {
@@ -122,39 +131,40 @@ const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
         setEditingRequestId(null);
       }
     } catch (error) {
-      console.error("❌ Firestore 업데이트 중 오류 발생:", error);
+      console.error("Firestore 업데이트 중 오류 발생:", error);
     }
   };
-
   useEffect(() => {
+    setLocalRequestData(requestData);
+  }, [requestData]);
+
+  const handleRefresh = async () => {
     if (!requestData?.id) return;
 
-    const unsubscribe = onSnapshot(
-      doc(db, "testservice", requestData.id),
-      (snapshot) => {
+    try {
+      const docRef = doc(db, "Request", requestData.id);
+      const snapshot = await getDoc(docRef);
+      if (snapshot.exists()) {
         const updatedData = { id: snapshot.id, ...snapshot.data() };
-
         setLocalRequestData(updatedData);
-        setSelectedHopeDate(updatedData.hopeDate);
-        setSelectedHopeTime(updatedData.hopeTime);
+        setSelectedService_date(updatedData.service_date);
+        setSelectedService_time(updatedData.service_time);
         setSelectedBrand(updatedData.brand);
-        setSelectedService(updatedData.service);
-        setSelectedType(updatedData.aircon);
+        setSelectedService_type(updatedData.service_type);
+        setSelectedAircon_type(updatedData.aircon_type);
         setAdditionalInfo(updatedData.detailInfo || "");
         setSelectedDropdownOption(updatedData.selectedDropdownOption || "");
         setSelectedAirconditionerform(
           updatedData.selectedairconditionerform || ""
         );
-
-        // 부모에게 최신 데이터 알림
-        if (typeof onRealtimeUpdate === "function") {
+        if (onRealtimeUpdate && typeof onRealtimeUpdate === "function") {
           onRealtimeUpdate(updatedData);
         }
       }
-    );
-
-    return () => unsubscribe();
-  }, [requestData?.id]);
+    } catch (error) {
+      console.error("새로고침 중 오류:", error);
+    }
+  };
 
   useEffect(() => {
     setRequests((prevRequests) =>
@@ -173,17 +183,45 @@ const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
     if (!cancelRequestId) return;
 
     try {
-      await deleteDoc(doc(db, "testservice", cancelRequestId));
+      await deleteDoc(doc(db, "Request", cancelRequestId));
 
       updateRequestData(cancelRequestId, null);
 
       setIsCancelPopupOpen(false);
       setCancelRequestId(null);
-      window.location.reload();
+
+      if (onDeleteRequest && typeof onDeleteRequest === "function") {
+        onDeleteRequest(cancelRequestId);
+      }
     } catch (error) {
-      console.error("❌ Firestore 삭제 중 오류 발생:", error);
+      console.error("Firestore 삭제 중 오류 발생:", error);
       alert("⚠️ 의뢰 취소 중 오류가 발생했습니다.");
     }
+  };
+
+  const formatPhoneForDisplay = (number) => {
+    const onlyNumbers = number.replace(/\D/g, "");
+    if (onlyNumbers.length === 11) {
+      return `${onlyNumbers.slice(0, 3)}-${onlyNumbers.slice(
+        3,
+        7
+      )}-${onlyNumbers.slice(7, 11)}`;
+    } else if (onlyNumbers.length === 10) {
+      return `${onlyNumbers.slice(0, 3)}-${onlyNumbers.slice(
+        3,
+        6
+      )}-${onlyNumbers.slice(6, 10)}`;
+    }
+    return number;
+  };
+  const formatDateForPicker = (dateStr) => {
+    // "2024년 06월 05일" → "2024-06-05"
+    const match = dateStr.match(/(\d{4})년\s*(\d{2})월\s*(\d{2})일/);
+    if (match) {
+      const [, year, month, day] = match;
+      return `${year}-${month}-${day}`;
+    }
+    return ""; // invalid
   };
 
   return (
@@ -192,44 +230,51 @@ const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
         <ProgressBar>
           {steps.map((step, index) => (
             <ProgressStep key={index}>
-              <Circle $isActive={index + 1 <= localRequestData.state} />
-              <StepLabel $isActive={index + 1 === localRequestData.state}>
+              <Circle $isActive={index + 1 <= localRequestData.status} />
+              <StepLabel $isActive={index + 1 === localRequestData.status}>
                 {step.label}
               </StepLabel>
               {index < steps.length - 1 && (
-                <Line $isActive={index + 1 < localRequestData.state} />
+                <Line $isActive={index + 1 < localRequestData.status} />
               )}
             </ProgressStep>
           ))}
         </ProgressBar>
-        {localRequestData.state >= 2 && (
+        <RefreshIconButton onClick={handleRefresh} title="새로고침">
+          <MdRefresh />
+          <RefreshText>실시간 의뢰서 정보 업데이트하기</RefreshText>
+        </RefreshIconButton>
+        {localRequestData.status >= 2 && (
           <TechnicianContainer>
             <TechnicianCard>
               <TechnicianTitle>배정된 기사님 정보</TechnicianTitle>
               <ProfileImage
-                src={requestData.engineerProfileImage || "default-profile.jpg"}
+                src={
+                  requestData.engineer_Profile_image || "default-profile.jpg"
+                }
                 alt="기사님 사진"
               />
               <TechnicianName>
-                {requestData.engineerName || "배정된 기사 없음"}
+                {requestData.engineer_name || "배정된 기사 없음"}
               </TechnicianName>
               <ContactInfo>
-                <PhoneNumber>{requestData.engineerPhone || "없음"}</PhoneNumber>
+                <PhoneNumber>
+                  {requestData.engineer_phone || "없음"}
+                </PhoneNumber>
               </ContactInfo>
               <CompanyInfo>
                 <CompanyTitle>
-                  {requestData.companyName || "업체 정보 없음"}
+                  {requestData.partner_name || "업체 정보 없음"}
                 </CompanyTitle>
                 <CompanyAddress>
-                  {requestData.companyAddress || "주소 정보 없음"}
+                  {requestData.partner_address || "주소 정보 없음"}
+                  {requestData.partner_address_detail || "주소 정보 없음"}
                 </CompanyAddress>
               </CompanyInfo>
               <TechnicianFooter>
                 <CompanyAcceptTimeInfo>
                   <Tag>기사님 승인날짜</Tag>
-                  <Tag2>
-                    {requestData.acceptanceDate || "접수완료시간없음"}
-                  </Tag2>
+                  <Tag2>{requestData.accepted_at || "접수완료시간없음"}</Tag2>
                 </CompanyAcceptTimeInfo>
               </TechnicianFooter>
             </TechnicianCard>
@@ -246,23 +291,27 @@ const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
             {editingRequestId === requestData.id ? (
               <LabelBox>
                 <CalendarPicker
-                  selectedDate={new Date(selectedHopeDate)}
+                  selectedDate={
+                    selectedService_date &&
+                    !isNaN(new Date(formatDateForPicker(selectedService_date)))
+                      ? new Date(formatDateForPicker(selectedService_date))
+                      : null
+                  }
                   setSelectedDate={(date) => {
-                    const formattedDate = date
-                      .toLocaleDateString("ko-KR", {
-                        year: "numeric",
-                        month: "2-digit",
-                        day: "2-digit",
-                      })
-                      .trim();
+                    const formattedForDisplay = `${date.getFullYear()}년 ${String(
+                      date.getMonth() + 1
+                    ).padStart(2, "0")}월 ${String(date.getDate()).padStart(
+                      2,
+                      "0"
+                    )}일`;
 
-                    setSelectedHopeDate(formattedDate);
-                    updateRequestData("hopeDate", formattedDate);
+                    setSelectedService_date(formattedForDisplay);
+                    updateRequestData("service-date", formattedForDisplay);
                   }}
                 />
               </LabelBox>
             ) : (
-              <Value>{selectedHopeDate || "없음"}</Value>
+              <Value>{selectedService_date || "없음"}</Value>
             )}
           </Section>
 
@@ -272,15 +321,15 @@ const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
             {editingRequestId === requestData.id ? (
               <LabelBox>
                 <TimeSlotPicker
-                  selectedTime={selectedHopeTime}
+                  selectedTime={selectedServcie_time}
                   setSelectedTime={(time) => {
-                    setSelectedHopeTime(time);
-                    updateRequestData("hopeTime", time);
+                    setSelectedService_time(time);
+                    updateRequestData("service_time", time);
                   }}
                 />
               </LabelBox>
             ) : (
-              <Value>{selectedHopeTime || "없음"}</Value>
+              <Value>{selectedServcie_time || "없음"}</Value>
             )}
           </Section>
           {/* 에어컨종류 */}
@@ -297,14 +346,14 @@ const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
                   "창문형",
                   "항온항습기",
                 ]}
-                selected={selectedType}
-                setSelected={setSelectedType}
+                selected={selectedAircon_type}
+                setSelected={setSelectedAircon_type}
                 isOpen={isTypeOpen}
                 setIsOpen={setIsTypeOpen}
                 optionWidths={["90px", "90px", "90px", "90px", "110px"]}
               />
             ) : (
-              <Value>{selectedType || "없음"}</Value>
+              <Value>{selectedAircon_type || "없음"}</Value>
             )}
           </Section>
           {/* 원하는서비스수정 */}
@@ -312,7 +361,7 @@ const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
             <Label>원하는서비스</Label>
             {editingRequestId === requestData.id ? (
               <DropdownSelector
-                title={selectedService}
+                title={selectedService_type}
                 icon={<GrUserSettings size="18" />}
                 options={[
                   "설치",
@@ -323,8 +372,8 @@ const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
                   "이전",
                   "철거",
                 ]}
-                selected={selectedService}
-                setSelected={setSelectedService}
+                selected={selectedService_type}
+                setSelected={setSelectedService_type}
                 isOpen={isServiceOpen}
                 setIsOpen={setIsServiceOpen}
                 optionWidths={[
@@ -339,7 +388,7 @@ const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
                 disabled
               />
             ) : (
-              <Value>{selectedService || "없음"}</Value>
+              <Value>{selectedService_type || "없음"}</Value>
             )}
           </Section>
           {/* 브랜드수정 */}
@@ -379,29 +428,31 @@ const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
           {/* 주소수정불가능 */}
           <Section>
             <Label>주소</Label>
-            <Value>{requestData.clientAddress || "없음"}</Value>
+            <Value>{requestData.customer_address || "없음"}</Value>
             <Value style={{ marginTop: "5px" }}>
-              {requestData.clientDetailedAddress || "없음"}
+              {requestData.customer_address_detail || "없음"}
             </Value>
           </Section>
           {/* 연락처수정불가능 */}
           <Section>
             <Label>연락처</Label>
-            <Value>{requestData.clientPhone || "없음"}</Value>
+            <Value>
+              {formatPhoneForDisplay(requestData.customer_phone) || "없음"}
+            </Value>
           </Section>
           {/* 추가요청사항 */}
           <Section style={{ whiteSpace: "pre-line" }}>
             {editingRequestId === requestData.id ? (
               <>
                 {["청소", "철거", "점검", "냉매 충전"].includes(
-                  selectedService
+                  selectedService_type
                 ) && (
                   <RequestDetails
                     additionalInfo={additionalInfo}
                     setAdditionalInfo={setAdditionalInfo}
                   />
                 )}
-                {selectedService === "수리" && (
+                {selectedService_type === "수리" && (
                   <>
                     <AdditionalDropSelected
                       options={[
@@ -428,7 +479,7 @@ const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
                   </>
                 )}
 
-                {selectedService === "설치" && (
+                {selectedService_type === "설치" && (
                   <>
                     <AdditionalDropSelected
                       options={[
@@ -455,7 +506,7 @@ const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
                     />
                   </>
                 )}
-                {selectedService === "이전" && (
+                {selectedService_type === "이전" && (
                   <>
                     <AdditionalDropSelected
                       options={[
@@ -507,7 +558,7 @@ const RequestReceived = ({ requestData, onRealtimeUpdate }) => {
             >
               의뢰 취소
             </CancelButton>
-            {requestData.state === 1 && (
+            {requestData.status === 1 && (
               <EditButton onClick={() => handleEditClick(requestData.id)}>
                 수정
               </EditButton>
@@ -582,33 +633,34 @@ const RequestBox = styled.div`
   height: 100%;
 `;
 const Circle = styled.div`
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  background-color: ${({ $isActive }) => ($isActive ? "#00e6fd" : "#ddd")};
+  margin-right: 0.5rem;
+  background-color: ${({ $isActive }) => ($isActive ? "#0080FF" : "#ddd")};
   @media ${device.mobile} {
-    width: 15px;
-    height: 15px;
+    width: 20px;
+    height: 20px;
   }
 `;
 
 const Line = styled.div`
-  width: 50px;
+  width: 60px;
   height: 2px;
-  background-color: ${({ $isActive }) => ($isActive ? "#00e6fd" : "#ddd")};
-  margin: 0 5px;
+  background-color: ${({ $isActive }) => ($isActive ? "#0080FF" : "#ddd")};
+  margin: 0px 0px 0px 35px;
   @media ${device.mobile} {
-    width: 30px;
+    width: 0px;
   }
 `;
 
 const StepLabel = styled.div`
   font-size: 14px;
   font-weight: ${({ $isActive }) => ($isActive ? "bold" : "normal")};
-  color: ${({ $isActive }) => ($isActive ? "#00e6fd" : "#666")};
-  margin-top: 5px;
+  color: ${({ $isActive }) => ($isActive ? "#0080FF" : "#666")};
+
   @media ${device.mobile} {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 `;
 
@@ -652,7 +704,7 @@ const CompanyAcceptTimeInfo = styled.div`
 
 const Tag = styled.span`
   display: inline-block;
-  background: #00e6fd;
+  background: #0080ff;
   color: white;
   font-size: 17px;
   font-weight: bold;
@@ -717,7 +769,7 @@ const CompanyAddress = styled.p`
   }
 `;
 const TechnicianFooter = styled.div`
-  background: #00e6fd;
+  background: #0080ff;
   padding: 30px 20px 30px 20px;
   border-radius: 0px 0px 10px 10px;
   display: flex;
@@ -776,6 +828,7 @@ const ButtonGroup = styled.div`
   gap: 10px;
   width: 100%;
   margin-top: 15px;
+  margin-bottom: 20px;
 `;
 
 const CancelButton = styled.button`
@@ -812,7 +865,7 @@ const EditButton = styled.button`
 
 const SaveButton = styled.button`
   flex: 1;
-  background: linear-gradient(to right, #01e6ff, #00dcf3, #59d7d7);
+  background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   color: white;
   border-radius: 10px;
   padding: 13px;
@@ -885,4 +938,36 @@ const PopupButton = styled.button`
   font-size: 14px;
   background: ${({ secondary }) => (secondary ? "#ddd" : "#00e6fd")};
   color: white;
+`;
+
+const RefreshIconButton = styled.button`
+  align-self: flex-end;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px 10px 10px 0px;
+  margin-bottom: 5px;
+  display: flex;
+
+  svg {
+    color: #0080ff;
+    font-size: 26px;
+    transition: transform 0.2s;
+    @media ${device.mobile} {
+      font-size: 2.5rem;
+    }
+
+    &:hover {
+      transform: rotate(90deg);
+    }
+  }
+  
+  }
+`;
+const RefreshText = styled.p`
+  font-size: 0.8rem;
+  padding: 0.3rem;
+  @media ${device.mobile} {
+    font-size: 1.2rem;
+  }
 `;

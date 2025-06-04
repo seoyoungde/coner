@@ -3,7 +3,7 @@ import AddressForm from "../../components/Services/AddressForm";
 
 const InstallPage2 = () => {
   const handleSubmit = (formData) => {
-    console.log("설치 서비스 예약 데이터:", formData);
+    // console.log("설치 서비스 예약 데이터:", formData);
   };
 
   return (

@@ -76,7 +76,6 @@ const Main = () => {
         return "#ffffff";
       case "/installpage2":
         return "#ffffff";
-
       case "/inquirydashboard":
         return "#ffffff";
       case "/selectservicedate":

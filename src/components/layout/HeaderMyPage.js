@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
-import conerlogo2 from "../../assets/images/logo/conerlogo 2.png";
+import conerlogo2 from "../../assets/images/logo/conerlogo2.png";
 
 const HeaderMyPage = () => {
   const { scale, height, ref } = useScaleLayout();

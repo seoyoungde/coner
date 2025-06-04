@@ -24,10 +24,11 @@ const InquiryPage = () => {
   const location = useLocation();
   const { scale, height, ref } = useScaleLayout();
   const requestId = location.state?.requestId;
-  const [clientId, setClientId] = useState(location.state?.clientId || null);
-  const clientPhone = location.state?.clientPhone;
+  const [customer_uid, setCustomerUid] = useState(
+    location.state?.customer_uid || null
+  );
+  const customer_phone = location.state?.customer_phone;
   const statusFilter = location.state?.status || null;
-  const [user, setUser] = useState(null);
 
   const [requestDataList, setRequestDataList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,8 +37,8 @@ const InquiryPage = () => {
 
   useEffect(() => {
     const unsubscribe = firebaseAuth.onAuthStateChanged(auth, (currentUser) => {
-      if (!clientId && currentUser) {
-        setClientId(currentUser.uid);
+      if (!customer_uid && currentUser) {
+        setCustomerUid(currentUser.uid);
       }
     });
     return () => unsubscribe();
@@ -49,16 +50,16 @@ const InquiryPage = () => {
 
     try {
       if (requestId) {
-        const docRef = doc(db, "testservice", requestId);
+        const docRef = doc(db, "Request", requestId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           requests.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
         }
       }
-      if (clientId) {
+      if (customer_uid) {
         const q = query(
-          collection(db, "testservice"),
-          where("clientId", "==", clientId)
+          collection(db, "Request"),
+          where("customer_uid", "==", customer_uid)
         );
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
@@ -67,10 +68,10 @@ const InquiryPage = () => {
           }
         });
       }
-      if (clientPhone) {
+      if (customer_phone) {
         const q = query(
-          collection(db, "testservice"),
-          where("clientPhone", "==", clientPhone)
+          collection(db, "Request"),
+          where("customer_phone", "==", customer_phone)
         );
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
@@ -82,14 +83,14 @@ const InquiryPage = () => {
         }
       }
       const queryConditions = [];
-      if (clientId) {
-        queryConditions.push(where("clientId", "==", clientId));
-      } else if (clientPhone) {
-        queryConditions.push(where("clientPhone", "==", clientPhone));
+      if (customer_uid) {
+        queryConditions.push(where("customer_uid", "==", customer_uid));
+      } else if (customer_phone) {
+        queryConditions.push(where("customer_phone", "==", customer_phone));
       }
 
       if (queryConditions.length > 0) {
-        const q = query(collection(db, "testservice"), ...queryConditions);
+        const q = query(collection(db, "Request"), ...queryConditions);
         const snapshot = await getDocs(q);
         snapshot.forEach((doc) => {
           if (!requests.has(doc.id)) {
@@ -107,29 +108,24 @@ const InquiryPage = () => {
 
   useEffect(() => {
     fetchRequestByClient();
-
-    if (statusFilter === 4) {
-      setActiveTab("completed");
-    } else {
-      setActiveTab("progress");
-    }
-  }, [requestId, clientPhone, clientId, statusFilter]);
+  }, [requestId, customer_phone, customer_uid]);
 
   const handleGoBack = () => {
     navigate("/requests");
   };
+
   const handleRealtimeUpdate = (updatedRequest) => {
     setRequestDataList((prevList) => {
-      const existing = prevList.find((r) => r.id === updatedRequest.id);
-      if (!existing) return prevList;
-
+      const exists = prevList.some((r) => r.id === updatedRequest.id);
+      if (!exists) return [...prevList, updatedRequest];
       return prevList.map((r) =>
         r.id === updatedRequest.id ? updatedRequest : r
       );
     });
   };
-  const completedRequests = requestDataList.filter((req) => req.state === 4);
-  const inProgressRequests = requestDataList.filter((req) => req.state < 4);
+
+  const completedRequests = requestDataList.filter((req) => req.status >= 4);
+  const inProgressRequests = requestDataList.filter((req) => req.status < 4);
 
   return (
     <ScaleWrapper
@@ -182,6 +178,11 @@ const InquiryPage = () => {
                   key={req.id}
                   requestData={req}
                   onRealtimeUpdate={handleRealtimeUpdate}
+                  onDeleteRequest={(id) => {
+                    setRequestDataList((prev) =>
+                      prev.filter((r) => r.id !== id)
+                    );
+                  }}
                 />
               ))
             ) : (
@@ -274,7 +275,7 @@ const Tab = styled.button`
   padding: 15px 0;
   font-size: 16px;
   font-weight: ${({ $isActive }) => ($isActive ? "bold" : "normal")};
-  color: ${({ $isActive }) => ($isActive ? "#00e6fd" : "#333")};
+  color: ${({ $isActive }) => ($isActive ? "#0080FF" : "#333")};
   text-align: center;
   position: relative;
   border: none;
@@ -289,7 +290,7 @@ const Tab = styled.button`
     width: ${({ $isActive }) => ($isActive ? "100%" : "0")};
     height: 2px;
     background-color: ${({ $isActive }) =>
-      $isActive ? "#00e6fd" : "transparent"};
+      $isActive ? "#0080FF" : "transparent"};
     transition: width 0.3s ease;
   }
   @media ${device.mobile} {

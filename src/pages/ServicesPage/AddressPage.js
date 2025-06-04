@@ -5,7 +5,7 @@ import AddressForm from "../../components/Services/AddressForm";
 
 const AddressPage = () => {
   const [searchParams] = useSearchParams();
-  const service = searchParams.get("service");
+  const service = searchParams.get("service_type");
 
   return (
     <Container>

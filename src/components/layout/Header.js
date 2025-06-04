@@ -38,7 +38,7 @@ const Container = styled.div`
 const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
-  padding: 0 1.5rem;
+  padding-left: 1rem;
 
   @media ${device.mobile} {
     padding: 0 0.5rem;
@@ -48,12 +48,13 @@ const HeaderContainer = styled.header`
 const Title = styled.h1`
   margin: 0;
   display: flex;
+
   img {
-    width: 110px;
+    width: 80px;
     height: auto;
     object-fit: contain;
     @media ${device.mobile} {
-      width: 150px;
+      width: 110px;
     }
   }
 `;

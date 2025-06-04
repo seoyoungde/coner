@@ -7,7 +7,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { db, auth } from "../../firebase";
 import axios from "axios";
 import * as firebaseAuth from "firebase/auth";
-import conerlogobannerIcon from "../../assets/images/logo/conerloginbanner.png";
+import conerlogo from "../../assets/images/logo/conerlogo.png";
 
 const LoginPage = () => {
   const { scale, height, ref } = useScaleLayout();
@@ -18,6 +18,8 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [timer, setTimer] = useState(0);
   const [timerId, setTimerId] = useState(null);
+  const [codeSentTo, setCodeSentTo] = useState("");
+
   const API = "http://3.34.179.158:3000";
 
   const generateRandomCode = () =>
@@ -34,9 +36,10 @@ const LoginPage = () => {
   const handleSendVerificationCode = async () => {
     if (!phoneNumber) return alert("전화번호를 입력해주세요.");
 
-    // const code = generateRandomCode();
-    const code = "000000";
+    const code = generateRandomCode();
+
     setSentCode(code);
+    setCodeSentTo(phoneNumber.replace(/\D/g, ""));
 
     setTimer(180);
 
@@ -55,16 +58,16 @@ const LoginPage = () => {
 
     setTimerId(id);
 
-    // try {
-    //   await axios.post("http://3.34.179.158:3000/send-sms", {
-    //     to: phone,
-    //     text: `인증번호는 ${code}입니다.`,
-    //   });
-    //   alert("인증번호가 전송되었습니다.");
-    // } catch (error) {
-    //   console.error(error);
-    //   alert("인증번호 전송 실패: " + error.message);
-    // }
+    try {
+      await axios.post("http://3.34.179.158:3000/sms/send", {
+        to: phoneNumber.replace(/\D/g, ""),
+        text: `인증번호는 ${code}입니다.`,
+      });
+      alert("인증번호가 전송되었습니다.");
+    } catch (error) {
+      console.error(error);
+      alert("인증번호 전송 실패: " + error.message);
+    }
   };
 
   const handleLogin = async () => {
@@ -72,17 +75,18 @@ const LoginPage = () => {
       if (!phoneNumber || phoneNumber.length < 10)
         return alert("전화번호를 정확히 입력해주세요");
       if (!code) return alert("인증번호를 입력해주세요");
-      // if (code !== sentCode) return alert("인증번호가 일치하지 않습니다");
-      if (code !== "000000") return alert("인증번호가 일치하지 않습니다");
+      if (code !== sentCode) return alert("인증번호가 일치하지 않습니다");
 
-      setIsLoading(true);
-      const formattedPhone = phoneNumber
-        .replace(/\D/g, "")
-        .replace(/^0/, "+82");
+      const formattedPhone = phoneNumber.replace(/\D/g, "");
+      const intlPhone = "+82" + formattedPhone.slice(1);
+
+      if (formattedPhone !== codeSentTo) {
+        return alert("인증번호를 받은 전화번호와 일치하지 않습니다.");
+      }
 
       const q = query(
-        collection(db, "testclients"),
-        where("clientphone", "==", formattedPhone)
+        collection(db, "Customer"),
+        where("phone", "==", formattedPhone)
       );
       const snapshot = await getDocs(q);
 
@@ -92,17 +96,15 @@ const LoginPage = () => {
       }
 
       const response = await axios.post(`${API}/auth/login`, {
-        phoneNumber: formattedPhone,
+        phoneNumber: intlPhone,
       });
 
       const token = response.data.customToken;
-      const result = await firebaseAuth.signInWithCustomToken(auth, token);
+      await firebaseAuth.signInWithCustomToken(auth, token);
 
-      alert("로그인 성공!");
       navigate("/mypage");
       setSentCode("");
     } catch (error) {
-      console.error(error);
       alert("로그인 실패: " + error.message);
     } finally {
       setIsLoading(false);
@@ -118,7 +120,11 @@ const LoginPage = () => {
       }}
     >
       <Container ref={ref}>
-        <img src={conerlogobannerIcon}></img>
+        <img
+          style={{ width: "170px" }}
+          src={conerlogo}
+          alt="코너로고배너"
+        ></img>
         <InputBox>
           <UserPhoneNum value={phoneNumber} onChange={handlePhoneChange} />
           <div style={{ width: "100%", display: "flex" }}>
@@ -189,7 +195,7 @@ const UserPhoneNum = styled.input.attrs({
   font-size: 16px;
   &:focus {
     outline: none;
-    border: 1px solid #00e5fd;
+    border: 1px solid #0080ff;
   }
 
   @media ${device.mobile} {
@@ -211,7 +217,7 @@ const Userpassword = styled.input.attrs({
   width: 80%;
   &:focus {
     outline: none;
-    border: 1px solid #00e5fd;
+    border: 1px solid #0080ff;
   }
   @media ${device.mobile} {
     height: 62px;
@@ -222,7 +228,7 @@ const Userpassword = styled.input.attrs({
 `;
 
 const LoginButton = styled.button`
-  background-color: ${({ disabled }) => (disabled ? "#ddd" : "#00E5FD")};
+  background-color: ${({ disabled }) => (disabled ? "#ddd" : "#0080FF")};
   color: white;
   font-weight: bold;
   padding: 16px 0;

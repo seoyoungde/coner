@@ -3,11 +3,11 @@ import styled from "styled-components";
 import { device } from "../../styles/theme";
 
 const timeSlots = [
-  "9:00 ~ 11:00",
-  "11:00 ~ 13:00",
-  "13:00 ~ 15:00",
-  "15:00 ~ 17:00",
-  "17:00 ~ 19:00",
+  "오전9시 ~ 오전11시",
+  "오전11시 ~ 오후1시",
+  "오후1시 ~ 오후3시",
+  "오후3시 ~ 오후5시",
+  "오후5시 ~ 오후7시",
 ];
 
 const TimeSlotPicker = ({ selectedTime, setSelectedTime }) => {
@@ -34,20 +34,21 @@ const TimeSlotContainer = styled.div`
   gap: 10px;
   margin: auto;
   margin-top: 20px;
-  width: 400px;
+  width: 460px;
   @media ${device.mobile} {
     grid-template-columns: repeat(2, 1fr);
+    width: 400px;
   }
 `;
 
 const TimeSlotButton = styled.button`
-  padding: 12px;
+  padding: 8px;
   border-radius: 20px;
   font-size: 14px;
   font-weight: bold;
   border: ${({ $isSelected }) =>
-    $isSelected ? "2px solid #00e6fd" : "1px solid #d6d6d6"};
-  background: ${({ $isSelected }) => ($isSelected ? "#00e6fd" : "white")};
+    $isSelected ? "2px solid #0080FF" : "1px solid #d6d6d6"};
+  background: ${({ $isSelected }) => ($isSelected ? "#0080FF" : "white")};
   color: ${({ $isSelected }) => ($isSelected ? "white" : "#333")};
   cursor: pointer;
   text-align: center;

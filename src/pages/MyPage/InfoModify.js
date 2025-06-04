@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
+import axios from "axios";
 import {
   doc,
   getDoc,
@@ -13,6 +14,7 @@ import {
   where,
   getDocs,
   writeBatch,
+  setDoc,
 } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import { useAuth } from "../../context/AuthProvider";
@@ -27,45 +29,46 @@ const InfoModify = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
-    clientemail: "",
-    clientname: "",
-    clientjob: "",
-    clientbirth: "",
-    clientaddress: "",
-    clientdetailaddress: "",
-    clientphone: "",
+    email: "",
+    name: "",
+    job: "",
+    birth_date: "",
+    address: "",
+    address_detail: "",
+    phone: "",
   });
   const [clearedFields, setClearedFields] = useState({});
-  const [passPhone, setPassPhone] = useState("");
+
+  const [code, setCode] = useState("");
+
   const [sentCode, setSentCode] = useState("");
   const [timer, setTimer] = useState(0);
   const [timerId, setTimerId] = useState(null);
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+  const [codeSentTo, setCodeSentTo] = useState("");
 
   useEffect(() => {
     if (userInfo) {
       setFormData({
-        clientemail: location.state?.clientemail || userInfo.clientemail || "",
-        clientname: location.state?.clientname || userInfo.clientname || "",
-        clientjob: location.state?.clientjob || userInfo.clientjob || "",
-        clientbirth: location.state?.clientbirth || userInfo.clientbirth || "",
-        clientaddress:
+        email: location.state?.email || userInfo.email || "",
+        name: location.state?.name || userInfo.name || "",
+        job: location.state?.job || userInfo.job || "",
+        birth_date: location.state?.birth_date || userInfo.birth_date || "",
+        address:
           location.state?.selectedAddress ||
-          location.state?.clientaddress ||
-          userInfo.clientaddress ||
+          location.state?.address ||
+          userInfo.address ||
           "",
-        clientdetailaddress:
-          location.state?.clientdetailaddress ||
-          userInfo.clientdetailaddress ||
-          "",
-        clientphone: location.state?.clientphone || userInfo.clientphone || "",
+        address_detail:
+          location.state?.address_detail || userInfo.address_detail || "",
+        phone: location.state?.phone || userInfo.phone || "",
       });
     }
   }, [userInfo, location.state]);
   const handleAddressSelect = (selectedAddress) => {
     setFormData((prev) => ({
       ...prev,
-      clientaddress: selectedAddress,
+      address: selectedAddress,
     }));
     setIsAddressModalOpen(false);
   };
@@ -77,7 +80,7 @@ const InfoModify = () => {
   };
 
   const normalizePhone = (phone) => {
-    return phone.replace(/\D/g, "").replace(/^0/, "+82");
+    return phone.replace(/\D/g, "");
   };
 
   const formatBirthInput = (e) => {
@@ -85,7 +88,7 @@ const InfoModify = () => {
     if (value.length >= 5) value = value.slice(0, 4) + "-" + value.slice(4);
     if (value.length >= 8) value = value.slice(0, 7) + "-" + value.slice(7);
     if (value.length > 10) value = value.slice(0, 10);
-    setFormData((prev) => ({ ...prev, clientbirth: value }));
+    setFormData((prev) => ({ ...prev, birth_date: value }));
   };
 
   const formatPhoneInput = (e) => {
@@ -93,7 +96,7 @@ const InfoModify = () => {
     if (value.length >= 4) value = value.slice(0, 3) + "-" + value.slice(3);
     if (value.length >= 9) value = value.slice(0, 8) + "-" + value.slice(8);
     if (value.length > 13) value = value.slice(0, 13);
-    setFormData((prev) => ({ ...prev, clientphone: value }));
+    setFormData((prev) => ({ ...prev, phone: value }));
   };
 
   const handleChange = (e) => {
@@ -101,12 +104,19 @@ const InfoModify = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSendVerificationCode = () => {
-    if (!formData.clientphone) return alert("전화번호를 입력해주세요.");
-    const code = "000000";
+  const generateRandomCode = () =>
+    Math.floor(100000 + Math.random() * 900000).toString();
+
+  const handleSendVerificationCode = async () => {
+    if (!formData.phone) return alert("전화번호를 입력해주세요.");
+
+    const code = generateRandomCode();
     setSentCode(code);
+    setCodeSentTo(normalizePhone(formData.phone));
     setTimer(180);
+
     if (timerId) clearInterval(timerId);
+
     const id = setInterval(() => {
       setTimer((prev) => {
         if (prev <= 1) {
@@ -117,35 +127,54 @@ const InfoModify = () => {
         return prev - 1;
       });
     }, 1000);
+
     setTimerId(id);
-    alert("인증번호가 전송되었습니다. (테스트용: 000000)");
+
+    try {
+      await axios.post("http://3.34.179.158:3000/sms/send", {
+        to: normalizePhone(formData.phone),
+        text: `인증번호는 ${code}입니다.`,
+      });
+      alert("인증번호가 전송되었습니다.");
+    } catch (error) {
+      console.error(error);
+      alert("인증번호 전송 실패: " + error.message);
+    }
   };
 
   const handleSubmit = async () => {
     if (!auth.currentUser) return;
-    if (!sentCode || passPhone !== sentCode) {
+
+    if (!sentCode || code !== sentCode) {
       alert("전화번호 인증이 필요합니다.");
+      return;
+    }
+    if (!code) return alert("인증번호를 입력해주세요");
+    if (code !== sentCode) return alert("인증번호가 일치하지 않습니다");
+    if (normalizePhone(formData.phone) !== codeSentTo) {
+      alert("인증번호를 받은 전화번호와 일치하지 않습니다.");
       return;
     }
     setIsSubmitting(true);
     try {
-      const newPhone = normalizePhone(formData.clientphone);
-      const ref = doc(db, "testclients", auth.currentUser.uid);
+      const newPhone = normalizePhone(formData.phone);
+
+      const ref = doc(db, "Customer", auth.currentUser.uid);
       const updatedData = {
         ...formData,
-        clientphone: newPhone,
+        phone: newPhone,
       };
       await updateDoc(ref, updatedData);
 
       const q = query(
-        collection(db, "testservice"),
-        where("clientId", "==", auth.currentUser.uid)
+        collection(db, "Request"),
+        where("customer_uid", "==", auth.currentUser.uid)
       );
       const snap = await getDocs(q);
       const batch = writeBatch(db);
       snap.forEach((docSnap) => {
-        batch.update(doc(db, "testservice", docSnap.id), {
-          clientPhone: newPhone,
+        batch.update(doc(db, "Request", docSnap.id), {
+          customer_phone: newPhone,
         });
       });
       await batch.commit();
@@ -156,7 +185,11 @@ const InfoModify = () => {
       }
 
       alert("정보가 수정되었습니다.");
-      navigate("/mypage");
+      if (location.state?.from === "addressform") {
+        navigate("/addressform", { replace: true });
+      } else {
+        navigate("/mypage", { replace: true });
+      }
     } catch (err) {
       console.error(err);
       alert("수정 실패: " + err.message);
@@ -174,6 +207,7 @@ const InfoModify = () => {
       }}
     >
       <Container ref={ref}>
+        <div id="recaptcha-container"></div>
         <Header>
           <BackButton onClick={() => navigate(-1)}>
             <BackIcon>
@@ -189,18 +223,18 @@ const InfoModify = () => {
             <FormGroup>
               <Label>이메일</Label>
               <Input
-                name="clientemail"
-                value={formData.clientemail}
-                onFocus={() => handleFocusClear("clientemail")}
+                name="email"
+                value={formData.email}
+                onFocus={() => handleFocusClear("email")}
                 onChange={handleChange}
               />
             </FormGroup>
             <FormGroup>
               <Label>이름</Label>
               <Input
-                name="clientname"
-                value={formData.clientname}
-                onFocus={() => handleFocusClear("clientname")}
+                name="name"
+                value={formData.name}
+                onFocus={() => handleFocusClear("name")}
                 onChange={handleChange}
               />
             </FormGroup>
@@ -210,9 +244,9 @@ const InfoModify = () => {
                 {["개인사업자", "법인사업자", "개인"].map((job) => (
                   <JobButton
                     key={job}
-                    $isSelected={formData.clientjob === job}
+                    $isSelected={formData.job === job}
                     onClick={() =>
-                      setFormData((prev) => ({ ...prev, clientjob: job }))
+                      setFormData((prev) => ({ ...prev, job: job }))
                     }
                   >
                     {job}
@@ -223,17 +257,17 @@ const InfoModify = () => {
             <FormGroup>
               <Label>생년월일</Label>
               <Input
-                name="clientbirth"
-                value={formData.clientbirth}
-                onFocus={() => handleFocusClear("clientbirth")}
+                name="birth_date"
+                value={formData.birth_date}
+                onFocus={() => handleFocusClear("birth_date")}
                 onChange={formatBirthInput}
               />
             </FormGroup>
             <FormGroup>
               <Label>주소</Label>
               <Input
-                name="clientaddress"
-                value={formData.clientaddress}
+                name="address"
+                value={formData.address}
                 readOnly
                 onClick={() => setIsAddressModalOpen(true)}
               />
@@ -245,9 +279,9 @@ const InfoModify = () => {
                 />
               )}
               <Input
-                name="clientdetailaddress"
-                value={formData.clientdetailaddress}
-                onFocus={() => handleFocusClear("clientdetailaddress")}
+                name="address_detail"
+                value={formData.address_detail}
+                onFocus={() => handleFocusClear("address_detail")}
                 onChange={handleChange}
                 placeholder="상세주소"
                 style={{ marginTop: "10px" }}
@@ -256,9 +290,9 @@ const InfoModify = () => {
             <FormGroup>
               <Label>전화번호</Label>
               <Input
-                name="clientphone"
-                value={formData.clientphone}
-                onFocus={() => handleFocusClear("clientphone")}
+                name="phone"
+                value={formData.phone}
+                onFocus={() => handleFocusClear("phone")}
                 onChange={formatPhoneInput}
               />
               <SmallButton onClick={handleSendVerificationCode}>
@@ -266,8 +300,8 @@ const InfoModify = () => {
               </SmallButton>
               <Input
                 placeholder="인증번호 입력"
-                value={passPhone}
-                onChange={(e) => setPassPhone(e.target.value)}
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
                 style={{ marginTop: "10px" }}
               />
               {timer > 0 && (
@@ -279,10 +313,7 @@ const InfoModify = () => {
                 </p>
               )}
             </FormGroup>
-
-            <Link to="/withdraw" style={{ fontSize: "0.8rem" }}>
-              회원탈퇴하기
-            </Link>
+            <WidthdrawLink to="/withdraw">회원탈퇴하기</WidthdrawLink>
           </FormBox>
         </FormSection>
 
@@ -402,16 +433,16 @@ const JobButtonBox = styled.div`
 
 const JobButton = styled.button`
   border: 1px solid
-    ${({ $isSelected }) => ($isSelected ? "#00e6fd" : "#f9f9f9")};
+    ${({ $isSelected }) => ($isSelected ? "#80BFFF" : "#f9f9f9")};
   border-radius: 6px;
   padding: 10px 0;
-  background: ${({ $isSelected }) => ($isSelected ? "#b8f8ff" : "#f2f2f2")};
+  background: ${({ $isSelected }) => ($isSelected ? "#80BFFF" : "#f2f2f2")};
   color: black;
   font-size: 14px;
   cursor: pointer;
 
   &:hover {
-    background: ${({ $isSelected }) => ($isSelected ? "#d0eff3" : "#eee")};
+    background: ${({ $isSelected }) => ($isSelected ? "#80BFFF" : "#80BFFF")};
   }
   @media ${device.mobile} {
     padding: 20px 0;
@@ -435,7 +466,7 @@ const SubmitButton = styled.button`
   margin-top: 20px;
   width: 100%;
   padding: 14px 0;
-  background-color: #00e6fd;
+  background-color: #0080ff;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -448,5 +479,13 @@ const SubmitButton = styled.button`
     font-size: 1.6rem;
     font-weight: 900;
     margin-bottom: 40px;
+  }
+`;
+
+const WidthdrawLink = styled(Link)`
+  font-size: 0.8rem;
+  cursor: pointer;
+  @media ${device.mobile} {
+    font-size: 1.2rem;
   }
 `;

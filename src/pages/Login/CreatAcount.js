@@ -23,15 +23,16 @@ const CreatAcount = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [job, setJob] = useState("");
-  const [birth, setBirth] = useState("");
+  const [birth_date, setBirth_date] = useState("");
   const [address, setAddress] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phone, setPhone] = useState("");
   const [passPhone, setPassPhone] = useState("");
   const [sentCode, setSentCode] = useState("");
-  const [detailAddress, setDetailAddress] = useState("");
+  const [address_detail, setAddress_detail] = useState("");
   const [timer, setTimer] = useState(0);
   const [timerId, setTimerId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [codeSentTo, setCodeSentTo] = useState("");
 
   useEffect(() => {
     const state = location.state;
@@ -41,22 +42,22 @@ const CreatAcount = () => {
       if (state.name) setName(state.name);
       if (state.email) setEmail(state.email);
       if (state.job) setJob(state.job);
-      if (state.birth) setBirth(state.birth);
-      if (state.detailAddress) setDetailAddress(state.detailAddress);
-      if (state.phoneNumber) setPhoneNumber(state.phoneNumber);
+      if (state.birth_date) setBirth_date(state.birth_date);
+      if (state.detailAddress) setAddress_detail(state.address_detail);
+      if (state.phone) setPhone(state.phone);
       if (state.passPhone) setPassPhone(state.passPhone);
     }
   }, [location.state]);
 
-  // const generateRandomCode = () =>
-  //   Math.floor(100000 + Math.random() * 900000).toString();
+  const generateRandomCode = () =>
+    Math.floor(100000 + Math.random() * 900000).toString();
 
   const handleSendVerificationCode = async () => {
-    if (!phoneNumber) return alert("전화번호를 입력해주세요.");
+    if (!phone) return alert("전화번호를 입력해주세요.");
 
-    // const code = generateRandomCode();
-    const code = "000000";
+    const code = generateRandomCode();
     setSentCode(code);
+    setCodeSentTo(phone.replace(/-/g, ""));
 
     setTimer(180);
 
@@ -75,25 +76,25 @@ const CreatAcount = () => {
 
     setTimerId(id);
 
-    // try {
-    //   await axios.post("http://3.34.179.158:3000/send-sms", {
-    //     to: phoneNumber,
-    //     text: `인증번호는 ${code}입니다.`,
-    //   });
-    //   alert("인증번호가 전송되었습니다.");
-    // } catch (error) {
-    //   console.error(error);
-    //   alert("인증번호 전송 실패: " + error.message);
-    // }
+    try {
+      await axios.post("http://3.34.179.158:3000/sms/send", {
+        to: phone.replace(/-/g, ""),
+        text: `인증번호는 ${code}입니다.`,
+      });
+      alert("인증번호가 전송되었습니다.");
+    } catch (error) {
+      console.error(error);
+      alert("인증번호 전송 실패: " + error.message);
+    }
   };
 
   const handleCreataccount = async () => {
     try {
       setIsSubmitting(true);
-      if (!name || !job || !birth || !address || !detailAddress) {
+      if (!name || !job || !birth_date || !address || !address_detail) {
         return alert("모든 정보를 입력해주세요.");
       }
-      if (!phoneNumber || !passPhone) {
+      if (!phone || !passPhone) {
         return alert("전화번호와 인증번호를 입력해주세요.");
       }
       if (!sentCode) {
@@ -102,29 +103,26 @@ const CreatAcount = () => {
       if (passPhone !== sentCode) {
         return alert("인증번호가 일치하지 않습니다.");
       }
+      if (phone.replace(/-/g, "") !== codeSentTo) {
+        return alert("인증번호를 받은 전화번호와 일치하지 않습니다.");
+      }
       const isValidBirth = (str) => {
-        const [y, m, d] = str.split("-");
+        const matches = str.match(/^(\d{4})년 (\d{2})월 (\d{2})일$/);
+        if (!matches) return false;
+        const [_, y, m, d] = matches;
         return (
-          str.length === 10 &&
-          +y > 1900 &&
-          +y < 2100 &&
-          +m >= 1 &&
-          +m <= 12 &&
-          +d >= 1 &&
-          +d <= 31
+          +y > 1900 && +y < 2100 && +m >= 1 && +m <= 12 && +d >= 1 && +d <= 31
         );
       };
-      if (!isValidBirth(birth)) {
+      if (!isValidBirth(birth_date)) {
         return alert("올바른 생년월일 형식이 아닙니다. 예: 1990-01-01");
       }
 
-      const formattedPhone = phoneNumber
-        .replace(/\D/g, "")
-        .replace(/^0/, "+82");
+      const formattedPhone = phone.replace(/-/g, "");
 
       const q = query(
-        collection(db, "testclients"),
-        where("clientphone", "==", formattedPhone)
+        collection(db, "Customer"),
+        where("phone", "==", formattedPhone)
       );
       const snapshot = await getDocs(q);
       if (snapshot.docs.find((doc) => !doc.data().isDeleted)) {
@@ -132,7 +130,7 @@ const CreatAcount = () => {
       }
 
       const res = await axios.post("http://3.34.179.158:3000/auth/login", {
-        phoneNumber: formattedPhone,
+        phoneNumber: "+82" + formattedPhone.slice(1),
       });
       const token = res.data.customToken;
 
@@ -140,25 +138,23 @@ const CreatAcount = () => {
       const uid = userCredential.user.uid;
 
       const newUser = {
-        clientId: uid,
-        clientemail: email,
-        clientname: name,
-        clientjob: job,
-        clientbirth: birth,
-        clientaddress: address,
-        clientdetailaddress: detailAddress,
-        clientphone: formattedPhone,
+        member_id: uid,
+        email: email,
+        name: name,
+        job: job,
+        birth_date: birth_date,
+        address: address,
+        address_detail: address_detail,
+        phone: formattedPhone,
         state: 1,
         isDeleted: false,
-        createdAt: new Date(),
       };
 
-      await setDoc(doc(db, "testclients", uid), newUser);
+      await setDoc(doc(db, "Customer", uid), newUser);
 
       alert("회원가입이 완료되었습니다. 로그인해주세요.");
       navigate("/loginpage");
     } catch (error) {
-      console.error("회원가입 실패:", error);
       alert(
         "회원가입 실패: " + (error.response?.data?.message || error.message)
       );
@@ -166,21 +162,24 @@ const CreatAcount = () => {
       setIsSubmitting(false);
     }
   };
-
   const handleBirthChange = (e) => {
     let value = e.target.value.replace(/\D/g, "");
-    if (value.length >= 5) value = value.slice(0, 4) + "-" + value.slice(4);
-    if (value.length >= 8) value = value.slice(0, 7) + "-" + value.slice(7);
-    if (value.length > 10) value = value.slice(0, 10);
-    setBirth(value);
+
+    if (value.length >= 4) value = value.slice(0, 4) + "년 " + value.slice(4);
+    if (value.length >= 8) value = value.slice(0, 8) + "월 " + value.slice(8);
+    if (value.length >= 12) value = value.slice(0, 12) + "일";
+    if (value.length > 13) value = value.slice(0, 13);
+
+    setBirth_date(value);
   };
 
   const handlePhoneChange = (e) => {
-    let value = e.target.value.replace(/\D/g, "");
+    let value = e.target.value.replace(/\D/g, "").slice(0, 11);
+
     if (value.length >= 4) value = value.slice(0, 3) + "-" + value.slice(3);
     if (value.length >= 9) value = value.slice(0, 8) + "-" + value.slice(8);
-    if (value.length > 13) value = value.slice(0, 13);
-    setPhoneNumber(value);
+
+    setPhone(value);
   };
 
   return (
@@ -248,7 +247,7 @@ const CreatAcount = () => {
               <Label>생년월일 8자리</Label>
               <Input
                 placeholder="생년월일을 입력하세요."
-                value={birth}
+                value={birth_date}
                 onChange={handleBirthChange}
               />
             </FormGroup>
@@ -265,9 +264,9 @@ const CreatAcount = () => {
                       name,
                       email,
                       job,
-                      birth,
-                      detailAddress,
-                      phoneNumber,
+                      birth_date,
+                      address_detail,
+                      phone,
                       passPhone,
                     },
                   })
@@ -276,8 +275,8 @@ const CreatAcount = () => {
               />
               <Input
                 name="clientDetailAddress"
-                value={detailAddress}
-                onChange={(e) => setDetailAddress(e.target.value)}
+                value={address_detail}
+                onChange={(e) => setAddress_detail(e.target.value)}
                 placeholder="상세주소입력"
                 style={{ marginTop: "10px" }}
               />
@@ -291,7 +290,7 @@ const CreatAcount = () => {
               </LabelRow>
               <Input
                 placeholder="전화번호를 입력해주세요"
-                value={phoneNumber}
+                value={phone}
                 onChange={handlePhoneChange}
               />
             </FormGroup>
@@ -437,16 +436,16 @@ const JobButtonBox = styled.div`
 
 const JobButton = styled.button`
   border: 1px solid
-    ${({ $isSelected }) => ($isSelected ? "#00e6fd" : "#f9f9f9")};
+    ${({ $isSelected }) => ($isSelected ? "#80BFFF" : "#f9f9f9")};
   border-radius: 6px;
   padding: 10px 0;
-  background: ${({ $isSelected }) => ($isSelected ? "#b8f8ff" : "#f2f2f2")};
+  background: ${({ $isSelected }) => ($isSelected ? "#80BFFF" : "#f2f2f2")};
   color: black;
   font-size: 14px;
   cursor: pointer;
 
   &:hover {
-    background: ${({ isSelected }) => (isSelected ? "#d0eff3" : "#eee")};
+    background: ${({ isSelected }) => (isSelected ? "#80BFFF" : "#80BFFF")};
   }
   @media ${device.mobile} {
     padding: 20px 0;
@@ -469,7 +468,7 @@ const SubmitButton = styled.button`
   margin-top: 20px;
   width: 100%;
   padding: 14px 0;
-  background-color: ${({ disabled }) => (disabled ? "#ddd" : "#00E5FD")};
+  background-color: ${({ disabled }) => (disabled ? "#ddd" : "#0080FF")};
   color: #fff;
   border: none;
   border-radius: 8px;

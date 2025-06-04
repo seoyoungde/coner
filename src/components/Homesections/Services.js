@@ -38,7 +38,7 @@ const serviceData = [
   },
   {
     id: 5,
-    title: "냉매 충전",
+    title: "냉매충전",
     icon: chargeIcon,
     path: "/charge",
   },
@@ -61,17 +61,17 @@ const Services = () => {
   const navigate = useNavigate();
   const { requestData, updateRequestData } = useRequest();
   const [selectedService, setSelectedService] = useState(
-    requestData.service || ""
+    requestData.service_type || ""
   );
 
   useEffect(() => {
-    if (requestData.service) {
-      setSelectedService(requestData.service);
+    if (requestData.service_type) {
+      setSelectedService(requestData.service_type);
     }
   }, [requestData.service]);
 
   const handleServiceClick = (service) => {
-    updateRequestData("service", service.title);
+    updateRequestData("service_type", service.title);
     setSelectedService(service.title);
 
     if (service.title === "설치") {
@@ -104,18 +104,7 @@ const Services = () => {
             </ServiceItem>
           )
         )}
-        <Link
-          to="/pricing"
-          className="link"
-          style={{
-            marginLeft: "30px",
-            marginBottom: "10px",
-            color: "#A0A0A0",
-            fontSize: "0.9rem",
-          }}
-        >
-          서비스비용이 궁금하신가요?
-        </Link>
+        <StyledLink to="/pricing">서비스비용이 궁금하신가요?</StyledLink>
       </ServiceList>
     </ServiceContainer>
   );
@@ -132,7 +121,7 @@ const ServiceContainer = styled.section`
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
 
     @media ${device.mobile} {
-      font-size: 1.9rem;
+      font-size: 2rem;
       padding-left: 14px;
     }
   }
@@ -208,6 +197,18 @@ const ServiceItem = styled.li`
       font-size: 1.4rem;
       margin-top: 15px;
     }
+  }
+`;
+const StyledLink = styled(Link)`
+  margin-left: 30px;
+  margin-bottom: 10px;
+  color: #a0a0a0;
+  font-size: 0.9rem;
+
+  @media ${device.mobile} {
+    font-size: 1.5rem; // 모바일에서 더 크게
+    font-weight: 600;
+    margin-left: 20px;
   }
 `;
 

@@ -35,21 +35,20 @@ const Withdraw = () => {
         return;
       }
 
-      const userRef = doc(db, "testclients", currentUser.uid);
-      const newPhone = userInfo.clientphone + "_deleted";
+      const userRef = doc(db, "Customer", currentUser.uid);
+      const newPhone = userInfo.phone + "_deleted";
       await updateDoc(userRef, {
         isDeleted: true,
         state: 0,
         withdrawReasons: reasons,
         withdrawDetail: details,
-        clientphone: newPhone,
+        phone: newPhone,
       });
 
       await deleteUser(currentUser);
       alert("회원 탈퇴가 완료되었습니다.");
       navigate("/");
     } catch (error) {
-      console.error(error);
       alert("탈퇴 처리 중 오류가 발생했습니다.");
     }
   };
@@ -252,7 +251,7 @@ const SubText = styled.div`
   font-size: 12px;
   margin-top: 4px;
   @media ${device.mobile} {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
   }
 `;
 
@@ -310,7 +309,7 @@ const WithdrawBtn = styled.button`
 const CancelBtn = styled.button`
   flex: 1;
   height: 46px;
-  background: linear-gradient(to right, #36c8d5, #51d3db);
+  background: linear-gradient(to right, #0080ff, #0080ff);
   color: white;
   border: none;
   border-radius: 8px;

@@ -114,7 +114,6 @@ const ScaleWrapper = styled.div`
 `;
 const Container = styled.div`
   width: 100%;
-
   box-sizing: border-box;
 `;
 
@@ -131,11 +130,7 @@ const BackButton = styled.button`
   padding-left: 20px;
   padding-top: 10px;
 `;
-const BackIcon = styled(IoIosArrowBack)`
-  font-size: 30px;
-  @media ${device.mobile}{
-  font-size:50px;
-`;
+
 const TitleSection = styled.div`
   margin-top: 38px;
   margin-bottom: 25px;
@@ -220,7 +215,7 @@ const OptionBox = styled.div`
   font-size: 14px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   background-color: ${({ $isSelected }) =>
-    $isSelected ? "#01e6ff" : "#ffffff"};
+    $isSelected ? "#0080FF" : "#ffffff"};
   color: ${({ $isSelected }) => ($isSelected ? "white" : "#333")};
   cursor: pointer;
 
@@ -236,14 +231,14 @@ const SubmitButton = styled.button`
   font-size: 19px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   color: white;
-  background: linear-gradient(to right, #01e6ff, #00dcf3, #59d7d7);
+  background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   border: none;
   border-radius: 9px;
   cursor: pointer;
   margin-top: 15px;
 
   &:hover {
-    background: linear-gradient(to right, #00ddf6, #00dbf2, #53cfce);
+    background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   }
   @media ${device.mobile} {
     height: 70px;

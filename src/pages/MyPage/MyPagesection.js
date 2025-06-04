@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
 import { db } from "../../firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where } from "firebase/firestore";
 import * as firebaseAuth from "firebase/auth";
 import { auth } from "../../firebase";
 import { useAuth } from "../../context/AuthProvider";
@@ -43,11 +43,11 @@ const MyPageSection = () => {
   const [requests, setRequests] = useState([]);
 
   useEffect(() => {
-    if (!userInfo?.clientphone || userInfo?.isDeleted) return;
+    if (!userInfo?.phone || userInfo?.isDeleted) return;
 
     const q = query(
-      collection(db, "testservice"),
-      where("clientPhone", "==", userInfo.clientphone)
+      collection(db, "Request"),
+      where("customer_phone", "==", userInfo.phone)
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const fetchedRequests = snapshot.docs.map((doc) => doc.data());
@@ -65,18 +65,18 @@ const MyPageSection = () => {
   const requestStates = [
     {
       label: "진행예정",
-      count: `${requests.filter((r) => r.state === 1).length}건`,
-      stateValue: 1,
+      count: `${requests.filter((r) => r.status === 1).length}건`,
+      statusValue: 1,
     },
     {
       label: "진행중",
-      count: `${requests.filter((r) => r.state === 2).length}건`,
-      stateValue: 2,
+      count: `${requests.filter((r) => r.status === 2).length}건`,
+      statusValue: 2,
     },
     {
       label: "진행완료",
-      count: `${requests.filter((r) => r.state === 4).length}건`,
-      stateValue: 4,
+      count: `${requests.filter((r) => r.status === 4).length}건`,
+      statusValue: 4,
     },
   ];
 
@@ -91,44 +91,41 @@ const MyPageSection = () => {
       <Container ref={ref}>
         <Content>
           <UserBox>
-            <h1>반가워요 {userInfo?.clientname || "고객"}님</h1>
+            <h1>반가워요 {userInfo?.name || "고객"}님</h1>
 
             {currentUser ? (
-              <div>
-                <Link to="/infomodify">내 정보 수정하기</Link>
-                <button
-                  onClick={handleLogout}
-                  style={{ border: "none", backgroundColor: "#f9f9f9" }}
-                >
-                  로그아웃하기
-                </button>
-              </div>
+              <div></div>
             ) : (
               <Link to="/loginpage">로그인하기</Link>
             )}
           </UserBox>
           <ProfileSection>
             <Logo src={conerlogo3Icon} alt="앱 로고" />
-            <p>{userInfo?.clientname || "고객"}님</p>
+            <p>{userInfo?.name || "고객"}님</p>
+            {currentUser ? (
+              <ModifyLink to="/infomodify">내 정보 수정하기</ModifyLink>
+            ) : (
+              <div></div>
+            )}
           </ProfileSection>
 
           <UserRequestNumber>
             <StateBox>
-              {requestStates.map((state, i) => (
+              {requestStates.map((status, i) => (
                 <StateItem
                   key={i}
                   $isLast={i === requestStates.length - 1}
                   onClick={() =>
                     navigate("/inquirydashboard", {
-                      state: {
-                        status: state.stateValue,
-                        clientId: currentUser?.uid,
+                      status: {
+                        status: status.statusValue,
+                        customer_uid: currentUser?.uid,
                       },
                     })
                   }
                 >
-                  <p>{state.label}</p>
-                  <p>{state.count}</p>
+                  <p>{status.label}</p>
+                  <p>{status.count}</p>
                 </StateItem>
               ))}
             </StateBox>
@@ -147,6 +144,11 @@ const MyPageSection = () => {
           ))}
 
           <Footer>
+            {currentUser ? (
+              <LogoutBtn onClick={handleLogout}>로그아웃하기</LogoutBtn>
+            ) : (
+              <div></div>
+            )}
             <p>©CONER Co., All rights reserved.</p>
           </Footer>
         </Content>
@@ -221,7 +223,7 @@ const StateItem = styled.div`
   }
 
   p:nth-child(2) {
-    color: #00d6ed;
+    color: #0080ff;
     text-decoration: underline;
     font-size: 17px;
     @media ${device.mobile} {
@@ -286,6 +288,26 @@ const Footer = styled.footer`
   @media ${device.mobile} {
     font-size: 1.2rem;
     margin-top: 50px;
+  }
+`;
+const ModifyLink = styled(Link)`
+  font-size: 13px;
+  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  text-decoration: none;
+  color: #a2a2a2;
+  cursor: pointer;
+  @media ${device.mobile} {
+    font-size: 1.2rem;
+  }
+`;
+const LogoutBtn = styled.button`
+  border: none;
+  backgroundcolor: #f9f9f9;
+  textdecoration: underline;
+  color: blue;
+  margin-bottom: 0.5rem;
+  @media ${device.mobile} {
+    font-size: 1.1rem;
   }
 `;
 

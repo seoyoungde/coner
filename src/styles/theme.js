@@ -8,7 +8,7 @@ export const device = {
 
 export const theme = {
   colors: {
-    main: "#00e5fd", // 메인 색상
+    main: "#0080FF", // 메인 색상
     secondary: "#0078d7", // 서브 색상
     text: "#333", // 텍스트 색상
     subtext: "#A0A0A0",
