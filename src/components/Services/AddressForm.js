@@ -21,20 +21,20 @@ const AddressForm = ({ title, description, buttonText }) => {
 
   const isLoggedIn = !!currentUser;
   const isReadOnly = isLoggedIn && !!userInfo;
+  const [job, setJob] = useState(userInfo?.job || "");
 
   const [popupMessage, setPopupMessage] = useState("");
   const [formData, setFormData] = useState({
-    clientAddress: "",
-    clientDetailedAddress: "",
-    clientPhone: "",
+    customer_address: "",
+    customer_address_detail: "",
+    customer_phone: "",
   });
 
   useEffect(() => {
     const restoredService =
-      location.state?.selectedService || searchParams.get("service");
+      location.state?.selectedService || searchParams.get("service_type");
     if (restoredService) {
-      console.log("서비스 저장됨:", restoredService);
-      updateRequestData("service", restoredService);
+      updateRequestData("service_type", restoredService);
     }
   }, [location.state, searchParams]);
 
@@ -42,7 +42,7 @@ const AddressForm = ({ title, description, buttonText }) => {
     if (location.state?.selectedAddress) {
       setFormData((prev) => ({
         ...prev,
-        clientAddress: location.state.selectedAddress,
+        customer_address: location.state.selectedAddress,
       }));
     }
   }, [location.state]);
@@ -50,9 +50,9 @@ const AddressForm = ({ title, description, buttonText }) => {
   useEffect(() => {
     if (userInfo) {
       setFormData({
-        clientAddress: userInfo.clientaddress || "",
-        clientDetailedAddress: userInfo.clientdetailaddress || "",
-        clientPhone: userInfo.clientphone || "",
+        customer_address: userInfo.address || "",
+        customer_address_detail: userInfo.address_detail || "",
+        customer_phone: userInfo.phone || "",
       });
     }
   }, [userInfo]);
@@ -60,48 +60,46 @@ const AddressForm = ({ title, description, buttonText }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (isReadOnly) return;
-    if (name === "clientPhone") {
-      const onlyNumbers = value.replace(/\D/g, "");
-      if (onlyNumbers.length > 11) return;
-      setFormData((prev) => ({ ...prev, [name]: onlyNumbers }));
+
+    if (name === "customer_phone") {
+      const onlyNumbers = value.replace(/\D/g, "").slice(0, 11);
+
+      let formatted = onlyNumbers;
+      if (onlyNumbers.length >= 4 && onlyNumbers.length < 8) {
+        formatted = onlyNumbers.slice(0, 3) + "-" + onlyNumbers.slice(3);
+      } else if (onlyNumbers.length >= 8) {
+        formatted =
+          onlyNumbers.slice(0, 3) +
+          "-" +
+          onlyNumbers.slice(3, 7) +
+          "-" +
+          onlyNumbers.slice(7);
+      }
+
+      setFormData((prev) => ({ ...prev, [name]: formatted }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-  const formatPhoneToInternational = (phone) => {
-    const trimmed = phone.trim();
-
-    // 이미 +82로 시작하면 그대로 사용
-    if (trimmed.startsWith("+82")) return trimmed;
-
-    // 01012345678 → +821012345678
-    if (trimmed.startsWith("0")) {
-      return "+82" + trimmed.slice(1);
-    }
-
-    // 821012345678처럼 입력된 경우 → +821012345678
-    if (trimmed.startsWith("82")) {
-      return "+82" + trimmed.slice(2);
-    }
-
-    // fallback: 그냥 +82 붙이기
-    return "+82" + trimmed;
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.clientAddress) return setPopupMessage("주소를 선택해주세요.");
-    if (!formData.clientDetailedAddress)
+    if (!formData.customer_address)
+      return setPopupMessage("주소를 선택해주세요.");
+    if (!formData.customer_address_detail)
       return setPopupMessage("상세주소를 입력해주세요.");
-    if (!formData.clientPhone)
+    if (!formData.customer_phone)
       return setPopupMessage("전화번호를 입력해주세요.");
 
-    const formattedPhone = formatPhoneToInternational(formData.clientPhone);
-    updateRequestData("clientAddress", formData.clientAddress);
-    updateRequestData("clientDetailedAddress", formData.clientDetailedAddress);
-    updateRequestData("clientPhone", formattedPhone);
-    navigate(`/selectservicedate?service=${searchParams.get("service")}`);
+    const formattedPhone = formData.customer_phone.replace(/\D/g, "");
+    updateRequestData("customer_address", formData.customer_address);
+    updateRequestData(
+      "customer_address_detail",
+      formData.customer_address_detail
+    );
+    updateRequestData("customer_phone", formattedPhone);
+    updateRequestData("sprint", [job]);
+    navigate(`/selectservicedate?service=${searchParams.get("service_type")}`);
   };
 
   const goToAddressSearch = () => {
@@ -109,7 +107,7 @@ const AddressForm = ({ title, description, buttonText }) => {
       navigate("/addressmodal", {
         state: {
           prevPath: location.pathname,
-          selectedService: searchParams.get("service"),
+          selectedService: searchParams.get("service_type"),
         },
       });
     }
@@ -145,7 +143,9 @@ const AddressForm = ({ title, description, buttonText }) => {
 
         <StepProgressBar currentStep={1} totalSteps={4} />
         <TitleSection>
-          <Title>{title || `${searchParams.get("service")} 서비스 신청`}</Title>
+          <Title>
+            {title || `${searchParams.get("service_type")} 서비스 신청`}
+          </Title>
           <Description>{description}</Description>
         </TitleSection>
 
@@ -165,16 +165,16 @@ const AddressForm = ({ title, description, buttonText }) => {
             </HelperTextBox>
             {isReadOnly && (
               <ModifyLink onClick={goToModifyInfo}>
-                내 정보 (주소 / 전화번호) 수정하러가기
+                내 정보 (주소 / 전화번호 /직업) 수정하러가기
               </ModifyLink>
             )}
             <CustomSelect>
               <Input
                 type="text"
-                name="clientAddress"
+                name="customer_address"
                 placeholder="클릭하여 주소 검색"
                 style={{ border: "none" }}
-                value={formData.clientAddress}
+                value={formData.customer_address}
                 readOnly={isReadOnly}
                 onChange={isReadOnly ? undefined : handleChange}
                 onClick={!isReadOnly ? goToAddressSearch : undefined}
@@ -183,9 +183,9 @@ const AddressForm = ({ title, description, buttonText }) => {
 
             <Input
               type="text"
-              name="clientDetailedAddress"
+              name="customer_address_detail"
               placeholder="상세주소"
-              value={formData.clientDetailedAddress}
+              value={formData.customer_address_detail}
               onChange={handleChange}
               readOnly={isReadOnly}
               style={{ marginTop: "10px" }}
@@ -196,14 +196,32 @@ const AddressForm = ({ title, description, buttonText }) => {
             <Label>연락처</Label>
             <Input
               type="tel"
-              name="clientPhone"
+              name="customer_phone"
               placeholder="전화번호"
-              value={formData.clientPhone}
+              value={formData.customer_phone}
               onChange={handleChange}
               readOnly={isReadOnly}
             />
           </Field>
-
+          <Field>
+            <Label>직업</Label>
+            {isReadOnly ? (
+              <Input value={job} readOnly />
+            ) : (
+              <JobButtonBox>
+                {["개인사업자", "법인사업자", "프리랜서"].map((item) => (
+                  <JobButton
+                    key={item}
+                    $isSelected={job === item}
+                    onClick={() => setJob(item)}
+                    type="button"
+                  >
+                    {item}
+                  </JobButton>
+                ))}
+              </JobButtonBox>
+            )}
+          </Field>
           <SubmitButton type="submit">{buttonText}</SubmitButton>
         </Form>
 
@@ -311,7 +329,7 @@ const HelperText = styled.p`
   font-size: 15px;
   padding: 0px 0px 15px 5px;
   @media ${device.mobile} {
-    font-size: 1rem;
+    font-size: 1.3rem;
   }
 `;
 const HelperTextBox = styled.div`
@@ -331,7 +349,7 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border: 1px solid #00e5fd;
+    border: 1px solid #0080ff;
   }
 
   &::placeholder {
@@ -355,19 +373,20 @@ const SubmitButton = styled.button`
   font-size: 19px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   color: white;
-  background: linear-gradient(to right, #01e6ff, #00dcf3, #59d7d7);
+  background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   border: none;
   border-radius: 9px;
   cursor: pointer;
   margin-top: 45px;
   &:hover {
-    background: linear-gradient(to right, #00ddf6, #00dbf2, #53cfce);
+    background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   }
   @media ${device.mobile} {
     height: 70px;
     margin-top: 20px;
     font-size: 1.6rem;
     font-weight: 900;
+    margin-bottom: 10px;
   }
 `;
 
@@ -396,5 +415,33 @@ const ModifyLink = styled.a`
   color: #a2a2a2;
   padding: 10px;
   cursor: pointer;
+  @media ${device.mobile} {
+    font-size: 1.2rem;
+    margin-left: 1rem;
+  }
+`;
+const JobButtonBox = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+`;
+
+const JobButton = styled.button`
+  border: 1px solid
+    ${({ $isSelected }) => ($isSelected ? "#80BFFF" : "#f9f9f9")};
+  border-radius: 6px;
+  padding: 10px 0;
+  background: ${({ $isSelected }) => ($isSelected ? "#80BFFF" : "#f2f2f2")};
+  color: black;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    background: ${({ isSelected }) => (isSelected ? "#80BFFF" : "#80BFFF")};
+  }
+  @media ${device.mobile} {
+    padding: 20px 0;
+    font-size: 1.2rem;
+  }
 `;
 export default AddressForm;

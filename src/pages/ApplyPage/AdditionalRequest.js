@@ -10,6 +10,8 @@ import { IoIosArrowBack } from "react-icons/io";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
 import { auth } from "../../firebase";
+import axios from "axios";
+import Popup from "../../components/Apply/Popup";
 
 const AdditionalRequest = () => {
   const navigate = useNavigate();
@@ -17,27 +19,42 @@ const AdditionalRequest = () => {
     useRequest();
   const { scale, height, ref } = useScaleLayout();
   const [additionalInfo, setAdditionalInfo] = useState("");
-
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const needsAdditionalDropSelected = ["설치", "이전"].includes(
-    requestData.service
+    requestData.service_type
   );
   const needsRepairAdditionalDropSelected = ["수리"].includes(
-    requestData.service
+    requestData.service_type
   );
   const [selectedDropdownOption, setSelectedDropdownOption] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
+    if (!additionalInfo.trim()) {
+      setIsPopupOpen(true);
+      return;
+    }
+
+    const { service_type } = requestData;
+    if (["설치", "이전", "수리"].includes(service_type)) {
+      if (!selectedDropdownOption) {
+        setIsPopupOpen(true);
+        return;
+      }
+    }
+
     try {
       setIsSubmitting(true);
       let formattedDetailInfo = "";
 
-      if (["청소", "철거", "점검", "냉매 충전"].includes(requestData.service)) {
+      if (
+        ["청소", "철거", "점검", "냉매 충전"].includes(requestData.service_type)
+      ) {
         formattedDetailInfo = additionalInfo.trim();
-      } else if (requestData.service === "설치") {
+      } else if (requestData.service_type === "설치") {
         formattedDetailInfo =
           `${requestData.detailInfo}\n${selectedDropdownOption}\n${additionalInfo}`.trim();
-      } else if (["이전", "수리"].includes(requestData.service)) {
+      } else if (["이전", "수리"].includes(requestData.service_type)) {
         formattedDetailInfo =
           `${selectedDropdownOption}\n${additionalInfo}`.trim();
       }
@@ -48,7 +65,7 @@ const AdditionalRequest = () => {
       updateRequestData("selectedDropdownOption", selectedDropdownOption);
       updateRequestData("detailInfo", formattedDetailInfo);
       if (clientId) {
-        updateRequestData("clientId", clientId);
+        updateRequestData("customer_uid", clientId);
       }
 
       await new Promise((resolve) => {
@@ -59,19 +76,41 @@ const AdditionalRequest = () => {
       const requestId = await submitRequest({
         ...requestData,
         detailInfo: formattedDetailInfo,
-        clientId: clientId,
+        customer_uid: clientId,
       });
 
       resetRequestData();
 
+      try {
+        await axios.post("http://3.34.179.158:3000/sms/notify", {
+          service_date: requestData.service_date,
+          service_time: requestData.service_time,
+          brand: requestData.brand,
+          aircon_type: requestData.aircon_type,
+          service_type: requestData.service_type,
+          customer_address: requestData.customer_address,
+          customer_phone: requestData.customer_phone,
+        });
+        console.log("✅ 알림 전송 성공");
+      } catch (err) {
+        console.error("❌ 알림 전송 실패:", err.response?.data || err.message);
+        console.log("❓ 실제 요청 보낸 데이터:", {
+          service_date: requestData.service_date,
+          service_time: requestData.service_time,
+          brand: requestData.brand,
+          aircon_type: requestData.aircon_type,
+          service_type: requestData.service_type,
+          customer_address: requestData.customer_address,
+          customer_phone: requestData.customer_phone,
+        });
+      }
       navigate("/inquirydashboard", {
         state: {
-          clientPhone: requestData.clientPhone,
+          clientPhone: requestData.customer_phone,
           requestId: requestId,
         },
       });
     } catch (error) {
-      console.error("❌ 데이터 저장 중 오류 발생:", error);
       alert("제출 중 오류가 발생했습니다. 다시 시도해주세요.");
     } finally {
       setIsSubmitting(false);
@@ -155,6 +194,14 @@ const AdditionalRequest = () => {
           <SubmitButton onClick={handleSubmit} disabled={isSubmitting}>
             {isSubmitting ? "제출 중..." : "제출하기"}
           </SubmitButton>
+          {isPopupOpen && (
+            <Popup onClose={() => setIsPopupOpen(false)}>
+              <PopupText>요청사항 및 옵션을 모두 입력해주세요.</PopupText>
+              <PopupButton onClick={() => setIsPopupOpen(false)}>
+                닫기
+              </PopupButton>
+            </Popup>
+          )}
         </FormLayout>
       </Container>
     </ScaleWrapper>
@@ -265,14 +312,14 @@ const SubmitButton = styled.button`
   padding: 18px;
   font-size: 18px;
   color: white;
-  background: linear-gradient(to right, #01e6ff, #00dcf3, #59d7d7);
+  background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   border: none;
   border-radius: 10px;
   cursor: pointer;
   margin-top: 30px;
   font-weight: bold;
   &:hover {
-    background: linear-gradient(to right, #00ddf6, #00dbf2, #53cfce);
+    background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   }
   @media ${device.mobile} {
     height: 70px;
@@ -280,4 +327,24 @@ const SubmitButton = styled.button`
     font-size: 1.6rem;
     font-weight: 900;
   }
+`;
+const PopupText = styled.p`
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 40px;
+  margin-top: 40px;
+  padding: 30px 50px 30px 50px;
+`;
+
+const PopupButton = styled.button`
+  width: 100%;
+  padding: 20px;
+  border: none;
+  border-radius: 0px 0px 8px 8px;
+  font-size: 16px;
+  font-weight: bold;
+  background: #0080ff;
+  color: white;
+  cursor: pointer;
 `;

@@ -61,7 +61,7 @@ const NextButton = styled.button`
   font-size: 18px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   color: white;
-  background: linear-gradient(to right, #01e6ff, #00dcf3, #59d7d7);
+  background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   border: none;
   border-radius: 10px;
   cursor: pointer;

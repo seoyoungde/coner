@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "../firebase";
 import * as firebaseAuth from "firebase/auth";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { query, collection, where, getDocs } from "firebase/firestore";
 
 const AuthContext = createContext();
 
@@ -11,16 +11,23 @@ export const AuthProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const normalizeToDomestic = (phone) => {
+    if (phone.startsWith("+82")) {
+      return "0" + phone.slice(3);
+    }
+    return phone;
+  };
+
   useEffect(() => {
     const unsubscribe = firebaseAuth.onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       if (user && user.phoneNumber) {
         try {
-          const normalizedPhone = user.phoneNumber;
+          const normalizedPhone = normalizeToDomestic(user.phoneNumber);
 
           const q = query(
-            collection(db, "testclients"),
-            where("clientphone", "==", normalizedPhone)
+            collection(db, "Customer"),
+            where("phone", "==", normalizedPhone)
           );
           const snapshot = await getDocs(q);
 

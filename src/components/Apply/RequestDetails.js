@@ -43,6 +43,10 @@ const Textarea = styled.textarea`
   outline: none;
   background: white;
   font-weight: bold;
+
+  @media ${device.mobile} {
+    font-size: 1.5rem;
+  }
   &::placeholder {
     color: #aaa;
     @media ${device.mobile} {

@@ -19,6 +19,7 @@ const PopupContainer = styled.div`
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   max-width: 90%;
+  max-height: 90vh;
   min-width: 280px;
   text-align: center;
 `;

@@ -10,41 +10,46 @@ import * as firebaseAuth from "firebase/auth";
 const RequestSearch = () => {
   const navigate = useNavigate();
   const { fetchRequestByClient } = useRequest();
-  const [formData, setFormData] = useState({ phoneNumber: "" });
+  const [formData, setFormData] = useState({ customer_phone: "" });
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const { scale, height, ref } = useScaleLayout();
 
-  const formatPhoneToInternational = (phone) => {
-    const onlyNumbers = phone.replace(/\D/g, "");
-    return onlyNumbers.startsWith("0")
-      ? "+82" + onlyNumbers.slice(1)
-      : onlyNumbers;
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "phoneNumber" && isNaN(value)) return;
-    setFormData({ ...formData, [name]: value });
-  };
 
+    // 숫자가 아니면 무시 (전화번호 외 항목에 영향 없도록)
+    if (name === "customer_phone" && isNaN(value.replace(/-/g, ""))) return;
+
+    // 숫자만 추출 후 최대 11자리 제한
+    let onlyNumbers = value.replace(/\D/g, "").slice(0, 11);
+
+    // 가독성을 위한 하이픈 추가
+    if (onlyNumbers.length >= 4) {
+      onlyNumbers = onlyNumbers.slice(0, 3) + "-" + onlyNumbers.slice(3);
+    }
+    if (onlyNumbers.length >= 9) {
+      onlyNumbers = onlyNumbers.slice(0, 8) + "-" + onlyNumbers.slice(8);
+    }
+
+    setFormData({ ...formData, [name]: onlyNumbers });
+  };
   const handleSearch = async () => {
     if (loading) return;
-    if (!formData.phoneNumber) {
+    if (!formData.customer_phone) {
       setErrorMessage("전화번호를 입력해주세요.");
       return;
     }
     setErrorMessage("");
     setLoading(true);
 
-    const formattedPhone = formatPhoneToInternational(formData.phoneNumber);
-
+    const formattedPhone = formData.customer_phone.replace(/\D/g, "");
     const requests = await fetchRequestByClient(formattedPhone);
     setLoading(false);
 
     if (requests && requests.length > 0) {
       navigate("/inquirydashboard", {
-        state: { clientPhone: formattedPhone },
+        state: { customer_phone: formattedPhone },
       });
     } else {
       setErrorMessage("일치하는 의뢰서를 찾을 수 없습니다.");
@@ -55,7 +60,7 @@ const RequestSearch = () => {
     const unsubscribe = firebaseAuth.onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         navigate("/inquirydashboard", {
-          state: { clientId: currentUser.uid },
+          state: { customer_uid: currentUser.uid },
         });
       }
     });
@@ -84,14 +89,14 @@ const RequestSearch = () => {
         >
           <Content>
             <InputWrapper>
-              <label htmlFor="phone">전화번호</label>
+              <label htmlFor="customer_phone">전화번호</label>
               <InputField
-                id="phone"
-                name="phoneNumber"
+                id="customer_phone"
+                name="customer_phone"
                 placeholder="전화번호"
-                value={formData.phoneNumber}
+                value={formData.customer_phone}
                 onChange={handleChange}
-                maxLength={11}
+                maxLength={13}
                 type="tel"
                 inputMode="numeric"
               />
@@ -177,7 +182,7 @@ const InputField = styled.input`
 
   &:focus {
     outline: none;
-    border: 1px solid #00e5fd;
+    border: 1px solid #0080ff;
   }
 
   &::placeholder {
@@ -206,7 +211,7 @@ const ErrorText = styled.p`
 
 const SearchButton = styled.button`
   border: none;
-  background: linear-gradient(to right, #01e6ff, #00dcf3, #59d7d7);
+  background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   width: 100%;
   border-radius: 10px;
   height: 50px;
@@ -216,7 +221,7 @@ const SearchButton = styled.button`
   font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
 
   &:hover {
-    background: linear-gradient(to right, #00ddf6, #00dbf2, #53cfce);
+    background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   }
   @media ${device.mobile} {
     height: 70px;

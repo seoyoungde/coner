@@ -117,12 +117,12 @@ const Option = styled.div`
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   text-align: center;
   border: 1px solid #d6d6d6;
-  background: ${({ $isSelected }) => ($isSelected ? "#00E5FD" : "white")};
+  background: ${({ $isSelected }) => ($isSelected ? "#0080FF" : "white")};
   color: ${({ $isSelected }) => ($isSelected ? "white" : "#333")};
   cursor: pointer;
   white-space: nowrap;
 
   @media ${device.mobile} {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
   }
 `;

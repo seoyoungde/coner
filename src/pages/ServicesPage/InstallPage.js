@@ -7,7 +7,6 @@ const InstallPage = () => {
   const navigate = useNavigate();
 
   const handleFormSubmit = (selectedOption) => {
-    console.log(selectedOption);
     navigate("/installpage2");
   };
 

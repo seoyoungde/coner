@@ -12,64 +12,63 @@ import {
 const RequestContext = createContext();
 
 const initialRequestState = {
-  id: "",
-  service: "",
-  aircon: "",
+  request_id: "",
+  service_type: "",
+  aircon_type: "",
   brand: "",
-  clientId: "",
-  clientPhone: "",
-  clientAddress: "",
-  clientDetailedAddress: "",
-  companyId: "",
-  companyName: "",
-  companyAddress: "",
-  companyDetailedAddress: "",
-  engineerId: "",
-  engineerName: "",
-  engineerPhone: "",
-  engineerProfileImage: "",
-  hopeDate: "",
-  hopeTime: "",
-  acceptanceDate: "",
-  applicationDate: "",
-  completionDate: "",
-  detailInfo: "",
+  customer_uid: "",
+  customer_phone: "",
+  customer_address: "",
+  customer_address_detail: "",
+  partner_uid: "",
+  partner_name: "",
+  partner_address: "",
+  partner_address_detail: "",
+  engineer_uid: "",
+  engineer_name: "",
+  engineer_phone: "",
+  engineer_profile_image: "",
+  service_date: "",
+  service_time: "",
+  accepted_at: "",
+  created_at: "",
+  completed_at: "",
   memo: "",
-  price: "",
-  state: 1,
-  requestImageList: [],
-  review: "",
+  paymentRequestedAt: "",
+  status: 1,
+  sprint: [],
+  detailInfo: "",
 };
 
 export const RequestProvider = ({ children }) => {
   const [requestData, setRequestData] = useState(initialRequestState);
   const allowedFields = [
-    "acceptanceDate",
-    "aircon",
-    "applicationDate",
+    "request_id",
+    "service_type",
+    "aircon_type",
     "brand",
-    "clientAddress",
-    "clientDetailedAddress",
-    "clientId",
-    "clientPhone",
-    "companyAddress",
-    "companyDetailedAddress",
-    "companyId",
-    "companyName",
-    "completionDate",
-    "detailInfo",
-    "engineerId",
-    "engineerName",
-    "engineerPhone",
-    "engineerProfileImage",
-    "hopeDate",
-    "hopeTime",
+    "customer_uid",
+    "customer_phone",
+    "customer_address",
+    "customer_address_detail",
+    "partner_uid",
+    "partner_name",
+    "partner_address",
+    "partner_address_detail",
+    "engineer_uid",
+    "engineer_name",
+    "engineer_phone",
+    "engineer_profile_image",
+    "service_date",
+    "service_time",
+    "accepted_at",
+    "created_at",
+    "completed_at",
     "memo",
-    "price",
-    "requestImageList",
-    "review",
-    "service",
-    "state",
+    "paymentRequestedAt",
+    "status",
+    "sprint",
+    "detailInfo",
   ];
   const filterAllowedFields = (data) => {
     const filtered = {};
@@ -88,11 +87,11 @@ export const RequestProvider = ({ children }) => {
     setRequestData(initialRequestState);
   };
 
-  const fetchRequestByClient = async (clientPhone) => {
+  const fetchRequestByClient = async (customer_phone) => {
     try {
       const q = query(
-        collection(db, "testservice"),
-        where("clientPhone", "==", clientPhone)
+        collection(db, "Request"),
+        where("customer_phone", "==", customer_phone)
       );
       const querySnapshot = await getDocs(q);
 
@@ -120,7 +119,7 @@ export const RequestProvider = ({ children }) => {
   };
 
   const submitRequest = async (updatedRequestData) => {
-    if (!updatedRequestData || !updatedRequestData.service) {
+    if (!updatedRequestData || !updatedRequestData.service_type) {
       console.error(
         "submitRequest: requestData가 비어 있습니다.",
         updatedRequestData
@@ -130,13 +129,16 @@ export const RequestProvider = ({ children }) => {
 
     try {
       const today = new Date();
-      const formattedDate = today.toISOString().split("T")[0];
+      const year = today.getFullYear();
+      const month = `${today.getMonth() + 1}`.padStart(2, "0");
+      const day = `${today.getDate()}`.padStart(2, "0");
+      const formattedDate = `${year}년 ${month}월 ${day}일`;
 
-      const newDocRef = doc(collection(db, "testservice"));
+      const newDocRef = doc(collection(db, "Request"));
       const sanitizedData = {
         ...filterAllowedFields(updatedRequestData),
-        id: newDocRef.id,
-        applicationDate: formattedDate,
+        request_id: newDocRef.id,
+        created_at: formattedDate,
       };
 
       await setDoc(newDocRef, sanitizedData);

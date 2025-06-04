@@ -107,14 +107,14 @@ const NavItem = styled(NavLink)`
   &.active {
     p {
       font-size: 1rem;
-      color: #00e5fd;
+      color: #0080ff;
       @media ${device.mobile} {
         font-size: 1.2rem;
       }
     }
     svg {
       font-size: 1.3rem;
-      color: #00e5fd;
+      color: #0080ff;
       @media ${device.mobile} {
         font-size: 1.7rem;
       }
@@ -148,14 +148,14 @@ const StyledNavLink = styled(NavLink)`
   &.active {
     p {
       font-size: 1rem;
-      color: #00e5fd;
+      color: #0080ff;
       @media ${device.mobile} {
         font-size: 1.2rem;
       }
     }
     svg {
       font-size: 1.3rem;
-      color: #00e5fd;
+      color: #0080ff;
       @media ${device.mobile} {
         font-size: 1.7rem;
       }

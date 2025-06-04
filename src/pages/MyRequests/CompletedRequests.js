@@ -11,15 +11,15 @@ const CompletedRequests = ({ requestData }) => {
     <RequestList>
       <RequestCard>
         <RequestHeader>
-          <Date>{requestData.completionDate || "날짜 없음"}</Date>
-          <Technician>{requestData.engineerName || "기사님 없음"}</Technician>
+          <Date>{requestData.completed_at || "날짜 없음"}</Date>
+          <Technician>{requestData.engineer_name || "기사님 없음"}</Technician>
         </RequestHeader>
         <RequestDetails>
           <TagContainer>
-            <Category>{requestData.service || "서비스 없음"}</Category>
-            <Service>{requestData.aircon || "에어컨 종류 없음"}</Service>
+            <Category>{requestData.service_type || "서비스 없음"}</Category>
+            <Service>{requestData.aircon_type || "에어컨 종류 없음"}</Service>
           </TagContainer>
-          <Address>{requestData.clientAddress || "주소 없음"}</Address>
+          <Address>{requestData.customer_address || "주소 없음"}</Address>
         </RequestDetails>
       </RequestCard>
     </RequestList>
@@ -45,6 +45,9 @@ const RequestCard = styled.div`
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
   background-color: #fff;
   margin-bottom: 10px;
+  @media ${device.mobile} {
+    padding: 10px;
+  }
 `;
 
 const RequestHeader = styled.div`
@@ -61,7 +64,7 @@ const Date = styled.div`
   font-size: 14px;
   color: #a0a0a0;
   @media ${device.mobile} {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
 `;
 
@@ -86,7 +89,7 @@ const TagContainer = styled.div`
 
 const Category = styled.div`
   font-size: 12px;
-  background-color: #00e6fd;
+  background-color: #0080ff;
   color: white;
   border-radius: 20px;
   padding: 5px 10px;
@@ -115,7 +118,7 @@ const Address = styled.div`
   color: #333;
   padding: 5px 10px;
   @media ${device.mobile} {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
   }
 `;
 

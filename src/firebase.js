@@ -5,16 +5,17 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBRNOUtPREZ9lrCea7e_opIG8Xa-ZWgD9o",
-  authDomain: "coolon-9a9a3.firebaseapp.com",
-  projectId: "coolon-9a9a3",
-  storageBucket: "coolon-9a9a3.firebasestorage.app",
-  messagingSenderId: "356148224176",
-  appId: "1:356148224176:web:fd59962193969184191b75",
-  measurementId: "G-PBP8W1H3TL",
+  apiKey: "AIzaSyAxCu5qunXBnuUR6hhKFeRIh-IJk7tBqis",
+  authDomain: "coner-database.firebaseapp.com",
+  projectId: "coner-database",
+  storageBucket: "coner-database.firebasestorage.app",
+  messagingSenderId: "1006786060667",
+  appId: "1:1006786060667:web:516ae639121897bf121dde",
+  measurementId: "G-0C0YN8B7TP",
 };
 
 const app = initializeApp(firebaseConfig);
+
 const analytics = getAnalytics(app);
 
 // Firebase 서비스 가져오기

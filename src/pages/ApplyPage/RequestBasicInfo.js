@@ -16,34 +16,14 @@ import { IoIosArrowBack } from "react-icons/io";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
 
-const priceMap = {
-  "청소-벽걸이형-삼성전자": 50000,
-  "청소-벽걸이형-LG전자": 52000,
-  "청소-벽걸이형-캐리어": 48000,
-  "청소-벽걸이형-센추리": 47000,
-  "청소-스탠드형-삼성전자": 50000,
-  "청소-스탠드형-LG전자": 52000,
-  "청소-스탠드형-캐리어": 48000,
-  "청소-스탠드형-센추리": 47000,
-  "청소-천장형-삼성전자": 50000,
-  "청소-천장형-LG전자": 52000,
-  "청소-천장형-캐리어": 48000,
-  "청소-천장형-센추리": 47000,
-
-  "설치-벽걸이형-삼성전자": 50000,
-  "설치-벽걸이형-LG전자": 52000,
-  "설치-벽걸이형-캐리어": 48000,
-  "설치-벽걸이형-센추리": 47000,
-
-  "설치-스탠드형-삼성전자": 70000,
-  "설치-스탠드형-LG전자": 72000,
-  "설치-스탠드형-캐리어": 69000,
-  "설치-스탠드형-센추리": 68000,
-
-  "설치-천장형-삼성전자": 50000,
-  "설치-천장형-LG전자": 52000,
-  "설치-천장형-캐리어": 48000,
-  "설치-천장형-센추리": 47000,
+const imageMap = {
+  청소: require("../../assets/images/price/clean_inspection_price.png"),
+  설치: require("../../assets/images/price/install_move_price.png"),
+  이전: require("../../assets/images/price/install_move_price.png"),
+  수리: require("../../assets/images/price/repair_price.png"),
+  점검: require("../../assets/images/price/clean_inspection_price.png"),
+  철거: require("../../assets/images/price/demolish_price.png"),
+  냉매충전: require("../../assets/images/price/gas_price.png"),
 };
 
 const RequestBasicInfo = () => {
@@ -59,25 +39,25 @@ const RequestBasicInfo = () => {
 
   useEffect(() => {
     const restoredService =
-      location.state?.selectedService || searchParams.get("service");
+      location.state?.selectedService || searchParams.get("service_type");
 
-    if (restoredService && !requestData.service) {
-      updateRequestData("service", restoredService);
+    if (restoredService && !requestData.service_type) {
+      updateRequestData("service_type", restoredService);
     }
   }, [location.state, searchParams]);
 
   const handleNext = () => {
-    const { service, aircon, brand } = requestData;
-    if (!service || !aircon || !brand) {
+    const { service_type, aircon_type, brand } = requestData;
+    if (!service_type || !aircon_type || !brand) {
       setIsPopupOpen(true);
       return;
     }
     navigate("/additionalrequest", {
-      state: { service, aircon, brand },
+      state: { service_type, aircon_type, brand },
     });
   };
 
-  const priceKey = `${requestData.service}-${requestData.aircon}-${requestData.brand}`;
+  const priceKey = `${requestData.service_type}-${requestData.aircon_type}-${requestData.brand}`;
 
   return (
     <ScaleWrapper
@@ -98,17 +78,25 @@ const RequestBasicInfo = () => {
         <StepProgressBar currentStep={3} totalSteps={4} />
         <FormLayout
           title={`"의뢰서 기본 정보"- ${
-            requestData.service || "서비스 미선택"
+            requestData.service_type || "서비스 미선택"
           }`}
           subtitle="희망 서비스와 에어컨 종류를 선택해주세요."
           onNext={handleNext}
         >
           <DropdownSelector
-            title={requestData.service || "서비스 선택"}
+            title={requestData.service_type || "서비스 선택"}
             icon={<GrUserSettings />}
-            options={["청소", "설치", "이전", "수리", "철거"]}
-            selected={requestData.service}
-            setSelected={(value) => updateRequestData("service", value)}
+            options={[
+              "청소",
+              "설치",
+              "이전",
+              "수리",
+              "철거",
+              "냉매충전",
+              "점검",
+            ]}
+            selected={requestData.service_type}
+            setSelected={(value) => updateRequestData("service_type", value)}
             isOpen={false}
             setIsOpen={() => {}}
             optionWidths={["70px", "70px", "70px", "70px", "70px"]}
@@ -119,8 +107,8 @@ const RequestBasicInfo = () => {
             title="에어컨 종류 선택하기"
             icon={<GrApps />}
             options={["벽걸이형", "스탠드형", "천장형", "창문형", "항온항습기"]}
-            selected={requestData.aircon}
-            setSelected={(value) => updateRequestData("aircon", value)}
+            selected={requestData.aircon_type}
+            setSelected={(value) => updateRequestData("aircon_type", value)}
             isOpen={isTypeOpen}
             setIsOpen={setIsTypeOpen}
             optionWidths={["90px", "90px", "90px", "90px", "110px"]}
@@ -152,25 +140,19 @@ const RequestBasicInfo = () => {
               "150px",
             ]}
           />
-          <Link
-            to="/pricing"
-            className="link"
-            state={{ from: "request-basic-info" }}
-            style={{
-              marginLeft: "30px",
-              marginBottom: "10px",
-              color: "#A0A0A0",
-              fontSize: "0.9rem",
-            }}
-          >
-            서비스비용보러가기
-          </Link>
-          {priceMap[priceKey] && (
-            <PriceBox>
-              예상 견적:{" "}
-              <strong>{priceMap[priceKey].toLocaleString()}원</strong>
-            </PriceBox>
+
+          {requestData.service_type && imageMap[requestData.service_type] && (
+            <ImageBox>
+              <img
+                src={imageMap[requestData.service_type]}
+                alt={`${requestData.service_type} 이미지`}
+              />
+            </ImageBox>
           )}
+
+          <StyledLink to="/pricing" state={{ from: "request-basic-info" }}>
+            서비스비용이 궁금하신가요?
+          </StyledLink>
           {isPopupOpen && (
             <Popup onClose={() => setIsPopupOpen(false)}>
               <PopupText>모든 옵션을 선택해주세요.</PopupText>
@@ -211,7 +193,7 @@ const PopupButton = styled.button`
   border-radius: 0px 0px 8px 8px;
   font-size: 16px;
   font-weight: bold;
-  background: #00e6fd;
+  background: #0080ff;
   color: white;
   cursor: pointer;
 `;
@@ -232,15 +214,24 @@ const BackIcon = styled(IoIosArrowBack)`
   @media ${device.mobile}{
   font-size:50px;
 `;
-const PriceBox = styled.div`
-  margin-top: 20px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-  padding-left: 10px;
+const ImageBox = styled.div`
+  margin-top: 10px;
+
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+`;
+const StyledLink = styled(Link)`
+  margin-left: 30px;
+  margin-bottom: 10px;
+  color: #a0a0a0;
+  font-size: 0.9rem;
 
   @media ${device.mobile} {
-    font-size: 1.5rem;
-    padding-left: 0;
+    font-size: 1.5rem; // 모바일에서 더 크게
+    font-weight: 600;
+    margin-left: 20px;
   }
 `;
