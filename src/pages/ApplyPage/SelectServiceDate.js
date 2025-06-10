@@ -22,6 +22,19 @@ const SelectServiceDate = () => {
   const { scale, height, ref } = useScaleLayout();
   const { requestData } = useRequest();
 
+  const disabledDates = [
+    new Date(2025, 5, 14),
+    new Date(2025, 5, 15),
+    new Date(2025, 5, 17),
+    new Date(2025, 5, 18),
+    new Date(2025, 5, 21),
+    new Date(2025, 5, 24),
+    new Date(2025, 5, 25),
+    new Date(2025, 5, 26),
+    new Date(2025, 5, 27),
+    new Date(2025, 5, 28),
+    new Date(2025, 5, 29),
+  ];
   const handleNext = () => {
     if (!selectedDate || !selectedTime) {
       setIsPopupOpen(true);
@@ -82,6 +95,7 @@ const SelectServiceDate = () => {
             <CalendarPicker
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
+              excludeDates={disabledDates}
             />
           </DateBox>
           <TimeBox>
@@ -99,16 +113,15 @@ const SelectServiceDate = () => {
               setSelectedTime={setSelectedTime}
             />
           </TimeBox>
-
-          {isPopupOpen && (
-            <Popup onClose={() => setIsPopupOpen(false)}>
-              <PopupText>모든 옵션을 선택해주세요.</PopupText>
-              <PopupButton onClick={() => setIsPopupOpen(false)}>
-                닫기
-              </PopupButton>
-            </Popup>
-          )}
         </FormLayout>
+        {isPopupOpen && (
+          <Popup onClose={() => setIsPopupOpen(false)}>
+            <PopupMessage>모든 옵션을 선택해주세요.</PopupMessage>
+            <CloseButton onClick={() => setIsPopupOpen(false)}>
+              닫기
+            </CloseButton>
+          </Popup>
+        )}
       </Container>
     </ScaleWrapper>
   );
@@ -200,23 +213,30 @@ const SelectedText = styled.div`
   }
 `;
 
-const PopupText = styled.p`
-  font-size: 16px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 40px;
-  margin-top: 40px;
-  padding: 30px 50px 30px 50px;
+const PopupMessage = styled.p`
+  font-size: 15px;
+  padding: 30px 30px 50px 30px;
+  margin-bottom: 20px;
+  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+
+  @media ${device.mobile} {
+    font-size: 1.1rem;
+    padding: 40px 20px 30px 20px;
+    margin-bottom: 10px;
+  }
 `;
 
-const PopupButton = styled.button`
+const CloseButton = styled.button`
   width: 100%;
   padding: 20px;
   border: none;
-  border-radius: 0px 0px 8px 8px;
-  font-size: 16px;
-  font-weight: bold;
-  background: #0080ff;
+  background-color: ${({ theme }) => theme.colors.main};
   color: white;
+  font-size: 15px;
+  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  border-radius: 0px 0px 10px 10px;
   cursor: pointer;
+  @media ${device.mobile} {
+    font-size: 1.1rem;
+  }
 `;

@@ -137,7 +137,9 @@ const AddressForm = ({ title, description, buttonText }) => {
       <Container ref={ref}>
         <Header>
           <BackButton onClick={() => navigate("/")}>
-            <IoIosArrowBack size={32} color="#333" />
+            <BackIcon>
+              <IoIosArrowBack size={32} color="#333" />
+            </BackIcon>
           </BackButton>
         </Header>
 
@@ -260,7 +262,11 @@ const BackButton = styled.button`
   padding-left: 20px;
   padding-top: 10px;
 `;
-
+const BackIcon = styled(IoIosArrowBack)`
+  font-size: 30px;
+  @media ${device.mobile}{
+  font-size:50px;
+`;
 const TitleSection = styled.div`
   margin-top: 38px;
   margin-bottom: 35px;
@@ -392,9 +398,15 @@ const SubmitButton = styled.button`
 
 const PopupMessage = styled.p`
   font-size: 15px;
-  padding: 30px 30px 70px 30px;
+  padding: 30px 30px 50px 30px;
   margin-bottom: 20px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
+
+  @media ${device.mobile} {
+    font-size: 1.1rem;
+    padding: 40px 20px 30px 20px;
+    margin-bottom: 10px;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -407,6 +419,9 @@ const CloseButton = styled.button`
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   border-radius: 0px 0px 10px 10px;
   cursor: pointer;
+  @media ${device.mobile} {
+    font-size: 1.1rem;
+  }
 `;
 const ModifyLink = styled.a`
   font-size: 13px;

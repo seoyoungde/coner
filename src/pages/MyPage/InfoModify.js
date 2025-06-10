@@ -14,12 +14,13 @@ import {
   where,
   getDocs,
   writeBatch,
-  setDoc,
 } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import { useAuth } from "../../context/AuthProvider";
 import { Link } from "react-router-dom";
 import InfoModifyAddressModal from "../../components/Services/InfoModifyAddressModal";
+import Popup from "../../components/Apply/Popup";
+import { migratePhoneAccount } from "../../utils/migratePhoneAccount";
 
 const InfoModify = () => {
   const navigate = useNavigate();
@@ -27,6 +28,8 @@ const InfoModify = () => {
   const { scale, height, ref } = useScaleLayout();
   const { setUserInfo, userInfo } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
 
   const [formData, setFormData] = useState({
     email: "",
@@ -108,7 +111,11 @@ const InfoModify = () => {
     Math.floor(100000 + Math.random() * 900000).toString();
 
   const handleSendVerificationCode = async () => {
-    if (!formData.phone) return alert("전화번호를 입력해주세요.");
+    if (!formData.phone) {
+      setPopupMessage("전화번호를 입력해주세요.");
+      setIsPopupOpen(true);
+      return;
+    }
 
     const code = generateRandomCode();
     setSentCode(code);
@@ -135,7 +142,8 @@ const InfoModify = () => {
         to: normalizePhone(formData.phone),
         text: `인증번호는 ${code}입니다.`,
       });
-      alert("인증번호가 전송되었습니다.");
+      setPopupMessage("인증번호가 전송되었습니다.");
+      setIsPopupOpen(true);
     } catch (error) {
       console.error(error);
       alert("인증번호 전송 실패: " + error.message);
@@ -145,16 +153,41 @@ const InfoModify = () => {
   const handleSubmit = async () => {
     if (!auth.currentUser) return;
 
-    if (!sentCode || code !== sentCode) {
-      alert("전화번호 인증이 필요합니다.");
-      return;
-    }
-    if (!code) return alert("인증번호를 입력해주세요");
-    if (code !== sentCode) return alert("인증번호가 일치하지 않습니다");
-    if (normalizePhone(formData.phone) !== codeSentTo) {
-      alert("인증번호를 받은 전화번호와 일치하지 않습니다.");
-      return;
-    }
+    // if (!sentCode || code !== sentCode) {
+    //   setPopupMessage("전화번호 인증이 필요합니다.");
+    //   setIsPopupOpen(true);
+    //   return;
+    // }
+    // if (!code) {
+    //   setPopupMessage("인증번호를 입력해주세요");
+    //   setIsPopupOpen(true);
+    //   return;
+    // }
+    // if (code !== sentCode) {
+    //   setPopupMessage("인증번호가 일치하지 않습니다");
+    //   setIsPopupOpen(true);
+    //   return;
+    // }
+    // if (normalizePhone(formData.phone) !== codeSentTo) {
+    //   setPopupMessage("인증번호를 받은 전화번호와 일치하지 않습니다.");
+    //   setIsPopupOpen(true);
+    //   return;
+    // }
+    // if (formData.phone !== userInfo.phone) {
+    //   await migratePhoneAccount(
+    //     formData.phone,
+    //     auth.currentUser,
+    //     (newUser, oldData) => {
+    //       setUserInfo({ ...oldData, uid: newUser.uid, phone: formData.phone });
+    //       navigate("/mypage");
+    //     },
+    //     (err) => {
+    //       setPopupMessage("전화번호 변경 중 오류가 발생했습니다.");
+    //       setIsPopupOpen(true);
+    //     }
+    //   );
+    //   return;
+    // }
     setIsSubmitting(true);
     try {
       const newPhone = normalizePhone(formData.phone);
@@ -174,7 +207,7 @@ const InfoModify = () => {
       const batch = writeBatch(db);
       snap.forEach((docSnap) => {
         batch.update(doc(db, "Request", docSnap.id), {
-          customer_phone: newPhone,
+          phone: newPhone,
         });
       });
       await batch.commit();
@@ -184,7 +217,8 @@ const InfoModify = () => {
         setUserInfo(updatedSnap.data());
       }
 
-      alert("정보가 수정되었습니다.");
+      setPopupMessage("정보가 수정되었습니다.");
+      setIsPopupOpen(true);
       if (location.state?.from === "addressform") {
         navigate("/addressform", { replace: true });
       } else {
@@ -207,7 +241,6 @@ const InfoModify = () => {
       }}
     >
       <Container ref={ref}>
-        <div id="recaptcha-container"></div>
         <Header>
           <BackButton onClick={() => navigate(-1)}>
             <BackIcon>
@@ -292,10 +325,11 @@ const InfoModify = () => {
               <Input
                 name="phone"
                 value={formData.phone}
-                onFocus={() => handleFocusClear("phone")}
+                readOnly
+                // onFocus={() => handleFocusClear("phone")}
                 onChange={formatPhoneInput}
               />
-              <SmallButton onClick={handleSendVerificationCode}>
+              {/* <SmallButton onClick={handleSendVerificationCode}>
                 인증번호받기
               </SmallButton>
               <Input
@@ -306,20 +340,32 @@ const InfoModify = () => {
               />
               {timer > 0 && (
                 <p
-                  style={{ color: "#999", fontSize: "13px", marginTop: "4px" }}
+                  style={{
+                    color: "#999",
+                    fontSize: "13px",
+                    marginTop: "4px",
+                  }}
                 >
                   인증번호 유효 시간: {Math.floor(timer / 60)}:
                   {String(timer % 60).padStart(2, "0")}
                 </p>
-              )}
+              )} */}
             </FormGroup>
             <WidthdrawLink to="/withdraw">회원탈퇴하기</WidthdrawLink>
           </FormBox>
         </FormSection>
-
+        <div id="recaptcha-container" style={{ display: "none" }} />
         <SubmitButton onClick={handleSubmit} disabled={isSubmitting}>
           {isSubmitting ? "수정 중..." : "수정완료"}
         </SubmitButton>
+        {isPopupOpen && (
+          <Popup onClose={() => setIsPopupOpen(false)}>
+            <PopupMessage>{popupMessage}</PopupMessage>
+            <CloseButton onClick={() => setIsPopupOpen(false)}>
+              닫기
+            </CloseButton>
+          </Popup>
+        )}
       </Container>
     </ScaleWrapper>
   );
@@ -487,5 +533,32 @@ const WidthdrawLink = styled(Link)`
   cursor: pointer;
   @media ${device.mobile} {
     font-size: 1.2rem;
+  }
+`;
+const PopupMessage = styled.p`
+  font-size: 15px;
+  padding: 30px 30px 50px 30px;
+  margin-bottom: 20px;
+  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+
+  @media ${device.mobile} {
+    font-size: 1.1rem;
+    padding: 40px 20px 30px 20px;
+    margin-bottom: 10px;
+  }
+`;
+
+const CloseButton = styled.button`
+  width: 100%;
+  padding: 20px;
+  border: none;
+  background-color: ${({ theme }) => theme.colors.main};
+  color: white;
+  font-size: 15px;
+  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  border-radius: 0px 0px 10px 10px;
+  cursor: pointer;
+  @media ${device.mobile} {
+    font-size: 1.1rem;
   }
 `;

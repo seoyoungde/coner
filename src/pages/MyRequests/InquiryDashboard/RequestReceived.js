@@ -12,6 +12,7 @@ import { db } from "../../../firebase";
 import { GrApps, GrUserSettings, GrBookmark } from "react-icons/gr";
 import { device } from "../../../styles/theme";
 import { MdRefresh } from "react-icons/md";
+import Popup from "../../../components/Apply/Popup";
 
 const RequestReceived = ({
   requestData,
@@ -568,25 +569,23 @@ const RequestReceived = ({
       </RequestBox>
 
       {isCancelPopupOpen && (
-        <PopupOverlay>
-          <PopupContainer>
-            <PopupText>정말로 의뢰를 취소하시겠습니까?</PopupText>
-            <PopupButtons>
-              <PopupButton
-                onClick={handleCancelRequest}
-                style={{ backgroundColor: "red" }}
-              >
-                의뢰 취소
-              </PopupButton>
-              <PopupButton
-                onClick={() => setIsCancelPopupOpen(false)}
-                style={{ backgroundColor: "gray" }}
-              >
-                닫기
-              </PopupButton>
-            </PopupButtons>
-          </PopupContainer>
-        </PopupOverlay>
+        <Popup onClose={() => setIsCancelPopupOpen(false)}>
+          <PopupMessage>정말로 의뢰를 취소하시겠습니까?</PopupMessage>
+          <PopupButtons>
+            <CloseButton
+              onClick={handleCancelRequest}
+              style={{ backgroundColor: "red" }}
+            >
+              의뢰 취소
+            </CloseButton>
+            <CloseButton
+              onClick={() => setIsCancelPopupOpen(false)}
+              style={{ backgroundColor: "gray" }}
+            >
+              닫기
+            </CloseButton>
+          </PopupButtons>
+        </Popup>
       )}
     </Container>
   );
@@ -894,50 +893,37 @@ const EditCancelButton = styled.div`
     padding: 15px;
   }
 `;
-const PopupOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
+
+const PopupMessage = styled.p`
+  font-size: 15px;
+  padding: 30px 30px 50px 30px;
+  margin-bottom: 20px;
+  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+
+  @media ${device.mobile} {
+    font-size: 1.1rem;
+    padding: 40px 20px 30px 20px;
+    margin-bottom: 10px;
+  }
+`;
+
+const CloseButton = styled.button`
   width: 100%;
-  height: calc(var(--vh, 1vh) * 100);
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
+  padding: 20px;
+  border: none;
+  background-color: ${({ theme }) => theme.colors.main};
+  color: white;
+  font-size: 15px;
+  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  border-radius: 0px 0px 0px 0px;
+  cursor: pointer;
+  @media ${device.mobile} {
+    font-size: 1.1rem;
+  }
 `;
-
-const PopupContainer = styled.div`
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  max-width: 90%;
-  min-width: 280px;
-text - align: center;
-  
-`;
-
-const PopupText = styled.p`
-  font-size: 16px;
-  color: #333;
-  padding: 40px;
-`;
-
 const PopupButtons = styled.div`
   display: flex;
   justify-content: space-between;
-`;
-
-const PopupButton = styled.button`
-  flex: 1;
-  padding: 18px;
-  border-radius: 0px 0px 0px 0px;
-  border: none;
-  cursor: pointer;
-  font-weight: ${({ theme }) => theme.fonts.weights.bold};
-  font-size: 14px;
-  background: ${({ secondary }) => (secondary ? "#ddd" : "#00e6fd")};
-  color: white;
 `;
 
 const RefreshIconButton = styled.button`
