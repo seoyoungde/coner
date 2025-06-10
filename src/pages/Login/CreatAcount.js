@@ -77,7 +77,7 @@ const CreatAcount = () => {
     setTimerId(id);
 
     try {
-      await axios.post("http://3.34.179.158:3000/sms/send", {
+      await axios.post("https://api.coner.kr/sms/send", {
         to: phone.replace(/-/g, ""),
         text: `인증번호는 ${code}입니다.`,
       });
@@ -129,7 +129,7 @@ const CreatAcount = () => {
         return alert("이미 가입된 전화번호입니다.");
       }
 
-      const res = await axios.post("http://3.34.179.158:3000/auth/login", {
+      const res = await axios.post("https://api.coner.kr/auth/login", {
         phoneNumber: "+82" + formattedPhone.slice(1),
       });
       const token = res.data.customToken;

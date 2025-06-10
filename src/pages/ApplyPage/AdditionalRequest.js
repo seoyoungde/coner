@@ -81,8 +81,8 @@ const AdditionalRequest = () => {
 
       resetRequestData();
 
-      try {
-        await axios.post("http://3.34.179.158:3000/sms/notify", {
+      https: try {
+        await axios.post("https://api.coner.kr/sms/notify", {
           service_date: requestData.service_date,
           service_time: requestData.service_time,
           brand: requestData.brand,
