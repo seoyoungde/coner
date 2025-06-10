@@ -8,6 +8,7 @@ import { updateDoc, doc } from "firebase/firestore";
 import { db, auth } from "../../firebase";
 import { deleteUser } from "firebase/auth";
 import { useAuth } from "../../context/AuthProvider";
+import Popup from "../../components/Apply/Popup";
 
 const Withdraw = () => {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ const Withdraw = () => {
   const [reasons, setReasons] = useState([]);
   const [details, setDetails] = useState("");
   const { userInfo } = useAuth();
+  const [popupMessage, setPopupMessage] = useState("");
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleReasonToggle = (reason) => {
     setReasons((prev) =>
@@ -26,7 +29,11 @@ const Withdraw = () => {
   };
 
   const handleWithdraw = async () => {
-    if (!confirmChecked) return;
+    if (!confirmChecked) {
+      setPopupMessage("모든 항목을 입력해야 탈퇴 신청이 가능합니다.");
+      setIsPopupOpen(true);
+      return;
+    }
 
     try {
       const currentUser = auth.currentUser;
@@ -135,11 +142,17 @@ const Withdraw = () => {
         </ContentBox>
 
         <ButtonRow>
-          <WithdrawBtn disabled={!confirmChecked} onClick={handleWithdraw}>
-            탈퇴신청
-          </WithdrawBtn>
+          <WithdrawBtn onClick={handleWithdraw}>탈퇴신청</WithdrawBtn>
           <CancelBtn onClick={() => navigate(-1)}>취소하기</CancelBtn>
         </ButtonRow>
+        {isPopupOpen && (
+          <Popup onClose={() => setIsPopupOpen(false)}>
+            <PopupMessage>{popupMessage}</PopupMessage>
+            <CloseButton onClick={() => setIsPopupOpen(false)}>
+              닫기
+            </CloseButton>
+          </Popup>
+        )}
       </Container>
     </ScaleWrapper>
   );
@@ -320,5 +333,32 @@ const CancelBtn = styled.button`
     margin-bottom: 40px;
     font-size: 1.6rem;
     font-weight: 900;
+  }
+`;
+const PopupMessage = styled.p`
+  font-size: 15px;
+  padding: 30px 30px 50px 30px;
+  margin-bottom: 20px;
+  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+
+  @media ${device.mobile} {
+    font-size: 1.1rem;
+    padding: 40px 20px 30px 20px;
+    margin-bottom: 10px;
+  }
+`;
+
+const CloseButton = styled.button`
+  width: 100%;
+  padding: 20px;
+  border: none;
+  background-color: ${({ theme }) => theme.colors.main};
+  color: white;
+  font-size: 15px;
+  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  border-radius: 0px 0px 10px 10px;
+  cursor: pointer;
+  @media ${device.mobile} {
+    font-size: 1.1rem;
   }
 `;

@@ -96,7 +96,6 @@ const AirConditionerForm = ({
 
           <SubmitButton onClick={handleSubmit}>{buttonText}</SubmitButton>
         </Form>
-
         {popupMessage && (
           <Popup onClose={() => setPopupMessage("")}>
             <PopupMessage>{popupMessage}</PopupMessage>
@@ -107,6 +106,7 @@ const AirConditionerForm = ({
     </ScaleWrapper>
   );
 };
+
 const ScaleWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -253,6 +253,12 @@ const PopupMessage = styled.p`
   padding: 30px 30px 50px 30px;
   margin-bottom: 20px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
+
+  @media ${device.mobile} {
+    font-size: 1.1rem;
+    padding: 40px 20px 30px 20px;
+    margin-bottom: 10px;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -265,6 +271,9 @@ const CloseButton = styled.button`
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   border-radius: 0px 0px 10px 10px;
   cursor: pointer;
+  @media ${device.mobile} {
+    font-size: 1.1rem;
+  }
 `;
 
 export default AirConditionerForm;

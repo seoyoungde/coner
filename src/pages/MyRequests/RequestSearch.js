@@ -18,13 +18,10 @@ const RequestSearch = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // 숫자가 아니면 무시 (전화번호 외 항목에 영향 없도록)
     if (name === "customer_phone" && isNaN(value.replace(/-/g, ""))) return;
 
-    // 숫자만 추출 후 최대 11자리 제한
     let onlyNumbers = value.replace(/\D/g, "").slice(0, 11);
 
-    // 가독성을 위한 하이픈 추가
     if (onlyNumbers.length >= 4) {
       onlyNumbers = onlyNumbers.slice(0, 3) + "-" + onlyNumbers.slice(3);
     }
@@ -201,7 +198,7 @@ const InputField = styled.input`
 `;
 
 const ErrorText = styled.p`
-  color: #01e6ff;
+  color: #0080ff;
   font-size: 14px;
   font-weight: bold;
   margin-top: -20px;

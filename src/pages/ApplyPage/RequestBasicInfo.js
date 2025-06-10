@@ -155,10 +155,10 @@ const RequestBasicInfo = () => {
           </StyledLink>
           {isPopupOpen && (
             <Popup onClose={() => setIsPopupOpen(false)}>
-              <PopupText>모든 옵션을 선택해주세요.</PopupText>
-              <PopupButton onClick={() => setIsPopupOpen(false)}>
+              <PopupMessage>모든 옵션을 선택해주세요.</PopupMessage>
+              <CloseButton onClick={() => setIsPopupOpen(false)}>
                 닫기
-              </PopupButton>
+              </CloseButton>
             </Popup>
           )}
         </FormLayout>
@@ -177,25 +177,32 @@ const Container = styled.div`
   width: 100%;
   box-sizing: border-box;
 `;
-const PopupText = styled.p`
-  font-size: 16px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 40px;
-  margin-top: 40px;
-  padding: 30px 50px 30px 50px;
+const PopupMessage = styled.p`
+  font-size: 15px;
+  padding: 30px 30px 50px 30px;
+  margin-bottom: 20px;
+  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+
+  @media ${device.mobile} {
+    font-size: 1.1rem;
+    padding: 40px 20px 30px 20px;
+    margin-bottom: 10px;
+  }
 `;
 
-const PopupButton = styled.button`
+const CloseButton = styled.button`
   width: 100%;
   padding: 20px;
   border: none;
-  border-radius: 0px 0px 8px 8px;
-  font-size: 16px;
-  font-weight: bold;
-  background: #0080ff;
+  background-color: ${({ theme }) => theme.colors.main};
   color: white;
+  font-size: 15px;
+  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  border-radius: 0px 0px 10px 10px;
   cursor: pointer;
+  @media ${device.mobile} {
+    font-size: 1.1rem;
+  }
 `;
 const Header = styled.div`
   display: flex;

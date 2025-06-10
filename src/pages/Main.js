@@ -176,6 +176,7 @@ const Main = () => {
         (isLoggedIn && location.pathname === "/inquirydashboard") ? (
           <Nav />
         ) : null}
+        <div id="popup-root" />
       </ContentBox>
       <HelmetProvider>
         <title>Coner - 냉난방기 예약</title>
@@ -231,6 +232,7 @@ const ImageBox = styled.div`
 `;
 
 const ContentBox = styled.div`
+  position: relative;
   background-color: ${({ backgroundColor }) => backgroundColor};
   display: flex;
   flex-direction: column;
