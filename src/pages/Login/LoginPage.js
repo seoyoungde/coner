@@ -20,7 +20,7 @@ const LoginPage = () => {
   const [timerId, setTimerId] = useState(null);
   const [codeSentTo, setCodeSentTo] = useState("");
 
-  const API = "http://3.34.179.158:3000";
+  const API = "https://api.coner.kr";
 
   const generateRandomCode = () =>
     Math.floor(100000 + Math.random() * 900000).toString();
@@ -59,7 +59,7 @@ const LoginPage = () => {
     setTimerId(id);
 
     try {
-      await axios.post("http://3.34.179.158:3000/sms/send", {
+      await axios.post("https://api.coner.kr/sms/send", {
         to: phoneNumber.replace(/\D/g, ""),
         text: `인증번호는 ${code}입니다.`,
       });
@@ -95,7 +95,7 @@ const LoginPage = () => {
         return;
       }
 
-      const response = await axios.post(`${API}/auth/login`, {
+      const response = await axios.post("https://api.coner.kr/auth/login", {
         phoneNumber: intlPhone,
       });
 

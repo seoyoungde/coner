@@ -138,7 +138,7 @@ const InfoModify = () => {
     setTimerId(id);
 
     try {
-      await axios.post("http://3.34.179.158:3000/sms/send", {
+      await axios.post("https://api.coner.kr/sms/send", {
         to: normalizePhone(formData.phone),
         text: `인증번호는 ${code}입니다.`,
       });
