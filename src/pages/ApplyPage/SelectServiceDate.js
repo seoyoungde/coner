@@ -98,6 +98,12 @@ const SelectServiceDate = () => {
               excludeDates={disabledDates}
             />
           </DateBox>
+          <InfoText>
+            * 저희 코너는 LG U+ 프로젝트 진행으로 인해 비활성화된 일정엔 배정이
+            불가합니다. 고객님께 최고의 품질로 서비스를 제공해드리기 위해 해당
+            날짜는 예약이 어려운 점 양해 부탁드립니다. 보다 나은 일정으로 최적의
+            서비스를 제공해드릴 수 있도록 노력하겠습니다. 감사합니다.
+          </InfoText>
           <TimeBox>
             <SelectedContainer>
               <TimeIcon>
@@ -169,7 +175,7 @@ const DateBox = styled.div`
   width: 100%;
   padding: 20px;
   border-radius: 10px;
-  margin-bottom: 20px;
+
   border: 1px solid #d6d6d6;
   display: flex;
   flex-direction: column;
@@ -181,6 +187,7 @@ const TimeBox = styled.div`
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 10px;
+  margin-top: 10px;
   border: 1px solid #d6d6d6;
   display: flex;
   flex-direction: column;

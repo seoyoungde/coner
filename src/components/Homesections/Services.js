@@ -142,7 +142,7 @@ const ServiceContainer = styled.section`
   p:last-child {
     font-size: ${({ theme }) => theme.fonts.sizes.medium};
     font-weight: ${({ theme }) => theme.fonts.weights.medium};
-    color: ${({ theme }) => theme.colors.subtext};
+    color: black;
 
     @media ${device.mobile} {
       font-size: 1.5rem;

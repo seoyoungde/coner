@@ -37,7 +37,7 @@ const Nav = () => {
           </StyledNavLink>
           <NavItem to="/mypage">
             <FaCircle />
-            <p>고객센터</p>
+            <p>마이페이지</p>
           </NavItem>
         </NavbarContainer>
       </Container>
@@ -63,7 +63,7 @@ const Container = styled.div`
   border-radius: 30px 30px 0px 0px;
   box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.1);
   @media ${device.mobile} {
-    height: 130px;
+    height: 100px;
   }
   @media ${device.mobile} {
     border-radius: 60px 60px 0px 0px;

@@ -60,6 +60,10 @@ const AirConditionerForm = ({
         <TitleSection>
           <Title>{title}</Title>
           <Description>{description}</Description>
+          <InfoText>
+            아직 에어컨이 없으시다면 걱정 마세요! 기사님이 직접 공간과 환경을
+            확인한 뒤, 가장 적합한 제품을 추천해드립니다
+          </InfoText>
         </TitleSection>
 
         <Form>
@@ -135,6 +139,8 @@ const TitleSection = styled.div`
   margin-top: 38px;
   margin-bottom: 25px;
   text-align: center;
+  padding-left: 30px;
+  padding-right: 30px;
 `;
 
 const Title = styled.h2`
@@ -275,5 +281,13 @@ const CloseButton = styled.button`
     font-size: 1.1rem;
   }
 `;
-
+const InfoText = styled.p`
+  font-size: 15px;
+  color: black;
+  margin-top: 10px;
+  @media ${device.mobile} {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+`;
 export default AirConditionerForm;

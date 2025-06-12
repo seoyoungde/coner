@@ -31,7 +31,6 @@ const Qna = () => {
 
   return (
     <QnaCards>
-      <h1 style={{ marginLeft: "17px" }}>자주 묻는 질문</h1>
       {faqList.map((item, idx) => {
         return (
           <QnaItem key={idx}>

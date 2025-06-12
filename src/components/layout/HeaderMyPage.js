@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
 import { device } from "../../styles/theme";
-import conerlogo2 from "../../assets/images/logo/conerlogo2.png";
+import conerlogotitle from "../../assets/images/logo/conerlogotitle.png";
 
 const HeaderMyPage = () => {
   const { scale, height, ref } = useScaleLayout();
@@ -17,7 +17,7 @@ const HeaderMyPage = () => {
     >
       <Container ref={ref}>
         <InnerWrapper>
-          <Logo src={conerlogo2} alt="Coner 로고" />
+          <Logo src={conerlogotitle} alt="Coner 로고" />
           <SubTitle>마이페이지</SubTitle>
           <Spacer />
         </InnerWrapper>
@@ -62,9 +62,9 @@ const InnerWrapper = styled.div`
 `;
 
 const Logo = styled.img`
-  height: 33px;
+  height: 25px;
   @media ${device.mobile} {
-    height: 45px;
+    height: 32px;
   }
 `;
 

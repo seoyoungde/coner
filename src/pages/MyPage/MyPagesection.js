@@ -14,11 +14,11 @@ import conerlogo3Icon from "../../assets/images/logo/conerlogo3.png";
 const sections = [
   {
     items: [
-      {
-        label: "협업 문의",
-        link: "https://nid.naver.com/nidlogin.login?url=https%3A%2F%2Fform.naver.com%2Fresponse%2Fs8wLn9wIdzIKvwZsOUOxsw",
-      },
-      { label: "코너 블로그", link: "https://blog.naver.com/coner-" },
+      // {
+      //   label: "협업 문의",
+      //   link: "https://nid.naver.com/nidlogin.login?url=https%3A%2F%2Fform.naver.com%2Fresponse%2Fs8wLn9wIdzIKvwZsOUOxsw",
+      // },
+
       {
         label: "공지사항",
         link: "https://coner-aircon.notion.site/e3cfa3b4d2e447cc8ee54048172e61db",
@@ -27,7 +27,7 @@ const sections = [
   },
   {
     items: [
-      { label: "카카오톡 문의하기", link: "https://open.kakao.com/o/sJi3SUpf" },
+      { label: "자주 묻는 질문", link: "/qnapage" },
       {
         label: "개인정보처리방침",
         link: "https://seojinhyeong.notion.site/79b84540aa2642e2ba26db26c2d39e7d",
@@ -135,9 +135,17 @@ const MyPageSection = () => {
             <InfoSection key={index}>
               {section.items.map((item, idx) => (
                 <InfoItem key={idx}>
-                  <a href={item.link} target="_blank" rel="noopener noreferrer">
-                    {item.label}
-                  </a>
+                  {item.link.startsWith("http") ? (
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link to={item.link}>{item.label}</Link>
+                  )}
                 </InfoItem>
               ))}
             </InfoSection>

@@ -59,7 +59,7 @@ const LoginPage = () => {
     setTimerId(id);
 
     try {
-      await axios.post("https://api.coner.kr/sms/send", {
+      await axios.post(`${API}/sms/send`, {
         to: phoneNumber.replace(/\D/g, ""),
         text: `인증번호는 ${code}입니다.`,
       });
@@ -72,6 +72,7 @@ const LoginPage = () => {
 
   const handleLogin = async () => {
     try {
+      setIsLoading(true);
       if (!phoneNumber || phoneNumber.length < 10)
         return alert("전화번호를 정확히 입력해주세요");
       if (!code) return alert("인증번호를 입력해주세요");
