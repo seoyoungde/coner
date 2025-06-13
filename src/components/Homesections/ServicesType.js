@@ -67,7 +67,7 @@ const TypeCards = styled.section`
     font-size: ${({ theme }) => theme.fonts.sizes.large};
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
     @media ${device.mobile} {
-      font-size: 1.9rem;
+      font-size: 28px;
       padding-left: 14px;
     }
   }
@@ -79,7 +79,7 @@ const TypeCards = styled.section`
     margin: 5px 0px 12px 17px;
 
     @media ${device.mobile} {
-      font-size: 1.5rem;
+      font-size: 20px;
       padding-left: 14px;
     }
   }
@@ -124,7 +124,7 @@ const TypeCard = styled.li`
     font-size: ${({ theme }) => theme.fonts.sizes.medium || "17px"};
     font-weight: 600;
     @media ${device.mobile} {
-      font-size: 1.4rem;
+      font-size: 20px;
     }
   }
 `;

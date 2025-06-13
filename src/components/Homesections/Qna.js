@@ -49,14 +49,14 @@ const QnaCards = styled.section`
   padding-top: 22px;
 
   @media ${device.mobile} {
-    margin-bottom: 19px;
+    margin-bottom: 30px;
   }
 
   h1 {
     font-size: ${({ theme }) => theme.fonts.sizes.large};
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
     @media ${device.mobile} {
-      font-size: 1.9rem;
+      font-size: 20px;
       padding-left: 14px;
     }
   }
@@ -68,7 +68,7 @@ const QnaItem = styled.div`
   margin: 16px 14px;
 
   @media ${device.mobile} {
-    padding: 18px 16px;
+    padding: 14px 12px;
     margin: 16px 12px;
   }
 `;
@@ -77,7 +77,7 @@ const Q = styled.h1`
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   margin-bottom: 12px;
   @media ${device.mobile} {
-    font-size: 1.9rem;
+    font-size: 18px;
     padding-left: 14px;
   }
 `;
@@ -89,6 +89,6 @@ const A = styled.p`
 
   white-space: pre-line;
   @media ${device.mobile} {
-    font-size: 1.3rem;
+    font-size: 18px;
   }
 `;

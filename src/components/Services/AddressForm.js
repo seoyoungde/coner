@@ -167,7 +167,7 @@ const AddressForm = ({ title, description, buttonText }) => {
             </HelperTextBox>
             {isReadOnly && (
               <ModifyLink onClick={goToModifyInfo}>
-                내 정보 (주소 / 전화번호 /직업) 수정하러가기
+                내 정보 (주소 /직업) 수정하러가기
               </ModifyLink>
             )}
             <CustomSelect>
@@ -265,7 +265,7 @@ const BackButton = styled.button`
 const BackIcon = styled(IoIosArrowBack)`
   font-size: 30px;
   @media ${device.mobile}{
-  font-size:50px;
+  font-size:40px;
 `;
 const TitleSection = styled.div`
   margin-top: 38px;
@@ -278,7 +278,7 @@ const Title = styled.h2`
   margin-bottom: 3px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 1.8rem;
+    font-size: 24px;
   }
 `;
 
@@ -286,7 +286,7 @@ const Description = styled.p`
   font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 1.4rem;
+    font-size: 20px;
     font-weight: 500;
   }
 `;
@@ -310,7 +310,7 @@ const Label = styled.label`
   font-size: 18px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 1.4rem;
+    font-size: 20px;
   }
 `;
 
@@ -335,7 +335,7 @@ const HelperText = styled.p`
   font-size: 15px;
   padding: 0px 0px 15px 5px;
   @media ${device.mobile} {
-    font-size: 1.3rem;
+    font-size: 18px;
   }
 `;
 const HelperTextBox = styled.div`
@@ -362,14 +362,14 @@ const Input = styled.input`
     color: #a0a0a0;
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
     @media ${device.mobile} {
-      font-size: 1.4rem;
+      font-size: 18px;
     }
   }
   @media ${device.mobile} {
-    height: 62px;
+    height: 52px;
     padding: 20px;
     margin-top: 5px;
-    font-size: 1.3rem;
+    font-size: 18px;
   }
 `;
 
@@ -388,9 +388,9 @@ const SubmitButton = styled.button`
     background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   }
   @media ${device.mobile} {
-    height: 70px;
+    height: 60px;
     margin-top: 20px;
-    font-size: 1.6rem;
+    font-size: 20px;
     font-weight: 900;
     margin-bottom: 10px;
   }
@@ -431,7 +431,7 @@ const ModifyLink = styled.a`
   padding: 10px;
   cursor: pointer;
   @media ${device.mobile} {
-    font-size: 1.2rem;
+    font-size: 16px;
     margin-left: 1rem;
   }
 `;
@@ -455,8 +455,8 @@ const JobButton = styled.button`
     background: ${({ isSelected }) => (isSelected ? "#80BFFF" : "#80BFFF")};
   }
   @media ${device.mobile} {
-    padding: 20px 0;
-    font-size: 1.2rem;
+    padding: 18px 0;
+    font-size: 18px;
   }
 `;
 export default AddressForm;

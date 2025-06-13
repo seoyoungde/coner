@@ -28,7 +28,7 @@ const Label = styled.p`
   margin-bottom: 8px;
   text-align: left;
   @media ${device.mobile} {
-    font-size: 1.6rem;
+    font-size: 20px;
   }
 `;
 
@@ -45,12 +45,12 @@ const Textarea = styled.textarea`
   font-weight: bold;
 
   @media ${device.mobile} {
-    font-size: 1.5rem;
+    font-size: 20px;
   }
   &::placeholder {
     color: #aaa;
     @media ${device.mobile} {
-      font-size: 1.3rem;
+      font-size: 18px;
     }
   }
 `;

@@ -604,7 +604,7 @@ const TechnicianContainer = styled.div``;
 const TechnicianETC = styled.div`
   font-size: 15px;
   @media ${device.mobile} {
-    font-size: 1.3rem;
+    font-size: 16px;
     margin-bottom: 10px;
   }
 `;
@@ -659,7 +659,7 @@ const StepLabel = styled.div`
   color: ${({ $isActive }) => ($isActive ? "#0080FF" : "#666")};
 
   @media ${device.mobile} {
-    font-size: 1.1rem;
+    font-size: 16px;
   }
 `;
 
@@ -682,7 +682,7 @@ const TechnicianTitle = styled.h3`
   color: #333;
   margin-bottom: 15px;
   @media ${device.mobile} {
-    font-size: 1.7rem;
+    font-size: 20px;
   }
 `;
 const ProfileImage = styled.div`
@@ -711,12 +711,12 @@ const Tag = styled.span`
   border-radius: 15px;
   margin-top: 10px;
   @media ${device.mobile} {
-    font-size: 1.6rem;
+    font-size: 18px;
   }
 `;
 const Tag2 = styled.div`
   @media ${device.mobile} {
-    font-size: 1.6rem;
+    font-size: 18px;
   }
 `;
 const TechnicianName = styled.h2`
@@ -725,7 +725,7 @@ const TechnicianName = styled.h2`
   color: #333;
   margin-top: 5px;
   @media ${device.mobile} {
-    font-size: 1.8rem;
+    font-size: 20px;
   }
 `;
 
@@ -742,7 +742,7 @@ const PhoneNumber = styled.span`
   color: #333;
   margin-right: 10px;
   @media ${device.mobile} {
-    font-size: 1.6rem;
+    font-size: 20px;
   }
 `;
 
@@ -756,7 +756,7 @@ const CompanyTitle = styled.p`
   font-weight: bold;
   color: #666;
   @media ${device.mobile} {
-    font-size: 1.5rem;
+    font-size: 18px;
   }
 `;
 
@@ -764,7 +764,7 @@ const CompanyAddress = styled.p`
   font-size: 12px;
   color: #999;
   @media ${device.mobile} {
-    font-size: 1.3rem;
+    font-size: 18px;
   }
 `;
 const TechnicianFooter = styled.div`
@@ -790,7 +790,7 @@ const Label = styled.div`
   color: #333;
   margin-bottom: 5px;
   @media ${device.mobile} {
-    font-size: 1.6rem;
+    font-size: 20px;
     font-weight: 700;
   }
 `;
@@ -804,9 +804,9 @@ const Value = styled.div`
   border: 1px solid #ddd;
   border-radius: 5px;
   @media ${device.mobile} {
-    font-size: 1.5rem;
+    font-size: 18px;
     font-weight: 500;
-    padding: 15px;
+    padding: 12px;
     margin-top: 5px;
   }
 `;
@@ -818,7 +818,7 @@ const WarningText = styled.p`
   margin-top: 40px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 1.2rem;
+    font-size: 16px;
   }
 `;
 
@@ -841,7 +841,7 @@ const CancelButton = styled.button`
   cursor: pointer;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 1.6rem;
+    font-size: 20px;
     padding: 15px;
   }
 `;
@@ -857,7 +857,7 @@ const EditButton = styled.button`
   cursor: pointer;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 1.6rem;
+    font-size: 20px;
     padding: 15px;
   }
 `;
@@ -873,7 +873,7 @@ const SaveButton = styled.button`
   cursor: pointer;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 1.6rem;
+    font-size: 20px;
     padding: 15px;
   }
 `;
@@ -889,7 +889,7 @@ const EditCancelButton = styled.div`
   cursor: pointer;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 1.6rem;
+    font-size: 20px;
     padding: 15px;
   }
 `;
@@ -901,8 +901,8 @@ const PopupMessage = styled.p`
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
 
   @media ${device.mobile} {
-    font-size: 1.1rem;
-    padding: 40px 20px 30px 20px;
+    font-size: 14px;
+    padding: 30px 10px 20px 20px;
     margin-bottom: 10px;
   }
 `;
@@ -918,7 +918,8 @@ const CloseButton = styled.button`
   border-radius: 0px 0px 0px 0px;
   cursor: pointer;
   @media ${device.mobile} {
-    font-size: 1.1rem;
+    font-size: 14px;
+    padding: 15px;
   }
 `;
 const PopupButtons = styled.div`

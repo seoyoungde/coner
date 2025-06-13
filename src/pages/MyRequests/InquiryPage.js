@@ -249,7 +249,7 @@ const BackButton = styled.button`
 const BackIcon = styled(IoIosArrowBack)`
   font-size: 30px;
   @media ${device.mobile}{
-  font-size:50px;
+  font-size:40px;
 `;
 const Title = styled.h1`
   position: absolute;
@@ -259,7 +259,7 @@ const Title = styled.h1`
   font-weight: ${({ theme }) => theme.fonts.weights.bold || 600};
   margin: 0;
   @media ${device.mobile} {
-    font-size: 1.6rem;
+    font-size: 24px;
   }
 `;
 
@@ -294,7 +294,7 @@ const Tab = styled.button`
     transition: width 0.3s ease;
   }
   @media ${device.mobile} {
-    font-size: 1.5rem;
+    font-size: 20px;
   }
 `;
 
@@ -311,6 +311,6 @@ const CenteredContent = styled.div`
   color: #333;
   font-weight: bold;
   @media ${device.mobile} {
-    font-size: 1.4rem;
+    font-size: 18px;
   }
 `;

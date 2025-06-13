@@ -135,7 +135,7 @@ const Title = styled.div`
     font-size: ${({ theme }) => theme.fonts.sizes.large};
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
     @media ${device.mobile} {
-      font-size: 1.8rem;
+      font-size: 24px;
     }
   }
   p {
@@ -143,7 +143,7 @@ const Title = styled.div`
     font-weight: ${({ theme }) => theme.fonts.weights.medium};
     margin-top: 4px;
     @media ${device.mobile} {
-      font-size: 1.35rem;
+      font-size: 20px;
       font-weight: 500;
     }
   }
@@ -162,7 +162,7 @@ const InputWrapper = styled.div`
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
     margin-bottom: 10px;
     @media ${device.mobile} {
-      font-size: 1.7rem;
+      font-size: 20px;
       margin-top: 20px;
     }
   }
@@ -186,14 +186,14 @@ const InputField = styled.input`
     color: #a0a0a0;
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
     @media ${device.mobile} {
-      font-size: 1.4rem;
+      font-size: 18px;
     }
   }
   @media ${device.mobile} {
-    height: 62px;
+    height: 58px;
     padding: 20px;
     margin-top: 5px;
-    font-size: 1.3rem;
+    font-size: 18px;
   }
 `;
 
@@ -221,9 +221,9 @@ const SearchButton = styled.button`
     background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   }
   @media ${device.mobile} {
-    height: 70px;
+    height: 60px;
     margin-top: 20px;
-    font-size: 1.6rem;
+    font-size: 20px;
     font-weight: 900;
   }
 `;

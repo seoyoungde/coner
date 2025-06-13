@@ -36,7 +36,7 @@ const Title = styled.h2`
   font-size: 22px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 1.8rem;
+    font-size: 24px;
   }
 `;
 
@@ -44,7 +44,7 @@ const Subtitle = styled.p`
   font-size: 16px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 1.4rem;
+    font-size: 20px;
     font-weight: 500;
   }
 `;
@@ -67,9 +67,9 @@ const NextButton = styled.button`
   cursor: pointer;
   margin-top: 20px;
   @media ${device.mobile} {
-    height: 70px;
+    height: 60px;
     margin-top: 20px;
-    font-size: 1.6rem;
+    font-size: 20px;
     font-weight: 900;
   }
 `;

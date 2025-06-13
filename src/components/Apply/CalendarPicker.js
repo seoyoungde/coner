@@ -35,7 +35,7 @@ const CalendarWrapper = styled.div`
     font-weight: bold;
     font-size: 18px;
     @media ${device.mobile} {
-      font-size: 1.6rem;
+      font-size: 20px;
     }
   }
 
@@ -43,7 +43,7 @@ const CalendarWrapper = styled.div`
     font-size: 20px;
 
     @media ${device.mobile} {
-      font-size: 24px;
+      font-size: 20px;
     }
   }
 
@@ -51,7 +51,7 @@ const CalendarWrapper = styled.div`
     font-size: 20px;
 
     @media ${device.mobile} {
-      font-size: 28px;
+      font-size: 20px;
     }
   }
   .react-calendar__tile:disabled {

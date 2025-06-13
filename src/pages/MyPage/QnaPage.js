@@ -65,7 +65,7 @@ const BackButton = styled.button`
 const BackIcon = styled(IoIosArrowBack)`
   font-size: 30px;
   @media ${device.mobile} {
-    font-size: 50px;
+    font-size: 40px;
   }
 `;
 
@@ -75,6 +75,6 @@ const Title = styled.h1`
   font-size: 20px;
   font-weight: bold;
   @media ${device.mobile} {
-    font-size: 1.6rem;
+    font-size: 24px;
   }
 `;

@@ -121,8 +121,9 @@ const ServiceContainer = styled.section`
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
 
     @media ${device.mobile} {
-      font-size: 2rem;
+      font-size: 28px;
       padding-left: 14px;
+      padding-right: 20px;
     }
   }
   h1:nth-child(2) {
@@ -135,8 +136,9 @@ const ServiceContainer = styled.section`
     margin: 5px 0px 32px 17px;
 
     @media ${device.mobile} {
-      font-size: 1.5rem;
+      font-size: 20px;
       padding-left: 14px;
+      padding-right: 18px;
     }
   }
   p:last-child {
@@ -145,7 +147,7 @@ const ServiceContainer = styled.section`
     color: black;
 
     @media ${device.mobile} {
-      font-size: 1.5rem;
+      font-size: 20px;
     }
   }
 `;
@@ -206,7 +208,7 @@ const StyledLink = styled(Link)`
   font-size: 0.9rem;
 
   @media ${device.mobile} {
-    font-size: 1.5rem; // 모바일에서 더 크게
+    font-size: 16px;
     font-weight: 600;
     margin-left: 20px;
   }
