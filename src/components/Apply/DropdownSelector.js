@@ -73,7 +73,7 @@ const IconWrapper = styled.div`
     font-size: 20px;
 
     @media ${device.mobile} {
-      font-size: 28px;
+      font-size: 20px;
     }
   }
 `;
@@ -96,7 +96,7 @@ const Title = styled.span`
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
 
   @media ${device.mobile} {
-    font-size: 1.5rem;
+    font-size: 20px;
   }
 `;
 
@@ -123,6 +123,6 @@ const Option = styled.div`
   white-space: nowrap;
 
   @media ${device.mobile} {
-    font-size: 1.3rem;
+    font-size: 18px;
   }
 `;

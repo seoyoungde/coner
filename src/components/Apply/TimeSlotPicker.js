@@ -3,11 +3,10 @@ import styled from "styled-components";
 import { device } from "../../styles/theme";
 
 const timeSlots = [
-  "오전9시 ~ 오전11시",
-  "오전11시 ~ 오후1시",
-  "오후1시 ~ 오후3시",
-  "오후3시 ~ 오후5시",
-  "오후5시 ~ 오후7시",
+  "오전9시 ~ 오후12시",
+  "오후12시 ~ 오후3시",
+  "오후3시 ~ 오후6시",
+  "오후6시 ~ 이후",
 ];
 
 const TimeSlotPicker = ({ selectedTime, setSelectedTime }) => {
@@ -53,6 +52,6 @@ const TimeSlotButton = styled.button`
   cursor: pointer;
   text-align: center;
   @media ${device.mobile} {
-    font-size: 1.2rem;
+    font-size: 16px;
   }
 `;

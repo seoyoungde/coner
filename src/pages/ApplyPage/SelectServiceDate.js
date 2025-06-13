@@ -23,17 +23,17 @@ const SelectServiceDate = () => {
   const { requestData } = useRequest();
 
   const disabledDates = [
-    new Date(2025, 5, 14),
-    new Date(2025, 5, 15),
-    new Date(2025, 5, 17),
-    new Date(2025, 5, 18),
-    new Date(2025, 5, 21),
-    new Date(2025, 5, 24),
-    new Date(2025, 5, 25),
-    new Date(2025, 5, 26),
-    new Date(2025, 5, 27),
-    new Date(2025, 5, 28),
-    new Date(2025, 5, 29),
+    // new Date(2025, 5, 14),
+    // new Date(2025, 5, 15),
+    // new Date(2025, 5, 17),
+    // new Date(2025, 5, 18),
+    // new Date(2025, 5, 21),
+    // new Date(2025, 5, 24),
+    // new Date(2025, 5, 25),
+    // new Date(2025, 5, 26),
+    // new Date(2025, 5, 27),
+    // new Date(2025, 5, 28),
+    // new Date(2025, 5, 29),
   ];
   const handleNext = () => {
     if (!selectedDate || !selectedTime) {
@@ -159,13 +159,13 @@ const BackButton = styled.button`
 const BackIcon = styled(IoIosArrowBack)`
   font-size: 30px;
   @media ${device.mobile}{
-  font-size:50px;
+  font-size:40px;
 `;
 const InfoText = styled.p`
   font-size: 14px;
   color: #888;
   @media ${device.mobile} {
-    font-size: 1.3rem;
+    font-size: 18px;
     margin-bottom: 1rem;
   }
 `;
@@ -195,13 +195,13 @@ const TimeBox = styled.div`
 const TimeIcon = styled(AiOutlineClockCircle)`
   font-size: 1.3rem;
   @media ${device.mobile} {
-    font-size: 2.1rem;
+    font-size: 24px;
   }
 `;
 const CalendarIcon = styled(GrFormCalendar)`
   font-size: 1.8rem;
   @media ${device.mobile} {
-    font-size: 3rem;
+    font-size: 2rem;
   }
 `;
 const SelectedContainer = styled.div`
@@ -216,7 +216,7 @@ const SelectedText = styled.div`
   font-weight: bold;
   color: #333;
   @media ${device.mobile} {
-    font-size: 1.5rem;
+    font-size: 20px;
   }
 `;
 
@@ -227,8 +227,8 @@ const PopupMessage = styled.p`
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
 
   @media ${device.mobile} {
-    font-size: 1.1rem;
-    padding: 40px 20px 30px 20px;
+    font-size: 14px;
+    padding: 30px 10px 20px 20px;
     margin-bottom: 10px;
   }
 `;
@@ -244,6 +244,7 @@ const CloseButton = styled.button`
   border-radius: 0px 0px 10px 10px;
   cursor: pointer;
   @media ${device.mobile} {
-    font-size: 1.1rem;
+    font-size: 14px;
+    padding: 15px;
   }
 `;

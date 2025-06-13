@@ -64,7 +64,6 @@ const PricingPage = () => {
 
 export default PricingPage;
 
-// Styled Components
 const ScaleWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -98,7 +97,7 @@ const Title = styled.h1`
   font-weight: ${({ theme }) => theme.fonts.weights.bold || 600};
   margin: 0;
   @media ${device.mobile} {
-    font-size: 1.6rem;
+    font-size: 28px;
   }
 `;
 const ImageWrapper = styled.div`
@@ -123,7 +122,7 @@ const BackButton = styled.button`
 const BackIcon = styled(IoIosArrowBack)`
   font-size: 30px;
   @media ${device.mobile} {
-    font-size: 50px;
+    font-size: 40px;
   }
 `;
 

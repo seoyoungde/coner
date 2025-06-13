@@ -203,7 +203,7 @@ const UserPhoneNum = styled.input.attrs({
     height: 62px;
     padding: 20px;
     margin-top: 5px;
-    font-size: 1.3rem;
+    font-size: 20px;
   }
 `;
 
@@ -224,7 +224,7 @@ const Userpassword = styled.input.attrs({
     height: 62px;
     padding: 20px;
     margin-top: 5px;
-    font-size: 1.3rem;
+    font-size: 20px;
   }
 `;
 
@@ -241,9 +241,9 @@ const LoginButton = styled.button`
   cursor: pointer;
   margin-top: 20px;
   @media ${device.mobile} {
-    height: 70px;
+    height: 60px;
     margin-top: 20px;
-    font-size: 1.6rem;
+    font-size: 20px;
     font-weight: 900;
   }
 `;
@@ -259,7 +259,7 @@ const SearchSection = styled.div`
   font-size: 13px;
   color: #aaa;
   @media ${device.mobile} {
-    font-size: 1.2rem;
+    font-size: 18px;
   }
 `;
 

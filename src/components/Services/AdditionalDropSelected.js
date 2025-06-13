@@ -100,7 +100,7 @@ const DropdownContainer = styled.div`
 `;
 const CommentIcon = styled(MdOutlineComment)`
   @media ${device.mobile} {
-    font-size: 1.7rem;
+    font-size: 24px;
   }
 `;
 const DropdownHeader = styled.div`
@@ -125,7 +125,7 @@ const DropdownLabel = styled.div`
   margin-left: 10px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 1.5rem;
+    font-size: 20px;
   }
 `;
 
@@ -158,6 +158,6 @@ const OptionBox = styled.div`
   cursor: pointer;
   white-space: nowrap;
   @media ${device.mobile} {
-    font-size: 1.2rem;
+    font-size: 18px;
   }
 `;

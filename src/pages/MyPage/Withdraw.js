@@ -188,7 +188,7 @@ const BackButton = styled.button`
 const BackIcon = styled(IoIosArrowBack)`
   font-size: 30px;
   @media ${device.mobile}{
-  font-size:50px;
+  font-size:40px;
 `;
 const Title = styled.h1`
   flex: 1;
@@ -196,7 +196,7 @@ const Title = styled.h1`
   font-size: 20px;
   font-weight: bold;
   @media ${device.mobile} {
-    font-size: 1.6rem;
+    font-size: 24px;
   }
 `;
 
@@ -205,7 +205,7 @@ const ContentBox = styled.div`
   font-size: 14px;
   line-height: 1.6;
   @media ${device.mobile} {
-    font-size: 1.3rem;
+    font-size: 20px;
   }
 `;
 
@@ -233,15 +233,15 @@ const ConfirmRow = styled.div`
 const Checkbox = styled.input`
   margin-right: 8px;
   @media ${device.mobile} {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
   }
 `;
 
 const ConfirmText = styled.span`
   font-size: 14px;
   @media ${device.mobile} {
-    font-size: 1.2rem;
+    font-size: 18px;
   }
 `;
 
@@ -250,7 +250,7 @@ const Required = styled.span`
   font-size: 12px;
   margin-left: 6px;
   @media ${device.mobile} {
-    font-size: 1.2rem;
+    font-size: 18px;
   }
 `;
 
@@ -264,7 +264,7 @@ const SubText = styled.div`
   font-size: 12px;
   margin-top: 4px;
   @media ${device.mobile} {
-    font-size: 1.1rem;
+    font-size: 16px;
   }
 `;
 
@@ -291,7 +291,7 @@ const Textarea = styled.textarea`
   border-radius: 4px;
   font-size: 14px;
   @media ${device.mobile} {
-    font-size: 1.1rem;
+    font-size: 16px;
   }
 `;
 
@@ -312,9 +312,9 @@ const WithdrawBtn = styled.button`
   font-size: 15px;
   cursor: pointer;
   @media ${device.mobile} {
-    height: 70px;
+    height: 60px;
     margin-bottom: 40px;
-    font-size: 1.6rem;
+    font-size: 20px;
     font-weight: 900;
   }
 `;
@@ -329,9 +329,9 @@ const CancelBtn = styled.button`
   font-size: 15px;
   cursor: pointer;
   @media ${device.mobile} {
-    height: 70px;
+    height: 60px;
     margin-bottom: 40px;
-    font-size: 1.6rem;
+    font-size: 20px;
     font-weight: 900;
   }
 `;
@@ -342,8 +342,8 @@ const PopupMessage = styled.p`
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
 
   @media ${device.mobile} {
-    font-size: 1.1rem;
-    padding: 40px 20px 30px 20px;
+    font-size: 14px;
+    padding: 30px 10px 20px 20px;
     margin-bottom: 10px;
   }
 `;
@@ -359,6 +359,7 @@ const CloseButton = styled.button`
   border-radius: 0px 0px 10px 10px;
   cursor: pointer;
   @media ${device.mobile} {
-    font-size: 1.1rem;
+    font-size: 14px;
+    padding: 15px;
   }
 `;

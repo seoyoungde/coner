@@ -184,8 +184,8 @@ const PopupMessage = styled.p`
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
 
   @media ${device.mobile} {
-    font-size: 1.1rem;
-    padding: 40px 20px 30px 20px;
+    font-size: 14px;
+    padding: 30px 10px 20px 20px;
     margin-bottom: 10px;
   }
 `;
@@ -201,7 +201,8 @@ const CloseButton = styled.button`
   border-radius: 0px 0px 10px 10px;
   cursor: pointer;
   @media ${device.mobile} {
-    font-size: 1.1rem;
+    font-size: 14px;
+    padding: 15px;
   }
 `;
 const Header = styled.div`
@@ -219,7 +220,7 @@ const BackButton = styled.button`
 const BackIcon = styled(IoIosArrowBack)`
   font-size: 30px;
   @media ${device.mobile}{
-  font-size:50px;
+  font-size:40px;
 `;
 const ImageBox = styled.div`
   margin-top: 10px;
@@ -237,7 +238,7 @@ const StyledLink = styled(Link)`
   font-size: 0.9rem;
 
   @media ${device.mobile} {
-    font-size: 1.5rem; // 모바일에서 더 크게
+    font-size: 18px;
     font-weight: 600;
     margin-left: 20px;
   }

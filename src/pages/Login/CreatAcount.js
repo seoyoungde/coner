@@ -352,7 +352,7 @@ const BackButton = styled.button`
 const BackIcon = styled(IoIosArrowBack)`
   font-size: 30px;
   @media ${device.mobile}{
-  font-size:50px;
+  font-size:40px;
 `;
 const Title = styled.h1`
   flex: 1;
@@ -360,7 +360,7 @@ const Title = styled.h1`
   font-size: 20px;
   font-weight: bold;
   @media ${device.mobile} {
-    font-size: 1.6rem;
+    font-size: 24px;
   }
 `;
 
@@ -373,7 +373,7 @@ const SectionTitle = styled.h2`
   font-weight: bold;
   margin-bottom: 16px;
   @media ${device.mobile} {
-    font-size: 1.6rem;
+    font-size: 22px;
   }
 `;
 
@@ -392,7 +392,7 @@ const Label = styled.p`
   font-weight: bold;
   margin-bottom: 6px;
   @media ${device.mobile} {
-    font-size: 1.4rem;
+    font-size: 20px;
   }
 `;
 
@@ -420,10 +420,10 @@ const Input = styled.input`
     border-color: #333;
   }
   @media ${device.mobile} {
-    height: 62px;
-    padding: 20px;
+    height: 54px;
+    padding: 16px;
     margin-top: 5px;
-    font-size: 1.3rem;
+    font-size: 18px;
   }
 `;
 
@@ -448,8 +448,8 @@ const JobButton = styled.button`
     background: ${({ isSelected }) => (isSelected ? "#80BFFF" : "#80BFFF")};
   }
   @media ${device.mobile} {
-    padding: 20px 0;
-    font-size: 1.2rem;
+    padding: 16px 0;
+    font-size: 18px;
   }
 `;
 
@@ -460,7 +460,7 @@ const SmallButton = styled.button`
   border: none;
   cursor: pointer;
   @media ${device.mobile} {
-    font-size: 1.2rem;
+    font-size: 16px;
   }
 `;
 
@@ -477,9 +477,9 @@ const SubmitButton = styled.button`
   margin-bottom: 40px;
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   @media ${device.mobile} {
-    height: 70px;
+    height: 60px;
     margin-top: 20px;
-    font-size: 1.6rem;
+    font-size: 20px;
     font-weight: 900;
     margin-bottom: 40px;
   }

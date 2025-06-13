@@ -80,7 +80,7 @@ const SubTitle = styled.h1`
   font-weight: ${({ theme }) => theme.fonts.weights.bold || 600};
   margin: 0;
   @media ${device.mobile} {
-    font-size: 1.6rem;
+    font-size: 24px;
   }
 `;
 

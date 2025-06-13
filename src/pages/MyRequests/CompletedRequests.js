@@ -64,7 +64,7 @@ const Date = styled.div`
   font-size: 14px;
   color: #a0a0a0;
   @media ${device.mobile} {
-    font-size: 1.4rem;
+    font-size: 18px;
   }
 `;
 
@@ -72,7 +72,7 @@ const Technician = styled.div`
   font-size: 14px;
   color: #a0a0a0;
   @media ${device.mobile} {
-    font-size: 1.5rem;
+    font-size: 18px;
   }
 `;
 
@@ -95,7 +95,7 @@ const Category = styled.div`
   padding: 5px 10px;
   font-weight: bold;
   @media ${device.mobile} {
-    font-size: 1.3rem;
+    font-size: 17px;
     padding: 8px 14px;
   }
 `;
@@ -108,7 +108,7 @@ const Service = styled.div`
   padding: 5px 10px;
   font-weight: bold;
   @media ${device.mobile} {
-    font-size: 1.3rem;
+    font-size: 17px;
     padding: 8px 14px;
   }
 `;
@@ -118,7 +118,7 @@ const Address = styled.div`
   color: #333;
   padding: 5px 10px;
   @media ${device.mobile} {
-    font-size: 1.2rem;
+    font-size: 16px;
   }
 `;
 
