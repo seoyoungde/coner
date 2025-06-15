@@ -98,12 +98,17 @@ const SelectServiceDate = () => {
               excludeDates={disabledDates}
             />
           </DateBox>
-          <InfoText>
-            * 저희 코너는 LG U+ 프로젝트 진행으로 인해 비활성화된 일정엔 배정이
-            불가합니다. 고객님께 최고의 품질로 서비스를 제공해드리기 위해 해당
-            날짜는 예약이 어려운 점 양해 부탁드립니다. 보다 나은 일정으로 최적의
-            서비스를 제공해드릴 수 있도록 노력하겠습니다. 감사합니다.
-          </InfoText>
+
+          <InfoText2>
+            <strong />
+            안내드립니다 <br />
+            현재 LG U+ 프로젝트 진행으로 인해 일부 일정에 변동이 생길 수
+            있습니다.
+            <br />
+            최상의 서비스 제공을 위해 조율이 필요한 점 너른 양해 부탁드립니다.
+            <br />더 나은 일정으로 찾아뵐 수 있도록 최선을
+            다하겠습니다.감사합니다.
+          </InfoText2>
           <TimeBox>
             <SelectedContainer>
               <TimeIcon>
@@ -165,7 +170,17 @@ const InfoText = styled.p`
   font-size: 14px;
   color: #888;
   @media ${device.mobile} {
-    font-size: 18px;
+    font-size: 16px;
+    margin-bottom: 1rem;
+  }
+`;
+const InfoText2 = styled.p`
+  text-align: left;
+  margin-left: 10px;
+  font-size: 14px;
+  color: #888;
+  @media ${device.mobile} {
+    font-size: 16px;
     margin-bottom: 1rem;
   }
 `;

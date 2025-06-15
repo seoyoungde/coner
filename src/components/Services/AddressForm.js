@@ -98,7 +98,7 @@ const AddressForm = ({ title, description, buttonText }) => {
       formData.customer_address_detail
     );
     updateRequestData("customer_phone", formattedPhone);
-    updateRequestData("sprint", [job]);
+    updateRequestData("customer_type", job);
     navigate(`/selectservicedate?service=${searchParams.get("service_type")}`);
   };
 
@@ -167,7 +167,7 @@ const AddressForm = ({ title, description, buttonText }) => {
             </HelperTextBox>
             {isReadOnly && (
               <ModifyLink onClick={goToModifyInfo}>
-                내 정보 (주소 /직업) 수정하러가기
+                내 정보 (주소 / 고객유형) 수정하러가기
               </ModifyLink>
             )}
             <CustomSelect>
@@ -206,12 +206,12 @@ const AddressForm = ({ title, description, buttonText }) => {
             />
           </Field>
           <Field>
-            <Label>직업</Label>
+            <Label>고객유형</Label>
             {isReadOnly ? (
               <Input value={job} readOnly />
             ) : (
               <JobButtonBox>
-                {["개인사업자", "법인사업자", "프리랜서"].map((item) => (
+                {["개인사업자", "법인사업자", "개인"].map((item) => (
                   <JobButton
                     key={item}
                     $isSelected={job === item}

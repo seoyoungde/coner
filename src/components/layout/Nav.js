@@ -66,7 +66,7 @@ const Container = styled.div`
     height: 100px;
   }
   @media ${device.mobile} {
-    border-radius: 60px 60px 0px 0px;
+    border-radius: 40px 40px 0px 0px;
   }
 `;
 
@@ -92,7 +92,7 @@ const NavItem = styled(NavLink)`
     font-size: 1rem;
     color: #d9d9d9;
     @media ${device.mobile} {
-      font-size: 1.2rem;
+      font-size: 20px;
     }
   }
 
@@ -100,7 +100,7 @@ const NavItem = styled(NavLink)`
     font-size: 1.3rem;
     color: #d9d9d9;
     @media ${device.mobile} {
-      font-size: 1.7rem;
+      font-size: 24px;
     }
   }
 
@@ -109,14 +109,14 @@ const NavItem = styled(NavLink)`
       font-size: 1rem;
       color: #0080ff;
       @media ${device.mobile} {
-        font-size: 1.2rem;
+        font-size: 20px;
       }
     }
     svg {
       font-size: 1.3rem;
       color: #0080ff;
       @media ${device.mobile} {
-        font-size: 1.7rem;
+        font-size: 24px;
       }
     }
   }
@@ -133,7 +133,7 @@ const StyledNavLink = styled(NavLink)`
     font-size: 1rem;
     color: #d9d9d9;
     @media ${device.mobile} {
-      font-size: 1.2rem;
+      font-size: 20px;
     }
   }
 
@@ -141,7 +141,7 @@ const StyledNavLink = styled(NavLink)`
     font-size: 1.3rem;
     color: #d9d9d9;
     @media ${device.mobile} {
-      font-size: 1.7rem;
+      font-size: 24px;
     }
   }
 
@@ -150,14 +150,14 @@ const StyledNavLink = styled(NavLink)`
       font-size: 1rem;
       color: #0080ff;
       @media ${device.mobile} {
-        font-size: 1.2rem;
+        font-size: 20px;
       }
     }
     svg {
       font-size: 1.3rem;
       color: #0080ff;
       @media ${device.mobile} {
-        font-size: 1.7rem;
+        font-size: 24px;
       }
     }
   }

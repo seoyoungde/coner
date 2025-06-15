@@ -221,7 +221,7 @@ const CreatAcount = () => {
               />
             </FormGroup>
             <FormGroup>
-              <Label>직업</Label>
+              <Label>고객유형</Label>
               <JobButtonBox>
                 <JobButton
                   $isSelected={job === "개인사업자"}

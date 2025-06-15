@@ -138,7 +138,7 @@ const ServiceContainer = styled.section`
     @media ${device.mobile} {
       font-size: 20px;
       padding-left: 14px;
-      padding-right: 18px;
+      padding-right: 38px;
     }
   }
   p:last-child {
