@@ -30,6 +30,7 @@ const initialRequestState = {
   engineer_profile_image: "",
   service_date: "",
   service_time: "",
+  service_images: [],
   accepted_at: "",
   created_at: "",
   completed_at: "",
@@ -38,6 +39,7 @@ const initialRequestState = {
   status: 1,
   sprint: [],
   detailInfo: "",
+  customer_type: "",
 };
 
 export const RequestProvider = ({ children }) => {
@@ -61,6 +63,7 @@ export const RequestProvider = ({ children }) => {
     "engineer_profile_image",
     "service_date",
     "service_time",
+    "service_images",
     "accepted_at",
     "created_at",
     "completed_at",
@@ -69,6 +72,7 @@ export const RequestProvider = ({ children }) => {
     "status",
     "sprint",
     "detailInfo",
+    "customer_type",
   ];
   const filterAllowedFields = (data) => {
     const filtered = {};

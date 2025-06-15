@@ -81,29 +81,29 @@ const AdditionalRequest = () => {
 
       resetRequestData();
 
-      https: try {
-        await axios.post("https://api.coner.kr/sms/notify", {
-          service_date: requestData.service_date,
-          service_time: requestData.service_time,
-          brand: requestData.brand,
-          aircon_type: requestData.aircon_type,
-          service_type: requestData.service_type,
-          customer_address: requestData.customer_address,
-          customer_phone: requestData.customer_phone,
-        });
-        console.log("✅ 알림 전송 성공");
-      } catch (err) {
-        console.error("❌ 알림 전송 실패:", err.response?.data || err.message);
-        console.log("❓ 실제 요청 보낸 데이터:", {
-          service_date: requestData.service_date,
-          service_time: requestData.service_time,
-          brand: requestData.brand,
-          aircon_type: requestData.aircon_type,
-          service_type: requestData.service_type,
-          customer_address: requestData.customer_address,
-          customer_phone: requestData.customer_phone,
-        });
-      }
+      // https: try {
+      //   await axios.post("https://api.coner.kr/sms/notify", {
+      //     service_date: requestData.service_date,
+      //     service_time: requestData.service_time,
+      //     brand: requestData.brand,
+      //     aircon_type: requestData.aircon_type,
+      //     service_type: requestData.service_type,
+      //     customer_address: requestData.customer_address,
+      //     customer_phone: requestData.customer_phone,
+      //   });
+      //   console.log("✅ 알림 전송 성공");
+      // } catch (err) {
+      //   console.error("❌ 알림 전송 실패:", err.response?.data || err.message);
+      //   console.log("❓ 실제 요청 보낸 데이터:", {
+      //     service_date: requestData.service_date,
+      //     service_time: requestData.service_time,
+      //     brand: requestData.brand,
+      //     aircon_type: requestData.aircon_type,
+      //     service_type: requestData.service_type,
+      //     customer_address: requestData.customer_address,
+      //     customer_phone: requestData.customer_phone,
+      //   });
+      // }
       navigate("/inquirydashboard", {
         state: {
           clientPhone: requestData.customer_phone,

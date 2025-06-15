@@ -36,7 +36,7 @@ const TimeSlotContainer = styled.div`
   width: 460px;
   @media ${device.mobile} {
     grid-template-columns: repeat(2, 1fr);
-    width: 400px;
+    width: 380px;
   }
 `;
 

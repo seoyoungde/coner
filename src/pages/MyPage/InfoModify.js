@@ -272,7 +272,7 @@ const InfoModify = () => {
               />
             </FormGroup>
             <FormGroup>
-              <Label>직업</Label>
+              <Label>고객유형</Label>
               <JobButtonBox>
                 {["개인사업자", "법인사업자", "개인"].map((job) => (
                   <JobButton
