@@ -63,12 +63,12 @@ const TypeCards = styled.section`
   }
 
   h1 {
-    margin-left: 17px;
+    margin-left: 42px;
     font-size: ${({ theme }) => theme.fonts.sizes.large};
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
     @media ${device.mobile} {
       font-size: 28px;
-      padding-left: 14px;
+      padding-left: 10px;
     }
   }
 
@@ -76,18 +76,18 @@ const TypeCards = styled.section`
     font-size: ${({ theme }) => theme.fonts.sizes.medium};
     font-weight: ${({ theme }) => theme.fonts.weights.medium};
     color: ${({ theme }) => theme.colors.subtext};
-    margin: 5px 0px 12px 17px;
+    margin: 5px 0px 12px 42px;
 
     @media ${device.mobile} {
       font-size: 20px;
-      padding-left: 14px;
+      padding-left: 10px;
     }
   }
 `;
 
 const TypeList = styled.ul`
   display: flex;
-  width: 80%;
+  width: 87%;
   justify-content: space-between;
   margin: auto;
   list-style: none;

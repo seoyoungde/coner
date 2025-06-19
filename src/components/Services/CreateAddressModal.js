@@ -5,6 +5,7 @@ import DaumPostcode from "react-daum-postcode";
 import { IoIosArrowBack } from "react-icons/io";
 import { device } from "../../styles/theme";
 import { useScaleLayout } from "../../hooks/useScaleLayout";
+import Popup from "../Apply/Popup";
 
 const SERVICE_AREAS = [
   "서울 강북구",
@@ -47,7 +48,7 @@ const CreateAddressModal = () => {
     }
   };
 
-  const handleClosePopup = () => {
+  const closePopup = () => {
     setPopupMessage("");
   };
 
@@ -80,11 +81,9 @@ const CreateAddressModal = () => {
           />
 
           {popupMessage && (
-            <Popup>
-              <PopupContent>
-                <PopupMessage>{popupMessage}</PopupMessage>
-                <CloseButton onClick={handleClosePopup}>닫기</CloseButton>
-              </PopupContent>
+            <Popup onClose={closePopup}>
+              <PopupMessage>{popupMessage}</PopupMessage>
+              <CloseButton onClick={closePopup}>닫기</CloseButton>
             </Popup>
           )}
         </PostcodeWrapper>
@@ -142,35 +141,22 @@ const BackIcon = styled(IoIosArrowBack)`
   }
 `;
 
-const Popup = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const PopupContent = styled.div`
-  background: white;
-  border-radius: 10px;
-  text-align: center;
-  width: 300px;
-`;
-
 const PopupMessage = styled.p`
   font-size: 15px;
-  padding: 30px 30px 70px 30px;
+  padding: 30px 30px 50px 30px;
   margin-bottom: 20px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
+
+  @media ${device.mobile} {
+    font-size: 12px;
+    padding: 30px 10px 20px 10px;
+    margin-bottom: 10px;
+  }
 `;
 
 const CloseButton = styled.button`
   width: 100%;
-  padding: 20px;
+  padding: 10px;
   border: none;
   background-color: ${({ theme }) => theme.colors.main};
   color: white;
@@ -178,6 +164,10 @@ const CloseButton = styled.button`
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   border-radius: 0px 0px 10px 10px;
   cursor: pointer;
+  @media ${device.mobile} {
+    font-size: 12px;
+    padding: 15px;
+  }
 `;
 
 export default CreateAddressModal;

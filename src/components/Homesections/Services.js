@@ -104,7 +104,19 @@ const Services = () => {
             </ServiceItem>
           )
         )}
-        <StyledLink to="/pricing">서비스비용이 궁금하신가요?</StyledLink>
+        <LinkBox>
+          <StyledLink to="/pricing">서비스비용이 궁금하신가요?</StyledLink>
+          <ChatBox>
+            <ChatTitle>서비스에대해 문의하실 사항이 있으신가요?</ChatTitle>
+            <OnlineChat
+              href="https://talk.naver.com/ct/w7a8bh2#nafullscreen"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              온라인상담하기
+            </OnlineChat>
+          </ChatBox>
+        </LinkBox>
       </ServiceList>
     </ServiceContainer>
   );
@@ -116,13 +128,13 @@ const ServiceContainer = styled.section`
   padding-bottom: 5px;
   margin-bottom: 20px;
   h1 {
-    margin-left: 17px;
+    margin-left: 42px;
     font-size: ${({ theme }) => theme.fonts.sizes.large};
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
 
     @media ${device.mobile} {
       font-size: 28px;
-      padding-left: 14px;
+      padding-left: 10px;
       padding-right: 20px;
     }
   }
@@ -133,11 +145,11 @@ const ServiceContainer = styled.section`
     font-size: ${({ theme }) => theme.fonts.sizes.medium};
     font-weight: ${({ theme }) => theme.fonts.weights.medium};
     color: ${({ theme }) => theme.colors.subtext};
-    margin: 5px 0px 32px 17px;
+    margin: 5px 0px 32px 42px;
 
     @media ${device.mobile} {
       font-size: 20px;
-      padding-left: 14px;
+      padding-left: 10px;
       padding-right: 38px;
     }
   }
@@ -201,8 +213,12 @@ const ServiceItem = styled.li`
     }
   }
 `;
-const StyledLink = styled(Link)`
+const LinkBox = styled.div`
+  display: flex;
+  flex-direction: column;
   margin-left: 30px;
+`;
+const StyledLink = styled(Link)`
   margin-bottom: 10px;
   color: #a0a0a0;
   font-size: 0.9rem;
@@ -210,8 +226,31 @@ const StyledLink = styled(Link)`
   @media ${device.mobile} {
     font-size: 16px;
     font-weight: 600;
-    margin-left: 20px;
+    margin-left: 10px;
   }
 `;
+const OnlineChat = styled.a`
+  font-size: 0.9rem;
+  border: 1px solid #0080ff;
 
+  padding: 7px;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #0080ff;
+  @media ${device.mobile} {
+    font-size: 16px;
+    font-weight: 600;
+    margin-left: 10px;
+  }
+`;
+const ChatTitle = styled.p`
+  text-align: center;
+  padding: 8px 0px 0px 0px;
+  color: #a0a0a0;
+  font-size: 0.9rem;
+`;
+const ChatBox = styled.div`
+  display: flex;
+  gap: 10px;
+`;
 export default Services;

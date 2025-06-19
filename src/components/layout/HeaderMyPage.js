@@ -62,9 +62,9 @@ const InnerWrapper = styled.div`
 `;
 
 const Logo = styled.img`
-  height: 25px;
+  height: 22px;
   @media ${device.mobile} {
-    height: 32px;
+    height: 28px;
   }
 `;
 

@@ -50,11 +50,11 @@ const Title = styled.h1`
   display: flex;
 
   img {
-    width: 80px;
+    width: 75px;
     height: auto;
     object-fit: contain;
     @media ${device.mobile} {
-      width: 110px;
+      width: 100px;
     }
   }
 `;

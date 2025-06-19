@@ -128,6 +128,7 @@ const Main = () => {
     "/createaddressmodal",
     "/infomodifyaddressmodal",
     "/qnapage",
+    "/addresspage",
   ];
   return (
     <Container style={{ height: `${windowHeight}px` }}>
