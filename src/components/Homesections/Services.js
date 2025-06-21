@@ -243,9 +243,12 @@ const OnlineChat = styled.a`
 `;
 const ChatTitle = styled.p`
   text-align: center;
-  padding: 8px 0px 0px 10px;
+  padding: 8px 0px 0px 0px;
   color: #a0a0a0;
   font-size: 0.9rem;
+  @media ${device.mobile} {
+    padding: 8px 0px 0px 10px;
+  }
 `;
 const ChatBox = styled.div`
   display: flex;
