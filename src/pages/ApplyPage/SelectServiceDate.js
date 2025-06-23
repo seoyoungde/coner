@@ -17,7 +17,7 @@ const SelectServiceDate = () => {
   const navigate = useNavigate();
   const { updateRequestData } = useRequest();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedTime, setSelectedTime] = useState("1");
+  const [selectedTime, setSelectedTime] = useState(" ");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { scale, height, ref } = useScaleLayout();
   const { requestData } = useRequest();

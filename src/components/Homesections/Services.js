@@ -84,8 +84,10 @@ const Services = () => {
   };
   return (
     <ServiceContainer>
-      <h1>일정만 남기면, 냉난방기 기사가 자동으로 도착합니다.</h1>
-      <p className="subtitle">전화 없이, 검색없이, 오직 한번의 입력으로</p>
+      <h1>전화 없이, 검색없이, 오직 한번의 입력으로</h1>
+      <p className="subtitle">
+        일정만 남기면, 냉난방기 기사가 자동으로 도착합니다.
+      </p>
 
       <ServiceList>
         {[...serviceData, { id: "empty", hidden: true }].map((service) =>
