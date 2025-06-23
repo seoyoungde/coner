@@ -184,7 +184,9 @@ const RequestReceived = ({
     if (!cancelRequestId) return;
 
     try {
-      await deleteDoc(doc(db, "Request", cancelRequestId));
+      // await deleteDoc(doc(db, "Request", cancelRequestId));
+      const cancelRef = doc(db, "Request", cancelRequestId);
+      await updateDoc(cancelRef, { status: 0 });
 
       updateRequestData(cancelRequestId, null);
 
@@ -316,7 +318,7 @@ const RequestReceived = ({
             )}
           </Section>
 
-          {/* 방문 희망 시간 수정 */}
+          {/* 방문 희망 시간 수정
           <Section>
             <Label>방문 희망 시간</Label>
             {editingRequestId === requestData.id ? (
@@ -332,7 +334,7 @@ const RequestReceived = ({
             ) : (
               <Value>{selectedServcie_time || "없음"}</Value>
             )}
-          </Section>
+          </Section> */}
           {/* 에어컨종류 */}
           <Section>
             <Label>서비스받을에어컨종류</Label>
@@ -852,7 +854,7 @@ const EditButton = styled.button`
   color: white;
   border-radius: 10px;
   padding: 13px;
-  font-size: 18px;
+  font-size: 17px;
   border: none;
   cursor: pointer;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
