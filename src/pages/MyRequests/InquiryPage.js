@@ -125,7 +125,9 @@ const InquiryPage = () => {
   };
 
   const completedRequests = requestDataList.filter((req) => req.status >= 4);
-  const inProgressRequests = requestDataList.filter((req) => req.status < 4);
+  const inProgressRequests = requestDataList.filter(
+    (req) => req.status > 0 && req.status < 4
+  );
 
   return (
     <ScaleWrapper

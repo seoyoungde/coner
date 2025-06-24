@@ -84,9 +84,9 @@ const Services = () => {
   };
   return (
     <ServiceContainer>
-      <h1>간편하게 서비스 예약하고, 3시간 안에 배정받으세요!</h1>
+      <h1>전화 없이, 검색없이, 오직 한번의 입력으로</h1>
       <p className="subtitle">
-        누적 120건+,만족도 98%의 냉난방기 전문가 지금 배정 받으세요.
+        일정만 남기면, 냉난방기 기사가 자동으로 도착합니다.
       </p>
 
       <ServiceList>
@@ -246,6 +246,7 @@ const ChatTitle = styled.p`
   padding: 8px 0px 0px 0px;
   color: #a0a0a0;
   font-size: ${({ theme }) => theme.fonts.sizes.small};
+
 `;
 const ChatBox = styled.div`
   display: flex;

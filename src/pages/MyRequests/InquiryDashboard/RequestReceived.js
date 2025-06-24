@@ -184,7 +184,9 @@ const RequestReceived = ({
     if (!cancelRequestId) return;
 
     try {
-      await deleteDoc(doc(db, "Request", cancelRequestId));
+      // await deleteDoc(doc(db, "Request", cancelRequestId));
+      const cancelRef = doc(db, "Request", cancelRequestId);
+      await updateDoc(cancelRef, { status: 0 });
 
       updateRequestData(cancelRequestId, null);
 
