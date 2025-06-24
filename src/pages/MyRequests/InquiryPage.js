@@ -226,6 +226,7 @@ const InnerWrapper = styled.div`
   position: relative;
   @media ${device.mobile} {
     width: 95%;
+    padding: 0 10px;
   }
 `;
 const Spacer = styled.div`

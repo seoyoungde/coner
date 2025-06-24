@@ -259,8 +259,11 @@ const BackButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  padding-left: 20px;
+  padding-left: 10px;
   padding-top: 10px;
+  @media ${device.mobile} {
+    padding-left: 20px;
+  }
 `;
 const BackIcon = styled(IoIosArrowBack)`
   font-size: 30px;
@@ -376,8 +379,8 @@ const Input = styled.input`
 const SubmitButton = styled.button`
   width: 100%;
   padding: 15px 15px 15px 15px;
-  font-size: 19px;
-  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  font-size: 17px;
+  font-weight: ${({ theme }) => theme.fonts.weights.medium};
   color: white;
   background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   border: none;

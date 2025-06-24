@@ -21,9 +21,18 @@ export const theme = {
       large: "21px",
       HeaderText: "20px",
     },
+    mobilesizes: {
+      small: "16px",
+      smallmedium: "18px",
+      medium: "20px",
+      mediumlarge: "24px",
+      large: "28px",
+    },
     weights: {
       light: 300, // 얇은 글씨
-      regular: 400, // 기본 두께
+      regular: 500, // 기본 두께
+      smallmedium: 600,
+      medium: 700,
       semibold: 900,
       bold: 980, // 굵은 글씨
     },

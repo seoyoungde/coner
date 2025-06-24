@@ -17,7 +17,7 @@ const SelectServiceDate = () => {
   const navigate = useNavigate();
   const { updateRequestData } = useRequest();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedTime, setSelectedTime] = useState("");
+  const [selectedTime, setSelectedTime] = useState(" ");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { scale, height, ref } = useScaleLayout();
   const { requestData } = useRequest();
@@ -36,7 +36,7 @@ const SelectServiceDate = () => {
     // new Date(2025, 5, 29),
   ];
   const handleNext = () => {
-    if (!selectedDate || !selectedTime) {
+    if (!selectedDate) {
       setIsPopupOpen(true);
       return;
     }
@@ -109,7 +109,7 @@ const SelectServiceDate = () => {
             <br />더 나은 일정으로 찾아뵐 수 있도록 최선을
             다하겠습니다.감사합니다.
           </InfoText2>
-          <TimeBox>
+          {/* <TimeBox>
             <SelectedContainer>
               <TimeIcon>
                 <AiOutlineClockCircle />
@@ -123,7 +123,7 @@ const SelectServiceDate = () => {
               selectedTime={selectedTime}
               setSelectedTime={setSelectedTime}
             />
-          </TimeBox>
+          </TimeBox> */}
         </FormLayout>
         {isPopupOpen && (
           <Popup onClose={() => setIsPopupOpen(false)}>
@@ -158,8 +158,11 @@ const BackButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  padding-left: 20px;
+  padding-left: 10px;
   padding-top: 10px;
+  @media ${device.mobile} {
+    padding-left: 20px;
+  }
 `;
 const BackIcon = styled(IoIosArrowBack)`
   font-size: 30px;

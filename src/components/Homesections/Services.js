@@ -133,7 +133,7 @@ const ServiceContainer = styled.section`
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
 
     @media ${device.mobile} {
-      font-size: 28px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.large};
       padding-left: 10px;
       padding-right: 20px;
     }
@@ -148,7 +148,7 @@ const ServiceContainer = styled.section`
     margin: 5px 0px 32px 42px;
 
     @media ${device.mobile} {
-      font-size: 20px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.large};
       padding-left: 10px;
       padding-right: 38px;
     }
@@ -159,7 +159,7 @@ const ServiceContainer = styled.section`
     color: black;
 
     @media ${device.mobile} {
-      font-size: 20px;
+      ${({ theme }) => theme.fonts.mobilesizes.large}
     }
   }
 `;
@@ -204,11 +204,11 @@ const ServiceItem = styled.li`
 
   p {
     margin-top: 5px;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: ${({ theme }) => theme.fonts.sizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
 
     @media ${device.mobile} {
-      font-size: 1.4rem;
+      ${({ theme }) => theme.fonts.mobilesizes.medium}
       margin-top: 15px;
     }
   }
@@ -221,16 +221,14 @@ const LinkBox = styled.div`
 const StyledLink = styled(Link)`
   margin-bottom: 10px;
   color: #a0a0a0;
-  font-size: 0.9rem;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
 
   @media ${device.mobile} {
-    font-size: 16px;
-    font-weight: 600;
-    margin-left: 10px;
-  }
+    font-size: ${({ theme }) => theme.fonts.sizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.smallmedium}
 `;
 const OnlineChat = styled.a`
-  font-size: 0.9rem;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   border: 1px solid #0080ff;
 
   padding: 7px;
@@ -238,8 +236,8 @@ const OnlineChat = styled.a`
   text-decoration: none;
   color: #0080ff;
   @media ${device.mobile} {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
+    font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
     margin-left: 10px;
   }
 `;
@@ -247,7 +245,7 @@ const ChatTitle = styled.p`
   text-align: center;
   padding: 8px 0px 0px 0px;
   color: #a0a0a0;
-  font-size: 0.9rem;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
 `;
 const ChatBox = styled.div`
   display: flex;

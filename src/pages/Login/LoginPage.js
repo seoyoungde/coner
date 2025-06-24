@@ -231,12 +231,12 @@ const Userpassword = styled.input.attrs({
 const LoginButton = styled.button`
   background-color: ${({ disabled }) => (disabled ? "#ddd" : "#0080FF")};
   color: white;
-  font-weight: bold;
+  font-weight: 700;
   padding: 16px 0;
   border: none;
   border-radius: 8px;
   width: 100%;
-  font-size: 16px;
+  font-size: 17px;
   margin-bottom: 24px;
   cursor: pointer;
   margin-top: 20px;
