@@ -246,7 +246,10 @@ const ChatTitle = styled.p`
   padding: 8px 0px 0px 0px;
   color: #a0a0a0;
   font-size: ${({ theme }) => theme.fonts.sizes.small};
-
+  @media ${device.mobile} {
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
+    font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
+  }
 `;
 const ChatBox = styled.div`
   display: flex;
