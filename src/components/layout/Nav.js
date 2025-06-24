@@ -89,34 +89,34 @@ const NavItem = styled(NavLink)`
   text-decoration: none;
 
   p {
-    font-size: 1rem;
+    font-size: ${({ theme }) => theme.fonts.sizes.medium};
     color: #d9d9d9;
     @media ${device.mobile} {
-      font-size: 20px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
     }
   }
 
   svg {
-    font-size: 1.3rem;
+    font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
     color: #d9d9d9;
     @media ${device.mobile} {
-      font-size: 24px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.mediumlarge};
     }
   }
 
   &.active {
     p {
-      font-size: 1rem;
+      font-size: ${({ theme }) => theme.fonts.sizes.medium};
       color: #0080ff;
       @media ${device.mobile} {
-        font-size: 20px;
+        font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
       }
     }
     svg {
-      font-size: 1.3rem;
+      font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
       color: #0080ff;
       @media ${device.mobile} {
-        font-size: 24px;
+        font-size: ${({ theme }) => theme.fonts.mobilesizes.mediumlarge};
       }
     }
   }
@@ -130,34 +130,34 @@ const StyledNavLink = styled(NavLink)`
   text-decoration: none;
 
   p {
-    font-size: 1rem;
+    font-size: ${({ theme }) => theme.fonts.sizes.medium};
     color: #d9d9d9;
     @media ${device.mobile} {
-      font-size: 20px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
     }
   }
 
   svg {
-    font-size: 1.3rem;
+    font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
     color: #d9d9d9;
     @media ${device.mobile} {
-      font-size: 24px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.mediumlarge};
     }
   }
 
   &.active {
     p {
-      font-size: 1rem;
+      font-size: ${({ theme }) => theme.fonts.sizes.medium};
       color: #0080ff;
       @media ${device.mobile} {
-        font-size: 20px;
+        font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
       }
     }
     svg {
-      font-size: 1.3rem;
+      font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
       color: #0080ff;
       @media ${device.mobile} {
-        font-size: 24px;
+        font-size: ${({ theme }) => theme.fonts.mobilesizes.mediumlarge};
       }
     }
   }

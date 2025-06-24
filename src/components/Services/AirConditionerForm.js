@@ -131,8 +131,11 @@ const BackButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  padding-left: 20px;
+  padding-left: 10px;
   padding-top: 10px;
+  @media ${device.mobile} {
+    padding-left: 20px;
+  }
 `;
 
 const TitleSection = styled.div`
@@ -234,12 +237,12 @@ const OptionBox = styled.div`
 const SubmitButton = styled.button`
   width: 100%;
   padding: 15px;
-  font-size: 19px;
-  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  font-size: 17px;
+  font-weight: ${({ theme }) => theme.fonts.weights.medium};
   color: white;
   background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   border: none;
-  border-radius: 9px;
+  border-radius: 8px;
   cursor: pointer;
   margin-top: 15px;
 

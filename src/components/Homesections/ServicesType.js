@@ -67,7 +67,7 @@ const TypeCards = styled.section`
     font-size: ${({ theme }) => theme.fonts.sizes.large};
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
     @media ${device.mobile} {
-      font-size: 28px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.large};
       padding-left: 10px;
     }
   }
@@ -79,7 +79,7 @@ const TypeCards = styled.section`
     margin: 5px 0px 12px 42px;
 
     @media ${device.mobile} {
-      font-size: 20px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
       padding-left: 10px;
     }
   }
@@ -98,7 +98,7 @@ const TypeList = styled.ul`
   -ms-overflow-style: none; /* IE */
 
   @media ${device.mobile} {
-    width: 90%;
+    width: 87%;
   }
 `;
 
@@ -121,10 +121,10 @@ const TypeCard = styled.li`
   }
 
   h3 {
-    font-size: ${({ theme }) => theme.fonts.sizes.medium || "17px"};
-    font-weight: 600;
+    font-size: ${({ theme }) => theme.fonts.sizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
     @media ${device.mobile} {
-      font-size: 20px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
     }
   }
 `;

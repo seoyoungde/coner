@@ -158,8 +158,11 @@ const BackButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  padding-left: 20px;
+  padding-left: 10px;
   padding-top: 10px;
+  @media ${device.mobile} {
+    padding-left: 20px;
+  }
 `;
 const BackIcon = styled(IoIosArrowBack)`
   font-size: 30px;

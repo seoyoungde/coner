@@ -58,12 +58,12 @@ const Content = styled.div`
 const NextButton = styled.button`
   width: 100%;
   padding: 15px;
-  font-size: 18px;
-  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  font-size: 17px;
+  font-weight: ${({ theme }) => theme.fonts.weights.medium};
   color: white;
   background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   margin-top: 20px;
   @media ${device.mobile} {

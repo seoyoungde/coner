@@ -99,8 +99,11 @@ const Container = styled.div`
 const Header = styled.div`
   display: flex;
   align-items: center;
-  padding: 10px 20px;
+  padding: 10px 10px;
   background-color: white;
+  @media ${device.mobile} {
+    padding: 10px 20px;
+  }
 `;
 
 const PostcodeWrapper = styled.div`

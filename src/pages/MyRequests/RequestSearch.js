@@ -135,7 +135,7 @@ const Title = styled.div`
     font-size: ${({ theme }) => theme.fonts.sizes.large};
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
     @media ${device.mobile} {
-      font-size: 24px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.mediumlarge};
     }
   }
   p {
@@ -143,8 +143,8 @@ const Title = styled.div`
     font-weight: ${({ theme }) => theme.fonts.weights.medium};
     margin-top: 4px;
     @media ${device.mobile} {
-      font-size: 20px;
-      font-weight: 500;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
+      font-weight: ${({ theme }) => theme.fonts.weights.regular};
     }
   }
 `;
@@ -158,11 +158,11 @@ const InputWrapper = styled.div`
 
   label {
     display: block;
-    font-size: 19.5px;
+    font-size: ${({ theme }) => theme.fonts.sizes.large};
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
     margin-bottom: 10px;
     @media ${device.mobile} {
-      font-size: 20px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
       margin-top: 20px;
     }
   }
@@ -174,7 +174,7 @@ const InputField = styled.input`
   border-radius: 10px;
   height: 48px;
   padding: 0 10px;
-  font-size: 16px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-family: inherit;
 
   &:focus {
@@ -186,21 +186,21 @@ const InputField = styled.input`
     color: #a0a0a0;
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
     @media ${device.mobile} {
-      font-size: 18px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
     }
   }
   @media ${device.mobile} {
     height: 58px;
     padding: 20px;
     margin-top: 5px;
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.sizes.medium};
   }
 `;
 
 const ErrorText = styled.p`
   color: #0080ff;
-  font-size: 14px;
-  font-weight: bold;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
+  font-weight: ${({ theme }) => theme.fonts.weights.medium};
   margin-top: -20px;
   margin-bottom: 20px;
   text-align: center;
@@ -210,12 +210,12 @@ const SearchButton = styled.button`
   border: none;
   background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   width: 100%;
-  border-radius: 10px;
+  border-radius: 8px;
   height: 50px;
   color: white;
   cursor: pointer;
-  font-weight: ${({ theme }) => theme.fonts.weights.bold};
-  font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
+  font-weight: ${({ theme }) => theme.fonts.weights.medium};
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
 
   &:hover {
     background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
@@ -223,8 +223,8 @@ const SearchButton = styled.button`
   @media ${device.mobile} {
     height: 60px;
     margin-top: 20px;
-    font-size: 20px;
-    font-weight: 900;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.bold};
   }
 `;
 

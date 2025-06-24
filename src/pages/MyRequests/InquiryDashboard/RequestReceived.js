@@ -873,7 +873,7 @@ const SaveButton = styled.button`
   font-size: 17px;
   border: none;
   cursor: pointer;
-  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  font-weight: ${({ theme }) => theme.fonts.weights.medium};
   @media ${device.mobile} {
     font-size: 20px;
     padding: 15px;
@@ -886,10 +886,10 @@ const EditCancelButton = styled.div`
   text-align: center;
   border-radius: 10px;
   padding: 13px;
-  font-size: 18px;
+  font-size: 17px;
   border: none;
   cursor: pointer;
-  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  font-weight: ${({ theme }) => theme.fonts.weights.medium};
   @media ${device.mobile} {
     font-size: 20px;
     padding: 15px;

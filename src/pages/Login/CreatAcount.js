@@ -473,7 +473,7 @@ const SubmitButton = styled.button`
   border: none;
   border-radius: 8px;
   font-size: 17px;
-  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+  font-weight: ${({ theme }) => theme.fonts.weights.medium};
   margin-bottom: 40px;
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   @media ${device.mobile} {
