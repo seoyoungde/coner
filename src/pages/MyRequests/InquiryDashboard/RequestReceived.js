@@ -253,7 +253,7 @@ const RequestReceived = ({
               <TechnicianTitle>배정된 기사님 정보</TechnicianTitle>
               <ProfileImage
                 src={
-                  requestData.engineer_Profile_image || "default-profile.jpg"
+                  requestData.engineer_profile_image || "default-profile.jpg"
                 }
                 alt="기사님 사진"
               />
@@ -692,7 +692,7 @@ const TechnicianTitle = styled.h3`
 const ProfileImage = styled.div`
   width: 70px;
   height: 70px;
-  border-radius: 50%;
+  border-radius: 8px;
   background: #ddd;
   margin: 0 auto;
   @media ${device.mobile} {

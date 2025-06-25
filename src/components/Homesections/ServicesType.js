@@ -67,7 +67,7 @@ const TypeCards = styled.section`
     font-size: ${({ theme }) => theme.fonts.sizes.large};
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
     @media ${device.mobile} {
-      font-size: ${({ theme }) => theme.fonts.mobilesizes.large};
+      font-size: 26px;
       padding-left: 10px;
     }
   }
