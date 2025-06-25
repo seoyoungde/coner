@@ -556,11 +556,13 @@ const RequestReceived = ({
           </ButtonGroup>
         ) : (
           <ButtonGroup>
-            <CancelButton
-              onClick={() => handleCancelRequestPopup(requestData.id)}
-            >
-              의뢰 취소
-            </CancelButton>
+            {requestData.status < 2 && (
+              <CancelButton
+                onClick={() => handleCancelRequestPopup(requestData.id)}
+              >
+                의뢰 취소
+              </CancelButton>
+            )}
             {requestData.status === 1 && (
               <EditButton onClick={() => handleEditClick(requestData.id)}>
                 수정

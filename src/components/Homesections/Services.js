@@ -133,7 +133,7 @@ const ServiceContainer = styled.section`
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
 
     @media ${device.mobile} {
-      font-size: ${({ theme }) => theme.fonts.mobilesizes.large};
+      font-size: 26px;
       padding-left: 10px;
       padding-right: 20px;
     }
@@ -148,7 +148,7 @@ const ServiceContainer = styled.section`
     margin: 5px 0px 32px 42px;
 
     @media ${device.mobile} {
-      font-size: ${({ theme }) => theme.fonts.mobilesizes.large};
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
       padding-left: 10px;
       padding-right: 38px;
     }
