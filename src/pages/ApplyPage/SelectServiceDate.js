@@ -21,6 +21,7 @@ const SelectServiceDate = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { scale, height, ref } = useScaleLayout();
   const { requestData } = useRequest();
+  const [isDateTouched, setIsDateTouched] = useState(false);
 
   const disabledDates = [
     // new Date(2025, 5, 14),
@@ -36,7 +37,7 @@ const SelectServiceDate = () => {
     // new Date(2025, 5, 29),
   ];
   const handleNext = () => {
-    if (!selectedDate) {
+    if (!isDateTouched) {
       setIsPopupOpen(true);
       return;
     }
@@ -76,40 +77,44 @@ const SelectServiceDate = () => {
             </BackIcon>
           </BackButton>
         </Header>
-        <StepProgressBar currentStep={2} totalSteps={4} />
+        <InnerWrapper>
+          <StepProgressBar currentStep={2} totalSteps={4} />
 
-        <FormLayout
-          title="서비스 희망 날짜 선택"
-          subtitle="원하시는 서비스 날짜를 선택해주세요."
-          onNext={handleNext}
-        >
-          <InfoText>오늘 날짜로부터 2일 이후부터 예약이 가능합니다.</InfoText>
+          <FormLayout
+            title="서비스 희망 날짜 선택"
+            subtitle="원하시는 서비스 날짜를 선택해주세요."
+            onNext={handleNext}
+          >
+            <InfoText>오늘 날짜로부터 2일 이후부터 예약이 가능합니다.</InfoText>
 
-          <DateBox>
-            <SelectedContainer>
-              <CalendarIcon>
-                <GrFormCalendar />
-              </CalendarIcon>
-              <SelectedText>{formatDate(selectedDate)}</SelectedText>
-            </SelectedContainer>
-            <CalendarPicker
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-              excludeDates={disabledDates}
-            />
-          </DateBox>
+            <DateBox>
+              <SelectedContainer>
+                <CalendarIcon>
+                  <GrFormCalendar />
+                </CalendarIcon>
+                <SelectedText>{formatDate(selectedDate)}</SelectedText>
+              </SelectedContainer>
+              <CalendarPicker
+                selectedDate={selectedDate}
+                setSelectedDate={(date) => {
+                  setSelectedDate(date);
+                  setIsDateTouched(true);
+                }}
+                excludeDates={disabledDates}
+              />
+            </DateBox>
 
-          <InfoText2>
-            <strong />
-            안내드립니다 <br />
-            현재 LG U+ 프로젝트 진행으로 인해 일부 일정에 변동이 생길 수
-            있습니다.
-            <br />
-            최상의 서비스 제공을 위해 조율이 필요한 점 너른 양해 부탁드립니다.
-            <br />더 나은 일정으로 찾아뵐 수 있도록 최선을
-            다하겠습니다.감사합니다.
-          </InfoText2>
-          {/* <TimeBox>
+            <InfoText2>
+              <strong />
+              안내드립니다 <br />
+              현재 LG U+ 프로젝트 진행으로 인해 일부 일정에 변동이 생길 수
+              있습니다.
+              <br />
+              최상의 서비스 제공을 위해 조율이 필요한 점 너른 양해 부탁드립니다.
+              <br />더 나은 일정으로 찾아뵐 수 있도록 최선을
+              다하겠습니다.감사합니다.
+            </InfoText2>
+            {/* <TimeBox>
             <SelectedContainer>
               <TimeIcon>
                 <AiOutlineClockCircle />
@@ -124,10 +129,11 @@ const SelectServiceDate = () => {
               setSelectedTime={setSelectedTime}
             />
           </TimeBox> */}
-        </FormLayout>
+          </FormLayout>
+        </InnerWrapper>
         {isPopupOpen && (
           <Popup onClose={() => setIsPopupOpen(false)}>
-            <PopupMessage>모든 옵션을 선택해주세요.</PopupMessage>
+            <PopupMessage>날짜를 선택해주세요.</PopupMessage>
             <CloseButton onClick={() => setIsPopupOpen(false)}>
               닫기
             </CloseButton>
@@ -153,7 +159,14 @@ const Header = styled.div`
   display: flex;
   align-items: center;
 `;
-
+const InnerWrapper = styled.div`
+  width: 95%;
+  margin: auto;
+  @media ${device.mobile} {
+    width: 86%;
+    margin: auto;
+  }
+`;
 const BackButton = styled.button`
   background: none;
   border: none;
@@ -170,21 +183,21 @@ const BackIcon = styled(IoIosArrowBack)`
   font-size:40px;
 `;
 const InfoText = styled.p`
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   color: #888;
   @media ${device.mobile} {
-    font-size: 16px;
-    margin-bottom: 1rem;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
+    margin-bottom: 14px;
   }
 `;
 const InfoText2 = styled.p`
   text-align: left;
   margin-left: 10px;
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   color: #888;
+  margin-bottom: 16px;
   @media ${device.mobile} {
-    font-size: 16px;
-    margin-bottom: 1rem;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
   }
 `;
 
@@ -193,7 +206,6 @@ const DateBox = styled.div`
   width: 100%;
   padding: 20px;
   border-radius: 10px;
-
   border: 1px solid #d6d6d6;
   display: flex;
   flex-direction: column;
@@ -230,22 +242,22 @@ const SelectedContainer = styled.div`
 `;
 
 const SelectedText = styled.div`
-  font-size: 17px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: bold;
   color: #333;
   @media ${device.mobile} {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
 
 const PopupMessage = styled.p`
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   padding: 30px 30px 50px 30px;
   margin-bottom: 20px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
 
   @media ${device.mobile} {
-    font-size: 14px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
     padding: 30px 10px 20px 20px;
     margin-bottom: 10px;
   }
@@ -257,12 +269,12 @@ const CloseButton = styled.button`
   border: none;
   background-color: ${({ theme }) => theme.colors.main};
   color: white;
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   border-radius: 0px 0px 10px 10px;
   cursor: pointer;
   @media ${device.mobile} {
-    font-size: 14px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
     padding: 15px;
   }
 `;

@@ -241,95 +241,96 @@ const InfoModify = () => {
       }}
     >
       <Container ref={ref}>
-        <Header>
-          <BackButton onClick={() => navigate(-1)}>
-            <BackIcon>
-              <IoIosArrowBack size={28} />
-            </BackIcon>
-          </BackButton>
-          <Title>내 정보 수정</Title>
-        </Header>
+        <InnerWrapper>
+          <Header>
+            <BackButton onClick={() => navigate(-1)}>
+              <BackIcon>
+                <IoIosArrowBack size={28} />
+              </BackIcon>
+            </BackButton>
+            <Title>내 정보 수정</Title>
+          </Header>
 
-        <FormSection>
-          <SectionTitle>회원정보입력</SectionTitle>
-          <FormBox>
-            <FormGroup>
-              <Label>이메일</Label>
-              <Input
-                name="email"
-                value={formData.email}
-                onFocus={() => handleFocusClear("email")}
-                onChange={handleChange}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label>이름</Label>
-              <Input
-                name="name"
-                value={formData.name}
-                onFocus={() => handleFocusClear("name")}
-                onChange={handleChange}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label>고객유형</Label>
-              <JobButtonBox>
-                {["개인사업자", "법인사업자", "개인"].map((job) => (
-                  <JobButton
-                    key={job}
-                    $isSelected={formData.job === job}
-                    onClick={() =>
-                      setFormData((prev) => ({ ...prev, job: job }))
-                    }
-                  >
-                    {job}
-                  </JobButton>
-                ))}
-              </JobButtonBox>
-            </FormGroup>
-            <FormGroup>
-              <Label>생년월일</Label>
-              <Input
-                name="birth_date"
-                value={formData.birth_date}
-                onFocus={() => handleFocusClear("birth_date")}
-                onChange={formatBirthInput}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label>주소</Label>
-              <Input
-                name="address"
-                value={formData.address}
-                readOnly
-                onClick={() => setIsAddressModalOpen(true)}
-              />
-
-              {isAddressModalOpen && (
-                <InfoModifyAddressModal
-                  onClose={() => setIsAddressModalOpen(false)}
-                  onSelect={handleAddressSelect}
+          <FormSection>
+            <SectionTitle>회원정보입력</SectionTitle>
+            <FormBox>
+              <FormGroup>
+                <Label>이메일</Label>
+                <Input
+                  name="email"
+                  value={formData.email}
+                  onFocus={() => handleFocusClear("email")}
+                  onChange={handleChange}
                 />
-              )}
-              <Input
-                name="address_detail"
-                value={formData.address_detail}
-                onFocus={() => handleFocusClear("address_detail")}
-                onChange={handleChange}
-                placeholder="상세주소"
-                style={{ marginTop: "10px" }}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label>전화번호</Label>
-              <Input
-                name="phone"
-                value={formData.phone}
-                readOnly
-                // onFocus={() => handleFocusClear("phone")}
-                onChange={formatPhoneInput}
-              />
-              {/* <SmallButton onClick={handleSendVerificationCode}>
+              </FormGroup>
+              <FormGroup>
+                <Label>이름</Label>
+                <Input
+                  name="name"
+                  value={formData.name}
+                  onFocus={() => handleFocusClear("name")}
+                  onChange={handleChange}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label>고객유형</Label>
+                <JobButtonBox>
+                  {["개인사업자", "법인사업자", "개인"].map((job) => (
+                    <JobButton
+                      key={job}
+                      $isSelected={formData.job === job}
+                      onClick={() =>
+                        setFormData((prev) => ({ ...prev, job: job }))
+                      }
+                    >
+                      {job}
+                    </JobButton>
+                  ))}
+                </JobButtonBox>
+              </FormGroup>
+              <FormGroup>
+                <Label>생년월일</Label>
+                <Input
+                  name="birth_date"
+                  value={formData.birth_date}
+                  onFocus={() => handleFocusClear("birth_date")}
+                  onChange={formatBirthInput}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label>주소</Label>
+                <Input
+                  name="address"
+                  value={formData.address}
+                  readOnly
+                  onClick={() => setIsAddressModalOpen(true)}
+                />
+
+                {isAddressModalOpen && (
+                  <InfoModifyAddressModal
+                    onClose={() => setIsAddressModalOpen(false)}
+                    onSelect={handleAddressSelect}
+                  />
+                )}
+                <Input
+                  name="address_detail"
+                  value={formData.address_detail}
+                  onFocus={() => handleFocusClear("address_detail")}
+                  onChange={handleChange}
+                  placeholder="상세주소"
+                  style={{ marginTop: "10px" }}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label>전화번호</Label>
+                <Input
+                  name="phone"
+                  value={formData.phone}
+                  readOnly
+                  // onFocus={() => handleFocusClear("phone")}
+                  onChange={formatPhoneInput}
+                />
+                {/* <SmallButton onClick={handleSendVerificationCode}>
                 인증번호받기
               </SmallButton>
               <Input
@@ -350,22 +351,23 @@ const InfoModify = () => {
                   {String(timer % 60).padStart(2, "0")}
                 </p>
               )} */}
-            </FormGroup>
-            <WidthdrawLink to="/withdraw">회원탈퇴하기</WidthdrawLink>
-          </FormBox>
-        </FormSection>
-        <div id="recaptcha-container" style={{ display: "none" }} />
-        <SubmitButton onClick={handleSubmit} disabled={isSubmitting}>
-          {isSubmitting ? "수정 중..." : "수정완료"}
-        </SubmitButton>
-        {isPopupOpen && (
-          <Popup onClose={() => setIsPopupOpen(false)}>
-            <PopupMessage>{popupMessage}</PopupMessage>
-            <CloseButton onClick={() => setIsPopupOpen(false)}>
-              닫기
-            </CloseButton>
-          </Popup>
-        )}
+              </FormGroup>
+              <WidthdrawLink to="/withdraw">회원탈퇴하기</WidthdrawLink>
+            </FormBox>
+          </FormSection>
+          <div id="recaptcha-container" style={{ display: "none" }} />
+          <SubmitButton onClick={handleSubmit} disabled={isSubmitting}>
+            {isSubmitting ? "수정 중..." : "수정완료"}
+          </SubmitButton>
+          {isPopupOpen && (
+            <Popup onClose={() => setIsPopupOpen(false)}>
+              <PopupMessage>{popupMessage}</PopupMessage>
+              <CloseButton onClick={() => setIsPopupOpen(false)}>
+                닫기
+              </CloseButton>
+            </Popup>
+          )}
+        </InnerWrapper>
       </Container>
     </ScaleWrapper>
   );
@@ -381,13 +383,16 @@ const ScaleWrapper = styled.div`
 
 const Container = styled.div`
   width: 100%;
+  margin-top: 20px;
   box-sizing: border-box;
-  padding: 20px;
+`;
+const InnerWrapper = styled.div`
+  width: 95%;
+  margin: auto;
   @media ${device.mobile} {
-    width: 96%;
+    width: 86%;
   }
 `;
-
 const Header = styled.div`
   display: flex;
   align-items: center;
@@ -412,10 +417,10 @@ const BackIcon = styled(IoIosArrowBack)`
 const Title = styled.h1`
   flex: 1;
   text-align: center;
-  font-size: 20px;
-  font-weight: bold;
+  font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
+  font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
   @media ${device.mobile} {
-    font-size: 24px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.mediumlarge};
   }
 `;
 
@@ -424,11 +429,11 @@ const FormSection = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 16px;
-  font-weight: bold;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
+  font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
   margin-bottom: 16px;
   @media ${device.mobile} {
-    font-size: 22px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
 
@@ -444,10 +449,10 @@ const FormGroup = styled.div`
 `;
 
 const Label = styled.p`
-  font-weight: bold;
+  font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
   margin-bottom: 6px;
   @media ${device.mobile} {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
 
@@ -456,7 +461,7 @@ const Input = styled.input`
   padding: 10px 14px;
   border: 1px solid #ddd;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   outline: none;
 
   &:focus {
@@ -466,7 +471,7 @@ const Input = styled.input`
     height: 52px;
     padding: 20px;
     margin-top: 5px;
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 
@@ -484,7 +489,7 @@ const JobButton = styled.button`
   padding: 10px 0;
   background: ${({ $isSelected }) => ($isSelected ? "#80BFFF" : "#f2f2f2")};
   color: black;
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   cursor: pointer;
 
   &:hover {
@@ -492,19 +497,19 @@ const JobButton = styled.button`
   }
   @media ${device.mobile} {
     padding: 15px 0;
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 
 const SmallButton = styled.button`
-  font-size: 13px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   color: #2b3ea3;
   background: none;
   border: none;
   cursor: pointer;
   margin-top: 8px;
   @media ${device.mobile} {
-    font-size: 1.2rem;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
   }
 `;
 
@@ -516,33 +521,33 @@ const SubmitButton = styled.button`
   color: #fff;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
-  font-weight: bold;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
+  font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
   cursor: pointer;
   @media ${device.mobile} {
     height: 60px;
     margin-top: 20px;
-    font-size: 20px;
-    font-weight: 900;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.bold};
     margin-bottom: 40px;
   }
 `;
 
 const WidthdrawLink = styled(Link)`
-  font-size: 0.8rem;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   cursor: pointer;
   @media ${device.mobile} {
-    font-size: 16px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
   }
 `;
 const PopupMessage = styled.p`
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   padding: 30px 30px 50px 30px;
   margin-bottom: 20px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
 
   @media ${device.mobile} {
-    font-size: 14px;
+    font-size: ${({ theme }) => theme.fonts.sizes.small};
     padding: 30px 10px 20px 20px;
     margin-bottom: 10px;
   }
@@ -554,12 +559,12 @@ const CloseButton = styled.button`
   border: none;
   background-color: ${({ theme }) => theme.colors.main};
   color: white;
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   border-radius: 0px 0px 10px 10px;
   cursor: pointer;
   @media ${device.mobile} {
-    font-size: 14px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
     padding: 15px;
   }
 `;

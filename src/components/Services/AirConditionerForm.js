@@ -54,19 +54,18 @@ const AirConditionerForm = ({
             <IoIosArrowBack size={32} color="#333" />
           </BackButton>
         </Header>
-
-        <StepProgressBar currentStep={0} totalSteps={4} />
-
-        <TitleSection>
-          <Title>{title}</Title>
-          <Description>{description}</Description>
-          <InfoText>
-            아직 에어컨이 없으시다면 걱정 마세요! 기사님이 직접 공간과 환경을
-            확인한 뒤, 가장 적합한 제품을 추천해드립니다
-          </InfoText>
-        </TitleSection>
-
         <Form>
+          <StepProgressBar currentStep={0} totalSteps={4} />
+
+          <TitleSection>
+            <Title>{title}</Title>
+            <Description>{description}</Description>
+            <InfoText>
+              아직 에어컨이 없으시다면 걱정 마세요! 기사님이 직접 공간과 환경을
+              확인한 뒤, 가장 적합한 제품을 추천해드립니다
+            </InfoText>
+          </TitleSection>
+
           <DropdownContainer>
             <DropdownHeader onClick={() => setIsDropdownOpen((prev) => !prev)}>
               <DropdownLabelBox>
@@ -151,7 +150,7 @@ const Title = styled.h2`
   margin-bottom: 3px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 24px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.mediumlarge};
   }
 `;
 
@@ -159,8 +158,8 @@ const Description = styled.p`
   font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 20px;
-    font-weight: 500;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.regular};
   }
 `;
 
@@ -180,13 +179,13 @@ const DropdownContainer = styled.div`
   width: 100%;
   margin-bottom: 20px;
   border: 2px solid #e3e3e3;
-  border-radius: 9px;
+  border-radius: 8px;
   background-color: white;
 `;
 
 const DropdownHeader = styled.div`
   padding: 25px 20px 5px 20px;
-  font-size: 17px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   display: flex;
   justify-content: space-between;
@@ -198,7 +197,7 @@ const DropdownLabel = styled.div`
   color: #333;
   margin-left: 10px;
   @media ${device.mobile} {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
 
@@ -218,10 +217,10 @@ const DropdownContent = styled.div`
 const OptionBox = styled.div`
   width: ${({ $width }) => $width};
   padding: 10px;
-  border: 1.5px solid rgb(235, 235, 235);
+  border: 1.5px solid #ebebeb;
   border-radius: 20px;
   text-align: center;
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   background-color: ${({ $isSelected }) =>
     $isSelected ? "#0080FF" : "#ffffff"};
@@ -230,14 +229,14 @@ const OptionBox = styled.div`
 
   @media ${device.mobile} {
     width: 350px;
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 
 const SubmitButton = styled.button`
   width: 100%;
   padding: 15px;
-  font-size: 17px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: ${({ theme }) => theme.fonts.weights.medium};
   color: white;
   background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
@@ -252,19 +251,19 @@ const SubmitButton = styled.button`
   @media ${device.mobile} {
     height: 60px;
     margin-top: 20px;
-    font-size: 20px;
-    font-weight: 900;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.bold};
   }
 `;
 
 const PopupMessage = styled.p`
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   padding: 30px 30px 50px 30px;
   margin-bottom: 20px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
 
   @media ${device.mobile} {
-    font-size: 14px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
     padding: 30px 10px 20px 20px;
     margin-bottom: 10px;
   }
@@ -276,21 +275,21 @@ const CloseButton = styled.button`
   border: none;
   background-color: ${({ theme }) => theme.colors.main};
   color: white;
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   border-radius: 0px 0px 10px 10px;
   cursor: pointer;
   @media ${device.mobile} {
-    font-size: 14px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
     padding: 15px;
   }
 `;
 const InfoText = styled.p`
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   color: black;
   margin-top: 10px;
   @media ${device.mobile} {
-    font-size: 16px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
     margin-bottom: 1rem;
   }
 `;

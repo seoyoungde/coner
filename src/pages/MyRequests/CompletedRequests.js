@@ -28,7 +28,7 @@ const CompletedRequests = ({ requestData }) => {
 
 const CenteredContent = styled.div`
   @media ${device.mobile} {
-    font-size: 1.4rem;
+    font-size: ${({ theme }) => theme.fonts.sizes.medium};
   }
 `;
 const RequestList = styled.div`
@@ -40,7 +40,7 @@ const RequestList = styled.div`
 
 const RequestCard = styled.div`
   border: 1px solid #ddd;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 18px;
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
   background-color: #fff;
@@ -61,18 +61,18 @@ const RequestHeader = styled.div`
 `;
 
 const Date = styled.div`
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   color: #a0a0a0;
   @media ${device.mobile} {
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 
 const Technician = styled.div`
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   color: #a0a0a0;
   @media ${device.mobile} {
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 
@@ -95,7 +95,7 @@ const Category = styled.div`
   padding: 5px 10px;
   font-weight: bold;
   @media ${device.mobile} {
-    font-size: 17px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
     padding: 8px 14px;
   }
 `;
@@ -108,17 +108,17 @@ const Service = styled.div`
   padding: 5px 10px;
   font-weight: bold;
   @media ${device.mobile} {
-    font-size: 17px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
     padding: 8px 14px;
   }
 `;
 
 const Address = styled.div`
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   color: #333;
   padding: 5px 10px;
   @media ${device.mobile} {
-    font-size: 16px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
   }
 `;
 

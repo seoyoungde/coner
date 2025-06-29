@@ -337,7 +337,7 @@ const RequestReceived = ({
           </Section> */}
           {/* 에어컨종류 */}
           <Section>
-            <Label>서비스받을에어컨종류</Label>
+            <Label>서비스 받을 에어컨 종류</Label>
             {editingRequestId === requestData.id ? (
               <DropdownSelector
                 title="에어컨 종류 선택하기"
@@ -606,18 +606,21 @@ const LabelBox = styled.div`
 const TechnicianContainer = styled.div``;
 
 const TechnicianETC = styled.div`
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   @media ${device.mobile} {
-    font-size: 16px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
     margin-bottom: 10px;
   }
 `;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  width: 96%;
+  width: 95%;
   margin: auto;
-  height: 100%;
+  @media ${device.mobile} {
+    width: 90%;
+    margin: auto;
+  }
 `;
 
 const ProgressBar = styled.div`
@@ -633,7 +636,6 @@ const ProgressStep = styled.div`
 `;
 const RequestBox = styled.div`
   width: 100%;
-  height: 100%;
 `;
 const Circle = styled.div`
   width: 18px;
@@ -658,12 +660,12 @@ const Line = styled.div`
 `;
 
 const StepLabel = styled.div`
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   font-weight: ${({ $isActive }) => ($isActive ? "bold" : "normal")};
   color: ${({ $isActive }) => ($isActive ? "#0080FF" : "#666")};
 
   @media ${device.mobile} {
-    font-size: 16px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
   }
 `;
 
@@ -681,12 +683,11 @@ const TechnicianCard = styled.div`
 `;
 
 const TechnicianTitle = styled.h3`
-  font-size: 18px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: bold;
-  color: #333;
   margin-bottom: 15px;
   @media ${device.mobile} {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
 const ProfileImage = styled.div`
@@ -709,27 +710,26 @@ const Tag = styled.span`
   display: inline-block;
   background: #0080ff;
   color: white;
-  font-size: 17px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: bold;
   padding: 5px 10px;
   border-radius: 15px;
   margin-top: 10px;
   @media ${device.mobile} {
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 const Tag2 = styled.div`
   @media ${device.mobile} {
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 const TechnicianName = styled.h2`
-  font-size: 18px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: bold;
-  color: #333;
   margin-top: 5px;
   @media ${device.mobile} {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
 
@@ -741,12 +741,11 @@ const ContactInfo = styled.div`
 `;
 
 const PhoneNumber = styled.span`
-  font-size: 16px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: bold;
-  color: #333;
   margin-right: 10px;
   @media ${device.mobile} {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
 
@@ -756,11 +755,11 @@ const CompanyInfo = styled.div`
 `;
 
 const CompanyTitle = styled.p`
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   font-weight: bold;
   color: #666;
   @media ${device.mobile} {
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 
@@ -768,7 +767,7 @@ const CompanyAddress = styled.p`
   font-size: 12px;
   color: #999;
   @media ${device.mobile} {
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 const TechnicianFooter = styled.div`
@@ -779,7 +778,7 @@ const TechnicianFooter = styled.div`
   justify-content: space-between;
   margin-top: 15px;
   color: white;
-  font-weight: bold;
+  font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
 `;
 
 const Section = styled.div`
@@ -789,27 +788,25 @@ const Section = styled.div`
 `;
 
 const Label = styled.div`
-  font-size: 16px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
-  color: #333;
   margin-bottom: 5px;
   @media ${device.mobile} {
-    font-size: 20px;
-    font-weight: 700;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.medium};
   }
 `;
 
 const Value = styled.div`
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
-  color: #333;
   background: #f9f9f9;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
   @media ${device.mobile} {
-    font-size: 18px;
-    font-weight: 500;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
+    font-weight: ${({ theme }) => theme.fonts.weights.regular};
     padding: 12px;
     margin-top: 5px;
   }
@@ -817,12 +814,11 @@ const Value = styled.div`
 
 const WarningText = styled.p`
   text-align: center;
-  color: #333;
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   margin-top: 40px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 16px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
   }
 `;
 
@@ -838,14 +834,14 @@ const CancelButton = styled.button`
   flex: 1;
   background-color: #ff5c5c;
   color: white;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 13px;
-  font-size: 17px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   border: none;
   cursor: pointer;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
     padding: 15px;
   }
 `;
@@ -854,14 +850,14 @@ const EditButton = styled.button`
   flex: 1;
   background-color: #ddd;
   color: white;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 13px;
-  font-size: 17px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   border: none;
   cursor: pointer;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
     padding: 15px;
   }
 `;
@@ -872,12 +868,12 @@ const SaveButton = styled.button`
   color: white;
   border-radius: 10px;
   padding: 13px;
-  font-size: 17px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   border: none;
   cursor: pointer;
   font-weight: ${({ theme }) => theme.fonts.weights.medium};
   @media ${device.mobile} {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
     padding: 15px;
   }
 `;
@@ -888,24 +884,24 @@ const EditCancelButton = styled.div`
   text-align: center;
   border-radius: 10px;
   padding: 13px;
-  font-size: 17px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   border: none;
   cursor: pointer;
   font-weight: ${({ theme }) => theme.fonts.weights.medium};
   @media ${device.mobile} {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
     padding: 15px;
   }
 `;
 
 const PopupMessage = styled.p`
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   padding: 30px 30px 50px 30px;
   margin-bottom: 20px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
 
   @media ${device.mobile} {
-    font-size: 14px;
+    font-size: ${({ theme }) => theme.fonts.sizes.small};
     padding: 30px 10px 20px 20px;
     margin-bottom: 10px;
   }
@@ -917,12 +913,12 @@ const CloseButton = styled.button`
   border: none;
   background-color: ${({ theme }) => theme.colors.main};
   color: white;
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   border-radius: 0px 0px 0px 0px;
   cursor: pointer;
   @media ${device.mobile} {
-    font-size: 14px;
+    font-size: ${({ theme }) => theme.fonts.sizes.small};
     padding: 15px;
   }
 `;
@@ -956,9 +952,9 @@ const RefreshIconButton = styled.button`
   }
 `;
 const RefreshText = styled.p`
-  font-size: 0.8rem;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   padding: 0.3rem;
   @media ${device.mobile} {
-    font-size: 1.2rem;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
   }
 `;

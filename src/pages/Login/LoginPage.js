@@ -167,14 +167,13 @@ const ScaleWrapper = styled.div`
 `;
 
 const Container = styled.div`
-  width: 100%;
-  padding: 20px;
+  width: 95%;
   box-sizing: border-box;
   position: absolute;
   top: 50%;
   text-align: center;
   @media ${device.mobile} {
-    width: 96%;
+    width: 86%;
   }
 `;
 
@@ -193,7 +192,7 @@ const UserPhoneNum = styled.input.attrs({
   padding: 16px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   &:focus {
     outline: none;
     border: 1px solid #0080ff;
@@ -203,7 +202,7 @@ const UserPhoneNum = styled.input.attrs({
     height: 62px;
     padding: 20px;
     margin-top: 5px;
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
 
@@ -214,7 +213,7 @@ const Userpassword = styled.input.attrs({
   padding: 16px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   width: 80%;
   &:focus {
     outline: none;
@@ -224,7 +223,7 @@ const Userpassword = styled.input.attrs({
     height: 62px;
     padding: 20px;
     margin-top: 5px;
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
 
@@ -236,15 +235,15 @@ const LoginButton = styled.button`
   border: none;
   border-radius: 8px;
   width: 100%;
-  font-size: 17px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   margin-bottom: 24px;
   cursor: pointer;
   margin-top: 20px;
   @media ${device.mobile} {
     height: 60px;
     margin-top: 20px;
-    font-size: 20px;
-    font-weight: 900;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.semibold};
   }
 `;
 const PassBtn = styled.button`
@@ -256,10 +255,10 @@ const SearchSection = styled.div`
   display: flex;
   justify-content: center;
   gap: 16px;
-  font-size: 13px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   color: #aaa;
   @media ${device.mobile} {
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 

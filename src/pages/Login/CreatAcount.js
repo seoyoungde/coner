@@ -328,11 +328,11 @@ const ScaleWrapper = styled.div`
   justify-content: center;
 `;
 const Container = styled.div`
-  width: 100%;
+  width: 95%;
   box-sizing: border-box;
-  padding: 20px;
+  margin-top: 20px;
   @media ${device.mobile} {
-    width: 96%;
+    width: 86%;
   }
 `;
 
@@ -357,10 +357,10 @@ const BackIcon = styled(IoIosArrowBack)`
 const Title = styled.h1`
   flex: 1;
   text-align: center;
-  font-size: 20px;
-  font-weight: bold;
+  font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
+  font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
   @media ${device.mobile} {
-    font-size: 24px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.mediumlarge};
   }
 `;
 
@@ -369,11 +369,11 @@ const FormSection = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 16px;
-  font-weight: bold;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
+  font-weight: : ${({ theme }) => theme.fonts.weights.smallmedium};
   margin-bottom: 16px;
   @media ${device.mobile} {
-    font-size: 22px;
+    font-size:  ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
 
@@ -389,21 +389,21 @@ const FormGroup = styled.div`
 `;
 
 const Label = styled.p`
-  font-weight: bold;
+  font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
   margin-bottom: 6px;
   @media ${device.mobile} {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
 
 const LabelRow = styled.div`
   display: flex;
   justify-content: space-between;
-  font-weight: bold;
+  font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
   margin-bottom: 6px;
   span {
     @media ${device.mobile} {
-      font-size: 1.4rem;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
     }
   }
 `;
@@ -413,7 +413,7 @@ const Input = styled.input`
   padding: 10px 14px;
   border: 1px solid #ddd;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   outline: none;
 
   &:focus {
@@ -423,7 +423,7 @@ const Input = styled.input`
     height: 54px;
     padding: 16px;
     margin-top: 5px;
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 
@@ -441,7 +441,7 @@ const JobButton = styled.button`
   padding: 10px 0;
   background: ${({ $isSelected }) => ($isSelected ? "#80BFFF" : "#f2f2f2")};
   color: black;
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   cursor: pointer;
 
   &:hover {
@@ -449,18 +449,18 @@ const JobButton = styled.button`
   }
   @media ${device.mobile} {
     padding: 16px 0;
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 
 const SmallButton = styled.button`
-  font-size: 13px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   color: #2b3ea3;
   background: none;
   border: none;
   cursor: pointer;
   @media ${device.mobile} {
-    font-size: 16px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
   }
 `;
 
@@ -472,15 +472,15 @@ const SubmitButton = styled.button`
   color: #fff;
   border: none;
   border-radius: 8px;
-  font-size: 17px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: ${({ theme }) => theme.fonts.weights.medium};
   margin-bottom: 40px;
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   @media ${device.mobile} {
     height: 60px;
     margin-top: 20px;
-    font-size: 20px;
-    font-weight: 900;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.semibold};
     margin-bottom: 40px;
   }
 `;

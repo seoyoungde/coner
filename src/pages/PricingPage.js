@@ -73,31 +73,29 @@ const Container = styled.div`
   width: 100%;
 `;
 const InnerWrapper = styled.div`
-  width: 100%;
+  width: 95%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
   position: relative;
-  margin-top: 10px;
+  margin-top: 20px;
   box-sizing: border-box;
   @media ${device.mobile} {
-    width: 95%;
+    width: 86%;
   }
 `;
 const Spacer = styled.div`
   width: 22px;
-  margin-top: 40px;
 `;
 const Title = styled.h1`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  font-size: ${({ theme }) => theme.fonts.sizes.HeaderText || "16px"};
-  font-weight: ${({ theme }) => theme.fonts.weights.bold || 600};
+  font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
+  font-weight: ${({ theme }) => theme.fonts.weights.bold};
   margin: 0;
   @media ${device.mobile} {
-    font-size: 28px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.large};
   }
 `;
 const ImageWrapper = styled.div`
@@ -140,7 +138,7 @@ const CloseButton = styled.button`
   background: none;
   border: none;
   color: #a0a0a0;
-  font-size: 1.5rem;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   cursor: pointer;
   margin-left: 10px;
 `;

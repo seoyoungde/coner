@@ -73,37 +73,38 @@ const RequestSearch = () => {
       }}
     >
       <Container ref={ref}>
-        <Title>
-          <h1>의뢰서 조회</h1>
-          <p>의뢰서에 작성했던 전화번호를 입력해주세요</p>
-        </Title>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSearch();
-          }}
-          style={{ width: "92%", margin: "auto" }}
-        >
-          <Content>
-            <InputWrapper>
-              <label htmlFor="customer_phone">전화번호</label>
-              <InputField
-                id="customer_phone"
-                name="customer_phone"
-                placeholder="전화번호"
-                value={formData.customer_phone}
-                onChange={handleChange}
-                maxLength={13}
-                type="tel"
-                inputMode="numeric"
-              />
-            </InputWrapper>
-            {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
-          </Content>
-          <SearchButton type="submit" disabled={loading}>
-            {loading ? "조회 중..." : "의뢰서 조회하기"}
-          </SearchButton>
-        </form>
+        <InnerWrapper>
+          <Title>
+            <h1>의뢰서 조회</h1>
+            <p>의뢰서에 작성했던 전화번호를 입력해주세요</p>
+          </Title>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearch();
+            }}
+          >
+            <Content>
+              <InputWrapper>
+                <label htmlFor="customer_phone">전화번호</label>
+                <InputField
+                  id="customer_phone"
+                  name="customer_phone"
+                  placeholder="전화번호"
+                  value={formData.customer_phone}
+                  onChange={handleChange}
+                  maxLength={13}
+                  type="tel"
+                  inputMode="numeric"
+                />
+              </InputWrapper>
+              {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
+            </Content>
+            <SearchButton type="submit" disabled={loading}>
+              {loading ? "조회 중..." : "의뢰서 조회하기"}
+            </SearchButton>
+          </form>
+        </InnerWrapper>
       </Container>
     </ScaleWrapper>
   );
@@ -121,11 +122,15 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+`;
+const InnerWrapper = styled.div`
+  width: 95%;
+  margin: auto;
   @media ${device.mobile} {
-    width: 92%;
+    width: 86%;
+    margin: auto;
   }
 `;
-
 const Title = styled.div`
   text-align: center;
   margin-top: 45px;
@@ -158,7 +163,7 @@ const InputWrapper = styled.div`
 
   label {
     display: block;
-    font-size: ${({ theme }) => theme.fonts.sizes.large};
+    font-size: ${({ theme }) => theme.fonts.sizes.medium};
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
     margin-bottom: 10px;
     @media ${device.mobile} {
@@ -174,7 +179,7 @@ const InputField = styled.input`
   border-radius: 10px;
   height: 48px;
   padding: 0 10px;
-  font-size: ${({ theme }) => theme.fonts.sizes.medium};
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   font-family: inherit;
 
   &:focus {

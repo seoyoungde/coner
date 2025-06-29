@@ -142,16 +142,15 @@ const AddressForm = ({ title, description, buttonText }) => {
             </BackIcon>
           </BackButton>
         </Header>
-
-        <StepProgressBar currentStep={1} totalSteps={4} />
-        <TitleSection>
-          <Title>
-            {title || `${searchParams.get("service_type")} 서비스 신청`}
-          </Title>
-          <Description>{description}</Description>
-        </TitleSection>
-
         <Form onSubmit={handleSubmit}>
+          <StepProgressBar currentStep={1} totalSteps={4} />
+          <TitleSection>
+            <Title>
+              {title || `${searchParams.get("service_type")} 서비스 신청`}
+            </Title>
+            <Description>{description}</Description>
+          </TitleSection>
+
           <Field>
             <Label>주소</Label>
             <HelperTextBox>
@@ -281,7 +280,7 @@ const Title = styled.h2`
   margin-bottom: 3px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 24px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.mediumlarge};
   }
 `;
 
@@ -289,8 +288,8 @@ const Description = styled.p`
   font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 20px;
-    font-weight: 500;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.regular};
   }
 `;
 
@@ -310,10 +309,10 @@ const Field = styled.div`
 const Label = styled.label`
   display: block;
   margin-bottom: 10px;
-  font-size: 18px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
 
@@ -334,11 +333,11 @@ const CustomSelect = styled.div`
 
 const HelperText = styled.p`
   color: #a5a5a5;
-  font-weight: 500;
-  font-size: 15px;
+  font-weight: ${({ theme }) => theme.fonts.weights.regular};
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   padding: 0px 0px 15px 5px;
   @media ${device.mobile} {
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 const HelperTextBox = styled.div`
@@ -351,7 +350,7 @@ const HelperIcon = styled(HiOutlineExclamationCircle)`
 const Input = styled.input`
   width: 100%;
   padding: 15px;
-  font-size: 16px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   border: 1px solid #a5a5a5;
   border-radius: 9px;
@@ -365,21 +364,21 @@ const Input = styled.input`
     color: #a0a0a0;
     font-weight: ${({ theme }) => theme.fonts.weights.bold};
     @media ${device.mobile} {
-      font-size: 18px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
     }
   }
   @media ${device.mobile} {
     height: 52px;
     padding: 20px;
     margin-top: 5px;
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 
 const SubmitButton = styled.button`
   width: 100%;
   padding: 15px 15px 15px 15px;
-  font-size: 17px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: ${({ theme }) => theme.fonts.weights.medium};
   color: white;
   background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
@@ -393,20 +392,20 @@ const SubmitButton = styled.button`
   @media ${device.mobile} {
     height: 60px;
     margin-top: 20px;
-    font-size: 20px;
-    font-weight: 900;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.bold};
     margin-bottom: 10px;
   }
 `;
 
 const PopupMessage = styled.p`
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   padding: 30px 30px 50px 30px;
   margin-bottom: 20px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
 
   @media ${device.mobile} {
-    font-size: 1.1rem;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
     padding: 40px 20px 30px 20px;
     margin-bottom: 10px;
   }
@@ -418,23 +417,23 @@ const CloseButton = styled.button`
   border: none;
   background-color: ${({ theme }) => theme.colors.main};
   color: white;
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   border-radius: 0px 0px 10px 10px;
   cursor: pointer;
   @media ${device.mobile} {
-    font-size: 1.1rem;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
   }
 `;
 const ModifyLink = styled.a`
-  font-size: 13px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   text-decoration: underline;
   color: #a2a2a2;
   padding: 10px;
   cursor: pointer;
   @media ${device.mobile} {
-    font-size: 16px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
     margin-left: 1rem;
   }
 `;
@@ -451,7 +450,7 @@ const JobButton = styled.button`
   padding: 10px 0;
   background: ${({ $isSelected }) => ($isSelected ? "#80BFFF" : "#f2f2f2")};
   color: black;
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   cursor: pointer;
 
   &:hover {
@@ -459,7 +458,7 @@ const JobButton = styled.button`
   }
   @media ${device.mobile} {
     padding: 18px 0;
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 export default AddressForm;

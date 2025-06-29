@@ -18,11 +18,9 @@ const FormLayout = ({ title, subtitle, children, onNext }) => {
 export default FormLayout;
 
 const Container = styled.div`
-  padding: 20px;
   text-align: center;
   width: 100%;
   @media ${device.mobile} {
-    width: 92%;
     margin: auto;
   }
 `;
@@ -33,19 +31,19 @@ const TitleSection = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 22px;
+  font-size: ${({ theme }) => theme.fonts.sizes.large};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 24px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.mediumlarge};
   }
 `;
 
 const Subtitle = styled.p`
-  font-size: 16px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   @media ${device.mobile} {
-    font-size: 20px;
-    font-weight: 500;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.regular};
   }
 `;
 
@@ -58,7 +56,7 @@ const Content = styled.div`
 const NextButton = styled.button`
   width: 100%;
   padding: 15px;
-  font-size: 17px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: ${({ theme }) => theme.fonts.weights.medium};
   color: white;
   background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
@@ -69,7 +67,7 @@ const NextButton = styled.button`
   @media ${device.mobile} {
     height: 60px;
     margin-top: 20px;
-    font-size: 20px;
-    font-weight: 900;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.bold};
   }
 `;

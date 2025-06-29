@@ -33,25 +33,25 @@ const CalendarWrapper = styled.div`
     background: white;
     border-radius: 10px;
     font-weight: bold;
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.sizes.medium};
     @media ${device.mobile} {
-      font-size: 20px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
     }
   }
 
   .react-calendar__navigation__label {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
 
     @media ${device.mobile} {
-      font-size: 20px;
+      font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
     }
   }
 
   .react-calendar__navigation__arrow {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
 
     @media ${device.mobile} {
-      font-size: 20px;
+      font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
     }
   }
   .react-calendar__tile:disabled {

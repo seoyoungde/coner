@@ -180,9 +180,9 @@ const Container = styled.div`
 const UserBox = styled.div`
   padding: 40px;
   h1 {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
     @media ${device.mobile} {
-      font-size: 24px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.mediumlarge};
     }
   }
   a {
@@ -192,7 +192,7 @@ const UserBox = styled.div`
     text-decoration: none;
     margin-top: 4px;
     @media ${device.mobile} {
-      font-size: 18px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
     }
   }
 `;
@@ -222,7 +222,7 @@ const StateItem = styled.div`
 
   p:nth-child(1) {
     font-weight: bold;
-    font-size: 18px;
+    font-size: 17px;
     margin-bottom: 10px;
     @media ${device.mobile} {
       font-size: 18px;
@@ -233,9 +233,9 @@ const StateItem = styled.div`
   p:nth-child(2) {
     color: #0080ff;
     text-decoration: underline;
-    font-size: 17px;
+    font-size: ${({ theme }) => theme.fonts.sizes.medium};
     @media ${device.mobile} {
-      font-size: 18px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
     }
   }
 `;
@@ -250,7 +250,7 @@ const ProfileSection = styled.div`
   text-align: center;
   margin-bottom: 20px;
   p {
-    font-size: 1.4rem;
+    font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
   }
 `;
 
@@ -274,15 +274,15 @@ const InfoSection = styled.div`
 
 const InfoItem = styled.div`
   padding: 10px 0;
-  font-size: ${({ theme }) => theme.fonts.sizes.medium};
-  font-weight: ${({ theme }) => theme.fonts.weights.medium};
+  font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
+  font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
 
   a {
     text-decoration: none;
     color: #333;
     @media ${device.mobile} {
-      font-size: 18px;
-      font-weight: 500;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
+      font-weight: ${({ theme }) => theme.fonts.weights.regular};
       padding-left: 20px;
     }
   }
@@ -291,21 +291,21 @@ const InfoItem = styled.div`
 const Footer = styled.footer`
   text-align: center;
   margin-top: 40px;
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   font-weight: ${({ theme }) => theme.fonts.weights.medium};
   @media ${device.mobile} {
-    font-size: 16px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
     margin-top: 50px;
   }
 `;
 const ModifyLink = styled(Link)`
-  font-size: 13px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   text-decoration: none;
   color: #a2a2a2;
   cursor: pointer;
   @media ${device.mobile} {
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 const LogoutBtn = styled.button`
@@ -315,7 +315,7 @@ const LogoutBtn = styled.button`
   color: blue;
   margin-bottom: 0.5rem;
   @media ${device.mobile} {
-    font-size: 16px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
   }
 `;
 

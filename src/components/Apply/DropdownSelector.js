@@ -47,7 +47,7 @@ export default DropdownSelector;
 const Container = styled.div`
   width: 100%;
   border: 2px solid #e3e3e3;
-  border-radius: 10px;
+  border-radius: 8px;
   background: white;
   cursor: pointer;
 `;
@@ -92,11 +92,11 @@ const ArrowIcon = styled.div`
 `;
 
 const Title = styled.span`
-  font-size: 17px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
 
   @media ${device.mobile} {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
 
@@ -113,7 +113,7 @@ const Option = styled.div`
   padding: 10px;
   width: ${({ $width }) => $width};
   border-radius: 20px;
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   text-align: center;
   border: 1px solid #d6d6d6;
@@ -123,6 +123,6 @@ const Option = styled.div`
   white-space: nowrap;
 
   @media ${device.mobile} {
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;

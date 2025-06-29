@@ -18,15 +18,17 @@ const QnaPage = () => {
       }}
     >
       <Container ref={ref}>
-        <Header>
-          <BackButton onClick={() => navigate("/mypage")}>
-            <BackIcon>
-              <IoIosArrowBack size={32} color="#333" />
-            </BackIcon>
-          </BackButton>
-          <Title>자주 묻는 질문</Title>
-        </Header>
-        <Qna />
+        <InnerWrapper>
+          <Header>
+            <BackButton onClick={() => navigate("/mypage")}>
+              <BackIcon>
+                <IoIosArrowBack size={32} color="#333" />
+              </BackIcon>
+            </BackButton>
+            <Title>자주 묻는 질문</Title>
+          </Header>
+          <Qna />
+        </InnerWrapper>
       </Container>
     </ScaleWrapper>
   );
@@ -42,12 +44,15 @@ const ScaleWrapper = styled.div`
 const Container = styled.div`
   width: 100%;
   box-sizing: border-box;
-  padding: 20px;
+  margin-top: 20px;
+`;
+const InnerWrapper = styled.div`
+  width: 95%;
+  margin: auto;
   @media ${device.mobile} {
-    width: 96%;
+    width: 86%;
   }
 `;
-
 const Header = styled.div`
   display: flex;
   align-items: center;
@@ -72,9 +77,9 @@ const BackIcon = styled(IoIosArrowBack)`
 const Title = styled.h1`
   flex: 1;
   text-align: center;
-  font-size: 20px;
-  font-weight: bold;
+  font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
+  font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
   @media ${device.mobile} {
-    font-size: 24px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.mediumlarge};
   }
 `;

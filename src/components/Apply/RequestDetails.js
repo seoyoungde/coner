@@ -23,34 +23,34 @@ const Container = styled.div`
 `;
 
 const Label = styled.p`
-  font-size: 17px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   margin-bottom: 8px;
   text-align: left;
   @media ${device.mobile} {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
 
 const Textarea = styled.textarea`
   width: 100%;
   padding: 15px;
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   border: 1px solid #ccc;
   border-radius: 10px;
   resize: none;
   height: 120px;
   outline: none;
   background: white;
-  font-weight: bold;
+  font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
 
   @media ${device.mobile} {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
   &::placeholder {
     color: #aaa;
     @media ${device.mobile} {
-      font-size: 18px;
+      font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
     }
   }
 `;

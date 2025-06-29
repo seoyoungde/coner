@@ -69,90 +69,92 @@ const Withdraw = () => {
       }}
     >
       <Container ref={ref}>
-        <Header>
-          <BackButton onClick={() => navigate(-1)}>
-            <BackIcon>
-              <IoIosArrowBack size={28} />
-            </BackIcon>
-          </BackButton>
-          <Title>회원탈퇴(신청)</Title>
-        </Header>
+        <InnerWrapper>
+          <Header>
+            <BackButton onClick={() => navigate(-1)}>
+              <BackIcon>
+                <IoIosArrowBack size={28} />
+              </BackIcon>
+            </BackButton>
+            <Title>회원탈퇴(신청)</Title>
+          </Header>
 
-        <ContentBox>
-          <Notice>
-            회원탈퇴 신청에 앞서 아래 내용을 반드시 확인해주시기 바랍니다
-          </Notice>
-          <SubBox>
-            <strong>회원탈퇴 시 처리내용</strong>
-            <ul>
-              <li>회원탈퇴 시 회원이 등록한 게시물은 삭제되지 않는다</li>
-              <li>
-                의뢰서 삭제를 원할 경우 먼저 고객센터에 의뢰 후 탈퇴를
-                신청하시기 바랍니다
-              </li>
-            </ul>
-          </SubBox>
+          <ContentBox>
+            <Notice>
+              회원탈퇴 신청에 앞서 아래 내용을 반드시 확인해주시기 바랍니다
+            </Notice>
+            <SubBox>
+              <strong>회원탈퇴 시 처리내용</strong>
+              <ul>
+                <li>회원탈퇴 시 회원이 등록한 게시물은 삭제되지 않는다</li>
+                <li>
+                  의뢰서 삭제를 원할 경우 먼저 고객센터에 의뢰 후 탈퇴를
+                  신청하시기 바랍니다
+                </li>
+              </ul>
+            </SubBox>
 
-          <ConfirmRow>
-            <Checkbox
-              type="checkbox"
-              checked={confirmChecked}
-              onChange={() => setConfirmChecked((prev) => !prev)}
+            <ConfirmRow>
+              <Checkbox
+                type="checkbox"
+                checked={confirmChecked}
+                onChange={() => setConfirmChecked((prev) => !prev)}
+              />
+              <ConfirmText>
+                위 내용을 모두 확인하였습니다 <Required>필수</Required>
+              </ConfirmText>
+            </ConfirmRow>
+
+            <Label>
+              ＊CONER 어떤 이유로 탈퇴하시려는 걸까요? (복수 선택 가능)
+            </Label>
+            <CheckboxList>
+              {[
+                "이용빈도 낮음",
+                "재가입",
+                "콘텐츠 등 정보 부족",
+                "고객대응 불친절",
+                "제휴서비스 불만",
+                "기타",
+              ].map((text) => (
+                <CheckboxRow key={text}>
+                  <Checkbox
+                    type="checkbox"
+                    checked={reasons.includes(text)}
+                    onChange={() => handleReasonToggle(text)}
+                  />
+                  <span>{text}</span>
+                </CheckboxRow>
+              ))}
+            </CheckboxList>
+
+            <Label>
+              코너 서비스 중 어떤 점이 불편하셨을까요?
+              <SubText>
+                선택하신 항목에 대한 자세한 이유를 남겨주시면 서비스 개선에 큰
+                도움이 됩니다
+              </SubText>
+            </Label>
+            <Textarea
+              placeholder="선택하신 항목에 대한 자세한 이유를 남겨주세요"
+              value={details}
+              onChange={(e) => setDetails(e.target.value)}
             />
-            <ConfirmText>
-              위 내용을 모두 확인하였습니다 <Required>필수</Required>
-            </ConfirmText>
-          </ConfirmRow>
+          </ContentBox>
 
-          <Label>
-            ＊CONER 어떤 이유로 탈퇴하시려는 걸까요? (복수 선택 가능)
-          </Label>
-          <CheckboxList>
-            {[
-              "이용빈도 낮음",
-              "재가입",
-              "콘텐츠 등 정보 부족",
-              "고객대응 불친절",
-              "제휴서비스 불만",
-              "기타",
-            ].map((text) => (
-              <CheckboxRow key={text}>
-                <Checkbox
-                  type="checkbox"
-                  checked={reasons.includes(text)}
-                  onChange={() => handleReasonToggle(text)}
-                />
-                <span>{text}</span>
-              </CheckboxRow>
-            ))}
-          </CheckboxList>
-
-          <Label>
-            코너 서비스 중 어떤 점이 불편하셨을까요?
-            <SubText>
-              선택하신 항목에 대한 자세한 이유를 남겨주시면 서비스 개선에 큰
-              도움이 됩니다
-            </SubText>
-          </Label>
-          <Textarea
-            placeholder="선택하신 항목에 대한 자세한 이유를 남겨주세요"
-            value={details}
-            onChange={(e) => setDetails(e.target.value)}
-          />
-        </ContentBox>
-
-        <ButtonRow>
-          <WithdrawBtn onClick={handleWithdraw}>탈퇴신청</WithdrawBtn>
-          <CancelBtn onClick={() => navigate(-1)}>취소하기</CancelBtn>
-        </ButtonRow>
-        {isPopupOpen && (
-          <Popup onClose={() => setIsPopupOpen(false)}>
-            <PopupMessage>{popupMessage}</PopupMessage>
-            <CloseButton onClick={() => setIsPopupOpen(false)}>
-              닫기
-            </CloseButton>
-          </Popup>
-        )}
+          <ButtonRow>
+            <WithdrawBtn onClick={handleWithdraw}>탈퇴신청</WithdrawBtn>
+            <CancelBtn onClick={() => navigate(-1)}>취소하기</CancelBtn>
+          </ButtonRow>
+          {isPopupOpen && (
+            <Popup onClose={() => setIsPopupOpen(false)}>
+              <PopupMessage>{popupMessage}</PopupMessage>
+              <CloseButton onClick={() => setIsPopupOpen(false)}>
+                닫기
+              </CloseButton>
+            </Popup>
+          )}
+        </InnerWrapper>
       </Container>
     </ScaleWrapper>
   );
@@ -166,10 +168,14 @@ const ScaleWrapper = styled.div`
 `;
 const Container = styled.div`
   width: 100%;
+  margin-top: 20px;
   box-sizing: border-box;
-  padding: 20px;
+`;
+const InnerWrapper = styled.div`
+  width: 95%;
+  margin: auto;
   @media ${device.mobile} {
-    width: 96%;
+    width: 86%;
   }
 `;
 const Header = styled.div`
@@ -193,19 +199,19 @@ const BackIcon = styled(IoIosArrowBack)`
 const Title = styled.h1`
   flex: 1;
   text-align: center;
-  font-size: 20px;
-  font-weight: bold;
+  font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
+  font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
   @media ${device.mobile} {
-    font-size: 24px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.mediumlarge};
   }
 `;
 
 const ContentBox = styled.div`
   margin-top: 80px;
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   line-height: 1.6;
   @media ${device.mobile} {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
 
@@ -239,9 +245,9 @@ const Checkbox = styled.input`
 `;
 
 const ConfirmText = styled.span`
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   @media ${device.mobile} {
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 
@@ -250,7 +256,7 @@ const Required = styled.span`
   font-size: 12px;
   margin-left: 6px;
   @media ${device.mobile} {
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 
@@ -264,7 +270,7 @@ const SubText = styled.div`
   font-size: 12px;
   margin-top: 4px;
   @media ${device.mobile} {
-    font-size: 16px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
   }
 `;
 
@@ -289,9 +295,9 @@ const Textarea = styled.textarea`
   border: 1px solid #ccc;
   resize: none;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   @media ${device.mobile} {
-    font-size: 16px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
   }
 `;
 
@@ -309,13 +315,13 @@ const WithdrawBtn = styled.button`
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   cursor: pointer;
   @media ${device.mobile} {
     height: 60px;
     margin-bottom: 40px;
-    font-size: 20px;
-    font-weight: 900;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.semibold};
   }
 `;
 
@@ -326,23 +332,23 @@ const CancelBtn = styled.button`
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   cursor: pointer;
   @media ${device.mobile} {
     height: 60px;
     margin-bottom: 40px;
-    font-size: 20px;
-    font-weight: 900;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.semibold};
   }
 `;
 const PopupMessage = styled.p`
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   padding: 30px 30px 50px 30px;
   margin-bottom: 20px;
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
 
   @media ${device.mobile} {
-    font-size: 14px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
     padding: 30px 10px 20px 20px;
     margin-bottom: 10px;
   }
@@ -354,12 +360,12 @@ const CloseButton = styled.button`
   border: none;
   background-color: ${({ theme }) => theme.colors.main};
   color: white;
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   font-weight: ${({ theme }) => theme.fonts.weights.bold};
   border-radius: 0px 0px 10px 10px;
   cursor: pointer;
   @media ${device.mobile} {
-    font-size: 14px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
     padding: 15px;
   }
 `;

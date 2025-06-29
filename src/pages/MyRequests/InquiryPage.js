@@ -258,11 +258,11 @@ const Title = styled.h1`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  font-size: ${({ theme }) => theme.fonts.sizes.HeaderText || "16px"};
-  font-weight: ${({ theme }) => theme.fonts.weights.bold || 600};
+  font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
+  font-weight: ${({ theme }) => theme.fonts.weights.bold};
   margin: 0;
   @media ${device.mobile} {
-    font-size: 24px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.mediumlarge};
   }
 `;
 
@@ -276,7 +276,7 @@ const TabHeader = styled.div`
 const Tab = styled.button`
   flex: 1;
   padding: 15px 0;
-  font-size: 16px;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: ${({ $isActive }) => ($isActive ? "bold" : "normal")};
   color: ${({ $isActive }) => ($isActive ? "#0080FF" : "#333")};
   text-align: center;
@@ -297,7 +297,7 @@ const Tab = styled.button`
     transition: width 0.3s ease;
   }
   @media ${device.mobile} {
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
 
@@ -306,14 +306,13 @@ const TabContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  margin-top: 20px;
 `;
 
 const CenteredContent = styled.div`
-  font-size: 16px;
-  color: #333;
+  font-size: ${({ theme }) => theme.fonts.sizes.medium};
   font-weight: bold;
   @media ${device.mobile} {
-    font-size: 18px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;

@@ -23,13 +23,9 @@ export default StepProgressBar;
 
 const Wrapper = styled.div`
   width: 100%;
-  padding: 8px 16px;
   margin: auto;
-  margin-bottom: 0;
-  margin-top: 0;
-  @media ${device.mobile} {
-    width: 92%;
-  }
+  margin-bottom: 49px;
+  margin-top: 22px;
 `;
 
 const ProgressWrapper = styled.div`
@@ -56,10 +52,10 @@ const ProgressFill = styled.div`
 `;
 
 const StepText = styled.span`
-  font-size: 15px;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
   color: #a5a5a5;
   white-space: nowrap;
   @media ${device.mobile} {
-    font-size: 1.4rem;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
