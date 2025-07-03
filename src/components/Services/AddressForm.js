@@ -210,7 +210,7 @@ const AddressForm = ({ title, description, buttonText }) => {
               <Input value={job} readOnly />
             ) : (
               <JobButtonBox>
-                {["개인사업자", "법인사업자", "개인"].map((item) => (
+                {["사업장(기업/매장)", "개인(가정)"].map((item) => (
                   <JobButton
                     key={item}
                     $isSelected={job === item}

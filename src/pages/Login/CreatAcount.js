@@ -224,22 +224,16 @@ const CreatAcount = () => {
               <Label>고객유형</Label>
               <JobButtonBox>
                 <JobButton
-                  $isSelected={job === "개인사업자"}
-                  onClick={() => setJob("개인사업자")}
+                  $isSelected={job === "사업장(기업/매장)"}
+                  onClick={() => setJob("사업장(기업/매장)")}
                 >
-                  개인사업자
+                  사업장(기업/매장)
                 </JobButton>
                 <JobButton
-                  $isSelected={job === "법인사업자"}
-                  onClick={() => setJob("법인사업자")}
+                  $isSelected={job === "개인(가정)"}
+                  onClick={() => setJob("개인(가정)")}
                 >
-                  법인사업자
-                </JobButton>
-                <JobButton
-                  $isSelected={job === "프리랜서"}
-                  onClick={() => setJob("프리랜서")}
-                >
-                  개인
+                  개인(가정)
                 </JobButton>
               </JobButtonBox>
             </FormGroup>

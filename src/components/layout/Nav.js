@@ -28,13 +28,10 @@ const Nav = () => {
             <RiHomeFill />
             <p>홈</p>
           </NavItem>
-          <StyledNavLink
-            to="/requests"
-            className={isRequestsActive ? "active" : ""}
-          >
+          <NavItem to="/requests" className={isRequestsActive ? "active" : ""}>
             <FaSquare />
             <p>내 의뢰서</p>
-          </StyledNavLink>
+          </NavItem>
           <NavItem to="/mypage">
             <FaCircle />
             <p>마이페이지</p>
@@ -64,29 +61,25 @@ const Container = styled.div`
   box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.1);
   @media ${device.mobile} {
     height: 100px;
-  }
-  @media ${device.mobile} {
     border-radius: 40px 40px 0px 0px;
   }
 `;
 
 const NavbarContainer = styled.div`
   width: 100%;
-  max-width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  padding: 0 12px;
 `;
 
 const NavItem = styled(NavLink)`
   display: flex;
   flex-direction: column;
   align-items: center;
-
   cursor: pointer;
   gap: 5px;
   text-decoration: none;
+  width: 34%;
 
   p {
     font-size: ${({ theme }) => theme.fonts.sizes.medium};
@@ -121,45 +114,5 @@ const NavItem = styled(NavLink)`
     }
   }
 `;
-const StyledNavLink = styled(NavLink)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  gap: 5px;
-  text-decoration: none;
 
-  p {
-    font-size: ${({ theme }) => theme.fonts.sizes.medium};
-    color: #d9d9d9;
-    @media ${device.mobile} {
-      font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
-    }
-  }
-
-  svg {
-    font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
-    color: #d9d9d9;
-    @media ${device.mobile} {
-      font-size: ${({ theme }) => theme.fonts.mobilesizes.mediumlarge};
-    }
-  }
-
-  &.active {
-    p {
-      font-size: ${({ theme }) => theme.fonts.sizes.medium};
-      color: #0080ff;
-      @media ${device.mobile} {
-        font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
-      }
-    }
-    svg {
-      font-size: ${({ theme }) => theme.fonts.sizes.HeaderText};
-      color: #0080ff;
-      @media ${device.mobile} {
-        font-size: ${({ theme }) => theme.fonts.mobilesizes.mediumlarge};
-      }
-    }
-  }
-`;
 export default Nav;

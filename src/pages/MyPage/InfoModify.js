@@ -275,7 +275,7 @@ const InfoModify = () => {
               <FormGroup>
                 <Label>고객유형</Label>
                 <JobButtonBox>
-                  {["개인사업자", "법인사업자", "개인"].map((job) => (
+                  {["사업장(기업/매장)", "개인(가정)"].map((job) => (
                     <JobButton
                       key={job}
                       $isSelected={formData.job === job}

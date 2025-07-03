@@ -62,6 +62,13 @@ const AdditionalRequest = () => {
       const user = auth.currentUser;
       const clientId = user?.uid || "";
 
+      const n_keyword = sessionStorage.getItem("n_keyword") || "";
+      const n_campaign = sessionStorage.getItem("n_campaign") || "";
+      const n_ad = sessionStorage.getItem("n_ad") || "";
+      const n_rank = sessionStorage.getItem("n_rank") || "";
+      const newSprintEntry = { n_keyword, n_campaign, n_ad, n_rank };
+      const updatedSprint = [...(requestData.sprint || []), newSprintEntry];
+      updateRequestData("sprint", updatedSprint);
       updateRequestData("selectedDropdownOption", selectedDropdownOption);
       updateRequestData("detailInfo", formattedDetailInfo);
       if (clientId) {
@@ -77,6 +84,7 @@ const AdditionalRequest = () => {
         ...requestData,
         detailInfo: formattedDetailInfo,
         customer_uid: clientId,
+        sprint: updatedSprint,
       });
 
       resetRequestData();
