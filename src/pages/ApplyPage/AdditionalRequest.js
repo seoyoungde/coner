@@ -63,12 +63,18 @@ const AdditionalRequest = () => {
       const clientId = user?.uid || "";
 
       const n_keyword = sessionStorage.getItem("n_keyword") || "";
-      const n_campaign = sessionStorage.getItem("n_campaign") || "";
+      // const n_campaign = sessionStorage.getItem("n_campaign") || "";
       const n_ad = sessionStorage.getItem("n_ad") || "";
       const n_rank = sessionStorage.getItem("n_rank") || "";
-      const newSprintEntry = { n_keyword, n_campaign, n_ad, n_rank };
-      const updatedSprint = [...(requestData.sprint || []), newSprintEntry];
+      const updatedSprint = [
+        ...(requestData.sprint || []),
+        `n_keyword: ${n_keyword}`,
+        `n_ad: ${n_ad}`,
+        `n_rank: ${n_rank}`,
+      ];
+
       updateRequestData("sprint", updatedSprint);
+
       updateRequestData("selectedDropdownOption", selectedDropdownOption);
       updateRequestData("detailInfo", formattedDetailInfo);
       if (clientId) {
