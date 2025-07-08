@@ -66,11 +66,15 @@ const AdditionalRequest = () => {
       // const n_campaign = sessionStorage.getItem("n_campaign") || "";
       const n_ad = sessionStorage.getItem("n_ad") || "";
       const n_rank = sessionStorage.getItem("n_rank") || "";
+
+      const trackingInfo = [
+        `n_keyword=${n_keyword}`,
+        `n_ad=${n_ad}`,
+        `n_rank=${n_rank}`,
+      ];
       const updatedSprint = [
         ...(requestData.sprint || []),
-        `n_keyword: ${n_keyword}`,
-        `n_ad: ${n_ad}`,
-        `n_rank: ${n_rank}`,
+        JSON.stringify(trackingInfo),
       ];
 
       updateRequestData("sprint", updatedSprint);
