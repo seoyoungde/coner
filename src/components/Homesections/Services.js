@@ -84,7 +84,7 @@ const Services = () => {
   };
   return (
     <ServiceContainer>
-      <h1>전화 없이,검색없이, 오직 한번의 입력으로</h1>
+      <h1>전화 없이, 검색없이, 오직 한번의 입력으로</h1>
       <p className="subtitle">
         일정만 남기면, 냉난방기 기사가 자동으로 도착합니다.
       </p>
@@ -107,7 +107,7 @@ const Services = () => {
         <LinkBox>
           <StyledLink to="/pricing">서비스비용이 궁금하신가요?</StyledLink>
           <ChatBox>
-            <ChatTitle>서비스에대해 문의하실 사항이 있으신가요?</ChatTitle>
+            <ChatTitle>서비스에 대해 문의하실 사항이 있으신가요?</ChatTitle>
             <OnlineChat
               href="https://talk.naver.com/ct/w7a8bh2#nafullscreen"
               target="_blank"
