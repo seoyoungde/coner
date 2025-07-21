@@ -85,7 +85,7 @@ const SelectServiceDate = () => {
             subtitle="원하시는 서비스 날짜를 선택해주세요."
             onNext={handleNext}
           >
-            <InfoText>오늘 날짜로부터 2일 이후부터 예약이 가능합니다.</InfoText>
+            <InfoText>오늘 날짜로부터 2일 이후에 예약이 가능합니다.</InfoText>
 
             <DateBox>
               <SelectedContainer>
@@ -107,12 +107,12 @@ const SelectServiceDate = () => {
             <InfoText2>
               <strong />
               안내드립니다 <br />
-              현재 LG U+ 프로젝트 진행으로 인해 일부 일정에 변동이 생길 수
+              현재 LGU+ 프로젝트 진행으로 인해 일부 일정에 변동이 생길 수
               있습니다.
               <br />
               최상의 서비스 제공을 위해 조율이 필요한 점 너른 양해 부탁드립니다.
-              <br />더 나은 일정으로 찾아뵐 수 있도록 최선을
-              다하겠습니다.감사합니다.
+              <br />더 나은 일정으로 찾아뵐 수 있도록 최선을 다하겠습니다
+              감사합니다.
             </InfoText2>
             <TimeBox>
               <SelectedContainer>
@@ -123,7 +123,7 @@ const SelectServiceDate = () => {
                   {selectedTime || "시간을 선택해주세요"}
                 </SelectedText>
               </SelectedContainer>
-              <InfoText>선택하신 시간대 사이에 기사님이 방문해요</InfoText>
+              <InfoText>선택하신 시간대에 기사님이 방문해요</InfoText>
               <TimeSlotPicker
                 selectedTime={selectedTime}
                 setSelectedTime={setSelectedTime}
