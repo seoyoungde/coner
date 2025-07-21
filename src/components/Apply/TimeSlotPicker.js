@@ -4,9 +4,8 @@ import { device } from "../../styles/theme";
 
 const timeSlots = [
   "오전9시 ~ 오후12시",
-  "오후12시 ~ 오후3시",
-  "오후3시 ~ 오후6시",
-  "오후6시 ~ 이후",
+  "오후1시 ~ 오후4시",
+  "오후5시 ~ 오후8시",
 ];
 
 const TimeSlotPicker = ({ selectedTime, setSelectedTime }) => {

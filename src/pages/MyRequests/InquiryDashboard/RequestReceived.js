@@ -318,7 +318,7 @@ const RequestReceived = ({
             )}
           </Section>
 
-          {/* 방문 희망 시간 수정
+          {/* 방문 희망 시간 수정*/}
           <Section>
             <Label>방문 희망 시간</Label>
             {editingRequestId === requestData.id ? (
@@ -334,7 +334,7 @@ const RequestReceived = ({
             ) : (
               <Value>{selectedServcie_time || "없음"}</Value>
             )}
-          </Section> */}
+          </Section>
           {/* 에어컨종류 */}
           <Section>
             <Label>서비스 받을 에어컨 종류</Label>

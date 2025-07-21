@@ -17,7 +17,7 @@ const SelectServiceDate = () => {
   const navigate = useNavigate();
   const { updateRequestData } = useRequest();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedTime, setSelectedTime] = useState(" ");
+  const [selectedTime, setSelectedTime] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { scale, height, ref } = useScaleLayout();
   const { requestData } = useRequest();
@@ -114,21 +114,21 @@ const SelectServiceDate = () => {
               <br />더 나은 일정으로 찾아뵐 수 있도록 최선을
               다하겠습니다.감사합니다.
             </InfoText2>
-            {/* <TimeBox>
-            <SelectedContainer>
-              <TimeIcon>
-                <AiOutlineClockCircle />
-              </TimeIcon>
-              <SelectedText>
-                {selectedTime || "시간을 선택해주세요"}
-              </SelectedText>
-            </SelectedContainer>
-            <InfoText>선택하신 시간대 사이에 기사님이 방문해요</InfoText>
-            <TimeSlotPicker
-              selectedTime={selectedTime}
-              setSelectedTime={setSelectedTime}
-            />
-          </TimeBox> */}
+            <TimeBox>
+              <SelectedContainer>
+                <TimeIcon>
+                  <AiOutlineClockCircle />
+                </TimeIcon>
+                <SelectedText>
+                  {selectedTime || "시간을 선택해주세요"}
+                </SelectedText>
+              </SelectedContainer>
+              <InfoText>선택하신 시간대 사이에 기사님이 방문해요</InfoText>
+              <TimeSlotPicker
+                selectedTime={selectedTime}
+                setSelectedTime={setSelectedTime}
+              />
+            </TimeBox>
           </FormLayout>
         </InnerWrapper>
         {isPopupOpen && (
