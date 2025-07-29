@@ -218,6 +218,7 @@ const HeaderBox = styled.div`
   z-index: 100;
   background: white;
   padding: 20px 0 10px;
+  border-bottom: 1px solid #ddd;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 `;
 const ImageBox = styled.div`

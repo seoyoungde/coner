@@ -123,6 +123,7 @@ const Services = () => {
 };
 
 const ServiceContainer = styled.section`
+  margin-top: 80px;
   background-color: #ffffff;
   padding-top: 22px;
   padding-bottom: 5px;
