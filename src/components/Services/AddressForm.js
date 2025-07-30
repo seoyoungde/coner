@@ -28,6 +28,7 @@ const AddressForm = ({ title, description, buttonText }) => {
     customer_address: "",
     customer_address_detail: "",
     customer_phone: "",
+    clientName: "",
   });
 
   useEffect(() => {
@@ -53,6 +54,7 @@ const AddressForm = ({ title, description, buttonText }) => {
         customer_address: userInfo.address || "",
         customer_address_detail: userInfo.address_detail || "",
         customer_phone: userInfo.phone || "",
+        clientName: userInfo.name || "",
       });
     }
   }, [userInfo]);
@@ -90,6 +92,7 @@ const AddressForm = ({ title, description, buttonText }) => {
       return setPopupMessage("상세주소를 입력해주세요.");
     if (!formData.customer_phone)
       return setPopupMessage("전화번호를 입력해주세요.");
+    if (!formData.clientName) return setPopupMessage("성함을 입력해주세요.");
 
     const formattedPhone = formData.customer_phone.replace(/\D/g, "");
     updateRequestData("customer_address", formData.customer_address);
@@ -99,6 +102,7 @@ const AddressForm = ({ title, description, buttonText }) => {
     );
     updateRequestData("customer_phone", formattedPhone);
     updateRequestData("customer_type", job);
+    updateRequestData("clientName", formData.clientName);
     navigate(`/selectservicedate?service=${searchParams.get("service_type")}`);
   };
 
@@ -202,6 +206,18 @@ const AddressForm = ({ title, description, buttonText }) => {
               value={formData.customer_phone}
               onChange={handleChange}
               readOnly={isReadOnly}
+            />
+          </Field>
+          <Field>
+            <Label>이름</Label>
+            <Input
+              type="text"
+              name="clientName"
+              placeholder="성함을 입력해주세요"
+              value={formData.clientName}
+              onChange={handleChange}
+              readOnly={isReadOnly}
+              style={{ marginTop: "10px" }}
             />
           </Field>
           <Field>
@@ -386,6 +402,7 @@ const SubmitButton = styled.button`
   border-radius: 9px;
   cursor: pointer;
   margin-top: 45px;
+  margin-bottom: 20px;
   &:hover {
     background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   }

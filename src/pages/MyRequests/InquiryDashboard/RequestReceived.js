@@ -443,6 +443,13 @@ const RequestReceived = ({
               {formatPhoneForDisplay(requestData.customer_phone) || "없음"}
             </Value>
           </Section>
+          {/* 이름수정불가능 */}
+          <Section>
+            <Label>이름</Label>
+            <Value style={{ marginTop: "5px" }}>
+              {requestData.clientName || "없음"}
+            </Value>
+          </Section>
           {/* 추가요청사항 */}
           <Section style={{ whiteSpace: "pre-line" }}>
             {editingRequestId === requestData.id ? (

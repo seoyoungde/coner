@@ -47,7 +47,7 @@ const MyPageSection = () => {
 
     const q = query(
       collection(db, "Request"),
-      where("customer_phone", "==", userInfo.phone)
+      where("customer_uid", "==", userInfo.member_id)
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const fetchedRequests = snapshot.docs.map((doc) => doc.data());
