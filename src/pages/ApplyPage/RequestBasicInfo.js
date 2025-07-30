@@ -216,6 +216,7 @@ const CloseButton = styled.button`
 const InnerWrapper = styled.div`
   width: 95%;
   margin: auto;
+
   @media ${device.mobile} {
     width: 86%;
     margin: auto;

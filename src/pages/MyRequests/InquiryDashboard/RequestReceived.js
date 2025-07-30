@@ -690,7 +690,7 @@ const TechnicianTitle = styled.h3`
     font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
-const ProfileImage = styled.div`
+const ProfileImage = styled.img`
   width: 70px;
   height: 70px;
   border-radius: 8px;

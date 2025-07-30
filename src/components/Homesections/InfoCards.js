@@ -72,8 +72,7 @@ const CardList = styled.div`
   margin: auto;
   list-style: none;
   margin-bottom: 42px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
+
   white-space: nowrap;
 
   @media (max-width: 600px) {

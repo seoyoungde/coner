@@ -64,6 +64,7 @@ const NextButton = styled.button`
   border-radius: 8px;
   cursor: pointer;
   margin-top: 20px;
+  margin-bottom: 20px;
   @media ${device.mobile} {
     height: 60px;
     margin-top: 20px;
