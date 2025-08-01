@@ -29,6 +29,7 @@ import CreateAddressModal from "../components/Services/CreateAddressModal";
 import mainimage2Icon from "../assets/images/home/mainimage2.jpg";
 import InfoModifyAddressModal from "../components/Services/InfoModifyAddressModal";
 import QnaPage from "./MyPage/QnaPage";
+import Install_purchasePage from "./ServicesPage/Install_purchasePage";
 
 const headerMap = {
   "/": <Header />,
@@ -77,6 +78,8 @@ const Main = () => {
         return "#ffffff";
       case "/pricing":
         return "#ffffff";
+      case "/install-purchase":
+        return "#ffffff";
 
       default:
         return "#f9f9f9";
@@ -111,6 +114,7 @@ const Main = () => {
     "/infomodifyaddressmodal",
     "/qnapage",
     "/addresspage",
+    "/install-purchase",
   ];
   return (
     <Container>
@@ -151,6 +155,10 @@ const Main = () => {
               element={<InfoModifyAddressModal />}
             />
             <Route path="/qnapage" element={<QnaPage />} />
+            <Route
+              path="/install-purchase"
+              element={<Install_purchasePage />}
+            />
           </Routes>
         </MainContent>
 

@@ -368,6 +368,7 @@ const RequestReceived = ({
                 icon={<GrUserSettings size="18" />}
                 options={[
                   "설치",
+                  "설치&에어컨구매",
                   "점검",
                   "청소",
                   "수리",
@@ -490,6 +491,33 @@ const RequestReceived = ({
                         "에어컨은 있어요. 설치 서비스만 원해요",
                       ]}
                       placeholderText="에어컨 구매 여부 선택하기"
+                      boxPerRow={2}
+                      onSelect={setSelectedAirconditionerform}
+                    />
+                    <AdditionalDropSelected
+                      options={[
+                        "앵글 설치가 필요해요.",
+                        "앵글 설치는 필요 없어요.",
+                      ]}
+                      placeholderText="앵글 설치 여부 선택하기"
+                      boxPerRow={2}
+                      onSelect={setSelectedDropdownOption}
+                    />
+                    <Label>추가요청사항</Label>
+                    <RequestDetails
+                      additionalInfo={additionalInfo}
+                      setAdditionalInfo={setAdditionalInfo}
+                    />
+                  </>
+                )}
+                {selectedService_type === "설치&에어컨구매" && (
+                  <>
+                    <AdditionalDropSelected
+                      options={[
+                        "중고에어컨 구매원해요",
+                        "신규에어컨 구매원해요",
+                      ]}
+                      placeholderText="에어컨 구매 종류 선택하기"
                       boxPerRow={2}
                       onSelect={setSelectedAirconditionerform}
                     />
