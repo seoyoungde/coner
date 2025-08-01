@@ -20,37 +20,46 @@ const serviceData = [
   },
   {
     id: 2,
+    title: "설치&에어컨구매",
+    icon: installIcon,
+    path: "/install-purchase",
+  },
+
+  {
+    id: 3,
     title: "점검",
     icon: inspectionIcon,
     path: "/inspection",
   },
   {
-    id: 3,
+    id: 4,
     title: "청소",
     icon: cleanIcon,
     path: "/clean",
   },
+
   {
-    id: 4,
+    id: 5,
     title: "수리",
     icon: repairIcon,
     path: "/repair",
   },
+
   {
-    id: 5,
+    id: 6,
     title: "냉매충전",
     icon: chargeIcon,
     path: "/charge",
   },
   {
-    id: 6,
+    id: 7,
     title: "이전",
     icon: moveIcon,
     path: "/move",
   },
 
   {
-    id: 7,
+    id: 8,
     title: "철거",
     icon: demolishIcon,
     path: "/demolish",
@@ -74,14 +83,15 @@ const Services = () => {
     updateRequestData("service_type", service.title);
     setSelectedService(service.title);
 
-    if (service.title === "설치") {
-      navigate("/install");
+    if (service.path === "/install" || service.path === "/install-purchase") {
+      navigate(service.path);
     } else {
       navigate(`/addresspage?service=${service.title}`, {
         state: { selectedService: service.title },
       });
     }
   };
+
   return (
     <ServiceContainer>
       <h1>전화 없이, 검색 없이, 오직 한번의 입력으로</h1>
@@ -90,34 +100,30 @@ const Services = () => {
       </p>
 
       <ServiceList>
-        {[...serviceData, { id: "empty", hidden: true }].map((service) =>
-          service.hidden ? (
-            <ServiceItem key={service.id} style={{ visibility: "hidden" }} />
-          ) : (
-            <ServiceItem
-              key={service.id}
-              onClick={() => handleServiceClick(service)}
-              $isSelected={selectedService === service.title}
-            >
-              <img src={service.icon} alt={`${service.title} 아이콘`} />
-              <p className="service_title">{service.title}</p>
-            </ServiceItem>
-          )
-        )}
-        <LinkBox>
-          <StyledLink to="/pricing">서비스비용이 궁금하신가요?</StyledLink>
-          <ChatBox>
-            <ChatTitle>서비스에 대해 문의하실 사항이 있으신가요?</ChatTitle>
-            <OnlineChat
-              href="https://talk.naver.com/ct/w7a8bh2#nafullscreen"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              온라인상담하기
-            </OnlineChat>
-          </ChatBox>
-        </LinkBox>
+        {serviceData.map((service) => (
+          <ServiceItem
+            key={service.id}
+            onClick={() => handleServiceClick(service)}
+            $isSelected={selectedService === service.title}
+          >
+            <img src={service.icon} alt={`${service.title} 아이콘`} />
+            <p className="service_title">{service.title}</p>
+          </ServiceItem>
+        ))}
       </ServiceList>
+      <LinkBox>
+        <StyledLink to="/pricing">서비스비용이 궁금하신가요?</StyledLink>
+        <ChatBox>
+          <ChatTitle>서비스에 대해 문의하실 사항이 있으신가요?</ChatTitle>
+          <OnlineChat
+            href="https://talk.naver.com/ct/w7a8bh2#nafullscreen"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            온라인상담하기
+          </OnlineChat>
+        </ChatBox>
+      </LinkBox>
     </ServiceContainer>
   );
 };
@@ -172,24 +178,25 @@ const ServiceList = styled.ul`
   margin: auto;
   list-style: none;
   padding: 0;
-
-  @media ${device.mobile} {
+  justify-content: flex-start;
+  gap: 10px @media ${device.mobile} {
     padding: 10px 10px 0px 10px;
   }
 `;
 
 const ServiceItem = styled.li`
-  flex: 1 0 25%;
+  flex: 0 0 25%;
   display: flex;
   flex-direction: column;
   align-items: center;
   cursor: pointer;
-  margin-bottom: 20px;
   height: 90px;
+  margin-bottom: 20px;
 
   @media ${device.mobile} {
-    margin-bottom: 0px;
+    flex: 0 0 33%; // 모바일은 2개씩
     height: 129px;
+    margin-bottom: 0px;
   }
 
   img {
@@ -214,10 +221,12 @@ const ServiceItem = styled.li`
     }
   }
 `;
+
 const LinkBox = styled.div`
   display: flex;
   flex-direction: column;
-  margin-left: 30px;
+  margin-left: 60px;
+  margin-top: 30px;
 `;
 const StyledLink = styled(Link)`
   margin-bottom: 10px;

@@ -20,9 +20,11 @@ const AdditionalRequest = () => {
   const { scale, height, ref } = useScaleLayout();
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const needsAdditionalDropSelected = ["설치", "이전"].includes(
-    requestData.service_type
-  );
+  const needsAdditionalDropSelected = [
+    "설치",
+    "이전",
+    "설치&에어컨구매",
+  ].includes(requestData.service_type);
   const needsRepairAdditionalDropSelected = ["수리"].includes(
     requestData.service_type
   );
@@ -36,7 +38,7 @@ const AdditionalRequest = () => {
     }
 
     const { service_type } = requestData;
-    if (["설치", "이전", "수리"].includes(service_type)) {
+    if (["설치", "이전", "수리", "설치&에어컨구매"].includes(service_type)) {
       if (!selectedDropdownOption) {
         setIsPopupOpen(true);
         return;
@@ -51,7 +53,7 @@ const AdditionalRequest = () => {
         ["청소", "철거", "점검", "냉매 충전"].includes(requestData.service_type)
       ) {
         formattedDetailInfo = additionalInfo.trim();
-      } else if (requestData.service_type === "설치") {
+      } else if ((requestData.service_type === "설치", "설치&에어컨구매")) {
         formattedDetailInfo =
           `${requestData.detailInfo}\n${selectedDropdownOption}\n${additionalInfo}`.trim();
       } else if (["이전", "수리"].includes(requestData.service_type)) {
@@ -351,6 +353,7 @@ const SubmitButton = styled.button`
   cursor: pointer;
   margin-top: 30px;
   font-weight: bold;
+  margin-bottom: 20px;
   &:hover {
     background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   }
