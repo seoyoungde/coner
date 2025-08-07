@@ -29,6 +29,11 @@ import CreateAddressModal from "../components/Services/CreateAddressModal";
 import mainimage2Icon from "../assets/images/home/mainimage2.jpg";
 import InfoModifyAddressModal from "../components/Services/InfoModifyAddressModal";
 import QnaPage from "./MyPage/QnaPage";
+import TechnicianSelectionPage from "../pages/TechnicianApplyPage/TechnicianSelection";
+import TechnicianAddressPage from "./TechnicianApplyPage/TechnicianAddressPage";
+import TechnicianSelectServiceDate from "./TechnicianApplyPage/TechnicianSelectServiceDate";
+import TechnicianRequestBasicInfo from "./TechnicianApplyPage/TechnicianRequestBasicInfo";
+import TechnicianAdditionalRequest from "./TechnicianApplyPage/TechnicianAdditionalRequest";
 
 const headerMap = {
   "/": <Header />,
@@ -95,7 +100,16 @@ const Main = () => {
         return "#ffffff";
       case "/pricing":
         return "#ffffff";
-
+      case "/technician-select":
+        return "#ffffff";
+      case "/technician-address/:partner_id":
+        return "#ffffff";
+      case "/technician-selectservicedate/:partner_id":
+        return "#ffffff";
+      case "/technician-requestbasicinfo/:partner_id":
+        return "#ffffff";
+      case "/technician-additionalrequest/:partner_id":
+        return "#ffffff";
       default:
         return "#f9f9f9";
     }
@@ -129,7 +143,19 @@ const Main = () => {
     "/infomodifyaddressmodal",
     "/qnapage",
     "/addresspage",
+    "/technician-select",
+    "/technician-address/:partner_id",
+    "/technician-selectservicedate/:partner_id",
+    "/technician-requestbasicinfo/:partner_id",
+    "/technician-additionalrequest/:partner_id",
   ];
+  const shouldHideNav =
+    hideNavPaths.includes(location.pathname) ||
+    location.pathname.startsWith("/technician-address/") ||
+    location.pathname.startsWith("/technician-selectservicedate/") ||
+    location.pathname.startsWith("/technician-requestbasicinfo/") ||
+    location.pathname.startsWith("/technician-additionalrequest/");
+
   return (
     <Container style={{ height: `${windowHeight}px` }}>
       {/* 왼쪽 민트색 박스 */}
@@ -172,11 +198,30 @@ const Main = () => {
               element={<InfoModifyAddressModal />}
             />
             <Route path="/qnapage" element={<QnaPage />} />
+            <Route
+              path="/technician-select"
+              element={<TechnicianSelectionPage />}
+            />
+            <Route
+              path="/technician-address/:partner_id"
+              element={<TechnicianAddressPage />}
+            />
+            <Route
+              path="/technician-selectservicedate/:partner_id"
+              element={<TechnicianSelectServiceDate />}
+            />
+            <Route
+              path="/technician-requestbasicinfo/:partner_id"
+              element={<TechnicianRequestBasicInfo />}
+            />
+            <Route
+              path="/technician-additionalrequest/:partner_id"
+              element={<TechnicianAdditionalRequest />}
+            />
           </Routes>
         </MainContent>
 
-        {(location.pathname !== "/inquirydashboard" &&
-          !hideNavPaths.includes(location.pathname)) ||
+        {(location.pathname !== "/inquirydashboard" && !shouldHideNav) ||
         (isLoggedIn && location.pathname === "/inquirydashboard") ? (
           <Nav />
         ) : null}

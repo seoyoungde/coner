@@ -16,6 +16,7 @@ export const theme = {
   fonts: {
     family: '"Noto Sans", Arial, sans-serif', // 글씨체
     sizes: {
+      smaller: "12px",
       small: "14px",
       medium: "17px",
       large: "21px",

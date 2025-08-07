@@ -4,6 +4,7 @@ import Services from "../components/Homesections/Services";
 import ServicesType from "../components/Homesections/ServicesType";
 import { useScaleLayout } from "../hooks/useScaleLayout";
 import bannerIcon from "../assets/images/home/banner.jpg";
+import TechnicianList from "../components/Homesections/TechnicianList";
 
 const Home = () => {
   const { scale, height, ref } = useScaleLayout();
@@ -22,6 +23,7 @@ const Home = () => {
         </BannerSection>
         <MainContent>
           <Services />
+          <TechnicianList />
           <ServicesType />
         </MainContent>
       </Container>
