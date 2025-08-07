@@ -39,7 +39,7 @@ const TechnicianList = () => {
               address: partner.address,
               address_detail: partner.address_detail || "",
               experience: engineer.registered_at || "정보 없음",
-              count: engineer.completed_request_count || 0,
+              count: partner.completed_request_count || 0,
               logo_image_url: partner.logo_image_url,
             };
           })
@@ -216,19 +216,22 @@ const Tag = styled.div`
 const ActionText = styled.div`
   font-size: ${({ theme }) => theme.fonts.sizes.small};
   white-space: nowrap;
+  font-weight: ${({ theme }) => theme.fonts.weights.medium};
   @media ${device.mobile} {
     margin-bottom: 10px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
 
 const MoreButton = styled.div`
   margin-top: 16px;
-  font-size: ${({ theme }) => theme.fonts.sizes.small};
+  font-size: 15px;
   cursor: pointer;
   margin-left: 42px;
+  font-weight: ${({ theme }) => theme.fonts.weights.semibold};
 
   @media ${device.mobile} {
-    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
     margin-left: 50px;
   }
 `;
