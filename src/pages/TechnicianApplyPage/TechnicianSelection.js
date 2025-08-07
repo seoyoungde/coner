@@ -201,6 +201,8 @@ const TechCard = styled.div`
   cursor: pointer;
   align-items: center;
   margin-top: 20px;
+  margin-bottom: 30px;
+
   @media ${device.mobile} {
     display: flex;
     flex-direction: column;

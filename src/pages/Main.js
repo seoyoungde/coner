@@ -37,8 +37,6 @@ import TechnicianRequestBasicInfo from "./TechnicianApplyPage/TechnicianRequestB
 import TechnicianAdditionalRequest from "./TechnicianApplyPage/TechnicianAdditionalRequest";
 
 import Install_purchasePage from "./ServicesPage/Install_purchasePage";
-
-
 const headerMap = {
   "/": <Header />,
 };
@@ -101,7 +99,6 @@ const Main = () => {
       case "/install-purchase":
         return "#ffffff";
 
-
       default:
         return "#f9f9f9";
     }
@@ -143,7 +140,6 @@ const Main = () => {
     "/technician-additionalrequest/:partner_id",
 
     "/install-purchase",
-
   ];
   const shouldHideNav =
     hideNavPaths.includes(location.pathname) ||
@@ -192,7 +188,6 @@ const Main = () => {
             />
             <Route path="/qnapage" element={<QnaPage />} />
             <Route
-
               path="/technician-select"
               element={<TechnicianSelectionPage />}
             />
@@ -211,11 +206,10 @@ const Main = () => {
             <Route
               path="/technician-additionalrequest/:partner_id"
               element={<TechnicianAdditionalRequest />}
-<Route
-
+            />
+            <Route
               path="/install-purchase"
               element={<Install_purchasePage />}
-
             />
           </Routes>
         </MainContent>

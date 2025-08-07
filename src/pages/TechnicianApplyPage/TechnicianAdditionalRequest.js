@@ -416,6 +416,7 @@ const SubmitButton = styled.button`
   cursor: pointer;
   margin-top: 30px;
   font-weight: bold;
+  margin-bottom: 20px;
   &:hover {
     background: linear-gradient(to right, #0080ff, #0080ff, #0080ff);
   }
