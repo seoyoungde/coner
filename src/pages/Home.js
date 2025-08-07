@@ -4,6 +4,7 @@ import Services from "../components/Homesections/Services";
 import ServicesType from "../components/Homesections/ServicesType";
 import { useScaleLayout } from "../hooks/useScaleLayout";
 import bannerIcon from "../assets/images/home/banner.jpg";
+import TechnicianList from "../components/Homesections/TechnicianList";
 
 const Home = () => {
   const { scale, height, ref } = useScaleLayout();
@@ -17,12 +18,14 @@ const Home = () => {
       }}
     >
       <Container ref={ref}>
-        {/* <BannerSection>
+       <BannerSection>
           <BannerImg src={bannerIcon} alt="Coner 메인 배너" />
-        </BannerSection> */}
-
-        <Services />
-        <ServicesType />
+        </BannerSection>
+        <MainContent>
+          <Services />
+          <TechnicianList />
+          <ServicesType />
+        </MainContent>
       </Container>
     </ScaleWrapper>
   );

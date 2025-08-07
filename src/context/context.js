@@ -41,6 +41,7 @@ const initialRequestState = {
   sprint: [],
   detailInfo: "",
   customer_type: "",
+  selectedTechnician: null,
 };
 
 export const RequestProvider = ({ children }) => {

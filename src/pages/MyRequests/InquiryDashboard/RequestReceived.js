@@ -23,6 +23,8 @@ const RequestReceived = ({
   const [localRequestData, setLocalRequestData] = useState(requestData);
 
   const { updateRequestData } = useRequest();
+  const initialServiceTypeRef = useRef(requestData.service_type);
+
   const isMounted = useRef(true);
   const [requests, setRequests] = useState(requestData ? [requestData] : []);
   const [editingRequestId, setEditingRequestId] = useState(null);
@@ -63,6 +65,7 @@ const RequestReceived = ({
     setSelectedDropdownOption(requestData.selectedDropdownOption || "");
     setSelectedAirconditionerform(requestData.selectedairconditionerform || "");
     setAdditionalInfo(requestData.detailInfo || "");
+    initialServiceTypeRef.current = requestData.service_type;
   };
 
   const handleCancelClick = () => {
@@ -102,12 +105,21 @@ const RequestReceived = ({
       formattedDetailInfo = [additionalInfo, selectedDropdownOption]
         .filter(Boolean)
         .join("\n");
+    } else if (selectedService_type === "설치&에어컨구매") {
+      formattedDetailInfo = [
+        selectedDropdownOption,
+        selectedairconditionerform,
+        additionalInfo,
+      ]
+        .filter(Boolean)
+        .join("\n");
     }
+
     const updatedRequest = {
       ...request,
       service_date: selectedService_date,
       service_time: selectedServcie_time,
-      servic_type: selectedService_type,
+      service_type: selectedService_type,
       brand: selectedBrand,
       aircon_type: selectedAircon_type,
       detailInfo: formattedDetailInfo,
@@ -218,14 +230,26 @@ const RequestReceived = ({
     return number;
   };
   const formatDateForPicker = (dateStr) => {
-    // "2024년 06월 05일" → "2024-06-05"
     const match = dateStr.match(/(\d{4})년\s*(\d{2})월\s*(\d{2})일/);
     if (match) {
       const [, year, month, day] = match;
       return `${year}-${month}-${day}`;
     }
-    return ""; // invalid
+    return "";
   };
+
+  useEffect(() => {
+    if (
+      editingRequestId === requestData.id &&
+      selectedService_type !== initialServiceTypeRef.current
+    ) {
+      setAdditionalInfo(
+        "※ 서비스 유형이 변경되었습니다.\n새로운 요청사항을 다시 입력해주세요."
+      );
+      setSelectedDropdownOption("");
+      setSelectedAirconditionerform("");
+    }
+  }, [selectedService_type]);
 
   return (
     <Container>
@@ -521,6 +545,7 @@ const RequestReceived = ({
                   <>
                     <AdditionalDropSelected
                       options={[
+
                         "중고에어컨 구매원해요",
                         "신규에어컨 구매원해요",
                       ]}
@@ -536,6 +561,7 @@ const RequestReceived = ({
                       placeholderText="앵글 설치 여부 선택하기"
                       boxPerRow={2}
                       onSelect={setSelectedDropdownOption}
+
                     />
                     <Label>추가요청사항</Label>
                     <RequestDetails
@@ -556,6 +582,14 @@ const RequestReceived = ({
                       onSelect={setSelectedDropdownOption}
                     />
                     <Label>추가요청사항</Label>
+                    {additionalInfo.startsWith(
+                      "※ 서비스 유형이 변경되었습니다."
+                    ) && (
+                      <InfoNotice>
+                        서비스 유형을 변경하셨습니다. 새로운 추가 요청사항을
+                        다시 입력해주세요.
+                      </InfoNotice>
+                    )}
                     <RequestDetails
                       additionalInfo={additionalInfo}
                       setAdditionalInfo={setAdditionalInfo}
@@ -566,6 +600,7 @@ const RequestReceived = ({
             ) : (
               <div>
                 <Label>추가요청사항</Label>
+
                 <Value style={{ whiteSpace: "pre-line" }}>
                   {additionalInfo || "없음"}
                 </Value>
@@ -631,6 +666,13 @@ const RequestReceived = ({
 };
 
 export default RequestReceived;
+const InfoNotice = styled.p`
+  color: #ff5c5c;
+  font-size: ${({ theme }) => theme.fonts.sizes.small};
+  margin-bottom: 10px;
+  font-weight: ${({ theme }) => theme.fonts.weights.bold};
+`;
+
 const LabelBox = styled.div`
   width: 100%;
   border: 2px solid #e3e3e3;
