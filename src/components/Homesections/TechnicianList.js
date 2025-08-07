@@ -24,22 +24,26 @@ const TechnicianList = () => {
             engineersByPartner.set(engineer.partner_id, engineer);
           }
         });
+        const OUR_STAFF_PARTNER_ID = "pozMcVxtmmsXvtMLaItJ";
 
-        const partners = partnerSnapshot.docs.map((doc) => {
-          const partner = doc.data();
-          const engineer = engineersByPartner.get(partner.partner_id) || {};
+        const partners = partnerSnapshot.docs
+          .map((doc) => {
+            const partner = doc.data();
+            const engineer = engineersByPartner.get(partner.partner_id) || {};
 
-          return {
-            id: doc.id,
-            name: partner.name,
-            career: partner.career,
-            address: partner.address,
-            address_detail: partner.address_detail || "",
-            experience: engineer.registered_at || "정보 없음",
-            count: engineer.completed_request_count || 0,
-            logo_image_url: partner.logo_image_url,
-          };
-        });
+            return {
+              id: doc.id,
+              name: partner.name,
+              partner_id: partner.partner_id,
+              career: partner.career,
+              address: partner.address,
+              address_detail: partner.address_detail || "",
+              experience: engineer.registered_at || "정보 없음",
+              count: engineer.completed_request_count || 0,
+              logo_image_url: partner.logo_image_url,
+            };
+          })
+          .filter((p) => p.partner_id !== OUR_STAFF_PARTNER_ID);
 
         const shuffled = partners.sort(() => 0.5 - Math.random());
         const selected = shuffled.slice(0, 3);

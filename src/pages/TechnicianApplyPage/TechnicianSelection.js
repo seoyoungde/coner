@@ -1,4 +1,3 @@
-// 수정된 TechnicianSelectionPage.jsx
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { collection, getDocs } from "firebase/firestore";
@@ -32,20 +31,26 @@ const TechnicianSelectionPage = () => {
           }
         });
 
-        const partners = partnerSnapshot.docs.map((doc) => {
-          const partner = doc.data();
-          const engineer = engineersByPartner.get(partner.partner_id) || {};
+        const OUR_STAFF_PARTNER_ID = "pozMcVxtmmsXvtMLaItJ";
 
-          return {
-            id: doc.id,
-            name: partner.name,
-            address: partner.address,
-            address_detail: partner.address_detail || "",
-            experience: engineer.registered_at || "정보 없음",
-            count: engineer.completed_request_count || 0,
-            logo_image_url: partner.logo_image_url,
-          };
-        });
+        const partners = partnerSnapshot.docs
+          .map((doc) => {
+            const partner = doc.data();
+            const engineer = engineersByPartner.get(partner.partner_id) || {};
+
+            return {
+              id: doc.id,
+              name: partner.name,
+              partner_id: partner.partner_id,
+              career: partner.career,
+              address: partner.address,
+              address_detail: partner.address_detail || "",
+              experience: engineer.registered_at || "정보 없음",
+              count: engineer.completed_request_count || 0,
+              logo_image_url: partner.logo_image_url,
+            };
+          })
+          .filter((p) => p.partner_id !== OUR_STAFF_PARTNER_ID);
 
         const shuffled = partners.sort(() => 0.5 - Math.random());
         const selected = shuffled.slice(0, 6);
@@ -89,8 +94,8 @@ const TechnicianSelectionPage = () => {
         </Header>
         <InnerWrapper>
           <FormLayout
-            title="기사님 선택"
-            subtitle="서비스받을 기사님을 선택해주세요"
+            title="업체 선택"
+            subtitle="서비스받을 업체를 선택해주세요"
           >
             {technicians.map((tech) => (
               <Card
@@ -110,7 +115,7 @@ const TechnicianSelectionPage = () => {
 
                   <CardContent>
                     <TagContent>
-                      <Tag>경력 : {tech.experience}</Tag>
+                      <Tag>경력 : {tech.career}</Tag>
                       <Tag>
                         완료한 건수 : <strong>{tech.count}</strong>
                       </Tag>
