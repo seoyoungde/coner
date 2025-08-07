@@ -29,11 +29,15 @@ import CreateAddressModal from "../components/Services/CreateAddressModal";
 import mainimage2Icon from "../assets/images/home/mainimage2.jpg";
 import InfoModifyAddressModal from "../components/Services/InfoModifyAddressModal";
 import QnaPage from "./MyPage/QnaPage";
+
 import TechnicianSelectionPage from "../pages/TechnicianApplyPage/TechnicianSelection";
 import TechnicianAddressPage from "./TechnicianApplyPage/TechnicianAddressPage";
 import TechnicianSelectServiceDate from "./TechnicianApplyPage/TechnicianSelectServiceDate";
 import TechnicianRequestBasicInfo from "./TechnicianApplyPage/TechnicianRequestBasicInfo";
 import TechnicianAdditionalRequest from "./TechnicianApplyPage/TechnicianAdditionalRequest";
+
+import Install_purchasePage from "./ServicesPage/Install_purchasePage";
+
 
 const headerMap = {
   "/": <Header />,
@@ -43,7 +47,6 @@ const Main = () => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const location = useLocation();
   const headerComponent = headerMap[location.pathname] || null;
-  const [showScrollbar, setShowScrollbar] = useState(false);
   const scrollRef = useRef(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -53,23 +56,6 @@ const Main = () => {
     });
 
     return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    const scrollContainer = scrollRef.current;
-
-    const handleScroll = () => {
-      setShowScrollbar(true);
-      clearTimeout(scrollContainer._scrollTimeout);
-      scrollContainer._scrollTimeout = setTimeout(() => {
-        setShowScrollbar(false);
-      }, 1000);
-    };
-
-    scrollContainer.addEventListener("scroll", handleScroll);
-    return () => {
-      scrollContainer.removeEventListener("scroll", handleScroll);
-    };
   }, []);
 
   const getBackgroundColor = (pathname) => {
@@ -100,6 +86,7 @@ const Main = () => {
         return "#ffffff";
       case "/pricing":
         return "#ffffff";
+
       case "/technician-select":
         return "#ffffff";
       case "/technician-address/:partner_id":
@@ -110,6 +97,11 @@ const Main = () => {
         return "#ffffff";
       case "/technician-additionalrequest/:partner_id":
         return "#ffffff";
+
+      case "/install-purchase":
+        return "#ffffff";
+
+
       default:
         return "#f9f9f9";
     }
@@ -143,11 +135,15 @@ const Main = () => {
     "/infomodifyaddressmodal",
     "/qnapage",
     "/addresspage",
+
     "/technician-select",
     "/technician-address/:partner_id",
     "/technician-selectservicedate/:partner_id",
     "/technician-requestbasicinfo/:partner_id",
     "/technician-additionalrequest/:partner_id",
+
+    "/install-purchase",
+
   ];
   const shouldHideNav =
     hideNavPaths.includes(location.pathname) ||
@@ -157,7 +153,7 @@ const Main = () => {
     location.pathname.startsWith("/technician-additionalrequest/");
 
   return (
-    <Container style={{ height: `${windowHeight}px` }}>
+    <Container>
       {/* 왼쪽 민트색 박스 */}
       <ImageBox>
         <img src={mainimage2Icon} alt="Coner 로고" />
@@ -165,10 +161,7 @@ const Main = () => {
       {/* 오른쪽 콘텐츠 박스 */}
       <ContentBox $backgroundColor={getBackgroundColor(location.pathname)}>
         {headerComponent && <HeaderBox>{headerComponent}</HeaderBox>}
-        <MainContent
-          ref={scrollRef}
-          className={showScrollbar ? "show-scrollbar" : ""}
-        >
+        <MainContent>
           <Routes>
             <Route path="/install" element={<InstallPage />} />
             <Route path="/" element={<Home />} />
@@ -199,6 +192,7 @@ const Main = () => {
             />
             <Route path="/qnapage" element={<QnaPage />} />
             <Route
+
               path="/technician-select"
               element={<TechnicianSelectionPage />}
             />
@@ -217,6 +211,11 @@ const Main = () => {
             <Route
               path="/technician-additionalrequest/:partner_id"
               element={<TechnicianAdditionalRequest />}
+<Route
+
+              path="/install-purchase"
+              element={<Install_purchasePage />}
+
             />
           </Routes>
         </MainContent>
@@ -263,6 +262,7 @@ const HeaderBox = styled.div`
   z-index: 100;
   background: white;
   padding: 20px 0 10px;
+  border-bottom: 1px solid #ddd;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 `;
 const ImageBox = styled.div`
@@ -319,13 +319,15 @@ const ContentBox = styled.div`
 
 const MainContent = styled.div`
   flex: 1;
-  height: calc(100% - 95px);
-  overflow-y: scroll;
+  overflow-y: auto;
   position: relative;
+  -webkit-overflow-scrolling: touch;
 
-  /* 기본 상태: 스크롤바 투명 처리 */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export default Main;

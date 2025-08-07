@@ -61,8 +61,9 @@ const AirConditionerForm = ({
             <Title>{title}</Title>
             <Description>{description}</Description>
             <InfoText>
-              아직 에어컨이 없으시다면 걱정 마세요! 기사님이 직접 공간과 환경을
-              확인한 뒤, 가장 적합한 제품을 추천해드립니다
+              아직 에어컨이 없으시다면 걱정 마세요!
+              <br /> 기사님이 직접 공간과 환경을 확인한 뒤, 가장 적합한 제품을
+              추천해드립니다
             </InfoText>
           </TitleSection>
 

@@ -342,7 +342,7 @@ const RequestReceived = ({
             )}
           </Section>
 
-          {/* 방문 희망 시간 수정
+          {/* 방문 희망 시간 수정*/}
           <Section>
             <Label>방문 희망 시간</Label>
             {editingRequestId === requestData.id ? (
@@ -358,7 +358,7 @@ const RequestReceived = ({
             ) : (
               <Value>{selectedServcie_time || "없음"}</Value>
             )}
-          </Section> */}
+          </Section>
           {/* 에어컨종류 */}
           <Section>
             <Label>서비스 받을 에어컨 종류</Label>
@@ -468,6 +468,13 @@ const RequestReceived = ({
               {formatPhoneForDisplay(requestData.customer_phone) || "없음"}
             </Value>
           </Section>
+          {/* 이름수정불가능 */}
+          <Section>
+            <Label>이름</Label>
+            <Value style={{ marginTop: "5px" }}>
+              {requestData.clientName || "없음"}
+            </Value>
+          </Section>
           {/* 추가요청사항 */}
           <Section style={{ whiteSpace: "pre-line" }}>
             {editingRequestId === requestData.id ? (
@@ -538,21 +545,23 @@ const RequestReceived = ({
                   <>
                     <AdditionalDropSelected
                       options={[
+
+                        "중고에어컨 구매원해요",
+                        "신규에어컨 구매원해요",
+                      ]}
+                      placeholderText="에어컨 구매 종류 선택하기"
+                      boxPerRow={2}
+                      onSelect={setSelectedAirconditionerform}
+                    />
+                    <AdditionalDropSelected
+                      options={[
                         "앵글 설치가 필요해요.",
                         "앵글 설치는 필요 없어요.",
                       ]}
                       placeholderText="앵글 설치 여부 선택하기"
                       boxPerRow={2}
                       onSelect={setSelectedDropdownOption}
-                    />
-                    <AdditionalDropSelected
-                      options={[
-                        "신규에어컨설치를 원해요.",
-                        "중고에어컨설치를 원해요.",
-                      ]}
-                      placeholderText="구매할 에어컨 종류 선택하기"
-                      boxPerRow={2}
-                      onSelect={setSelectedAirconditionerform}
+
                     />
                     <Label>추가요청사항</Label>
                     <RequestDetails
@@ -758,7 +767,7 @@ const TechnicianTitle = styled.h3`
     font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
   }
 `;
-const ProfileImage = styled.div`
+const ProfileImage = styled.img`
   width: 70px;
   height: 70px;
   border-radius: 8px;

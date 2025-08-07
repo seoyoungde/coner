@@ -18,7 +18,7 @@ const Home = () => {
       }}
     >
       <Container ref={ref}>
-        <BannerSection>
+       <BannerSection>
           <BannerImg src={bannerIcon} alt="Coner 메인 배너" />
         </BannerSection>
         <MainContent>

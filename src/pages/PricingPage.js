@@ -33,9 +33,11 @@ const PricingPage = () => {
       <Container ref={ref}>
         <InnerWrapper>
           {from === "request-basic-info" ? (
-            <CloseButton onClick={handleClose}>x</CloseButton>
+            <CloseButton onClick={handleClose}>
+              <IoIosArrowBack size={32} color="#333" />
+            </CloseButton>
           ) : (
-            <BackButton onClick={() => navigate(-1)}>
+            <BackButton onClick={() => navigate("/")}>
               <BackIcon>
                 <IoIosArrowBack size={32} color="#333" />
               </BackIcon>
