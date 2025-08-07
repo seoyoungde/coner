@@ -94,8 +94,8 @@ const TechnicianSelectionPage = () => {
         </Header>
         <InnerWrapper>
           <FormLayout
-            title="업체 선택"
-            subtitle="서비스받을 업체를 선택해주세요"
+            title="협력업체 선택"
+            subtitle="서비스 받고 싶은 업체를 선택해서 의뢰하세요!"
           >
             {technicians.map((tech) => (
               <Card
@@ -103,38 +103,34 @@ const TechnicianSelectionPage = () => {
                 selected={tech.id === selectedId}
                 onClick={() => setSelectedId(tech.id)}
               >
-                <ProfileImage
-                  src={tech.logo_image_url || "/default-profile.png"}
-                  alt={tech.name}
-                />
-                <ContentBox>
-                  <NameContent>
+                <LeftBox>
+                  <ProfileImage
+                    src={tech.logo_image_url || "/default-profile.png"}
+                    alt={tech.name}
+                  />
+                  <InfoContent>
                     <Name>{tech.name}</Name>
                     <Address>{tech.address}</Address>
-                  </NameContent>
+                    <Tag>경력 : {tech.career}</Tag>
+                    <Tag>
+                      완료한 건수 : <strong>{tech.count}</strong>
+                    </Tag>
+                  </InfoContent>
+                </LeftBox>
 
-                  <CardContent>
-                    <TagContent>
-                      <Tag>경력 : {tech.career}</Tag>
-                      <Tag>
-                        완료한 건수 : <strong>{tech.count}</strong>
-                      </Tag>
-                    </TagContent>
-                    <ActionText
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/technician-address/${tech.id}`, {
-                          state: {
-                            flowType: "fromTechnician",
-                            selectedTechnician: tech,
-                          },
-                        });
-                      }}
-                    >
-                      [ 이 업체에 의뢰하기 ]
-                    </ActionText>
-                  </CardContent>
-                </ContentBox>
+                <ActionText
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/technician-address/${tech.id}`, {
+                      state: {
+                        flowType: "fromTechnician",
+                        selectedTechnician: tech,
+                      },
+                    });
+                  }}
+                >
+                  이 업체에 의뢰하기
+                </ActionText>
               </Card>
             ))}
 
@@ -187,6 +183,30 @@ const BackButton = styled.button`
   padding-top: 10px;
   @media ${device.mobile} {
     padding-left: 20px;
+  }
+`;
+const LeftBox = styled.div`
+  display: flex;
+  align-items: center;
+
+  @media ${device.mobile} {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+`;
+const InfoContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-left: 16px;
+  align-items: flex-start;
+
+  @media ${device.mobile} {
+    margin-left: 5px;
+    margin-right: 5px;
+    align-items: center;
+    text-align: center;
   }
 `;
 const BackIcon = styled(IoIosArrowBack)`
@@ -246,30 +266,22 @@ const Tag = styled.div`
 `;
 const Card = styled.div`
   display: flex;
-  margin: auto;
-  margin-bottom: 10px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
   border: 2px solid ${(props) => (props.selected ? "#C2E1FF" : "#eee")};
   border-radius: 8px;
+  margin: 0 auto 10px;
+  width: 100%;
   cursor: pointer;
-  padding: 10px;
-
-  @media ${device.mobile} {
-    flex-direction: column; /* ✅ 세로로 정렬 */
-    align-items: center;
-    width: 100%;
-    padding: 16px;
-  }
-`;
-const CardContent = styled.div`
-  display: flex;
-  flex-direction: row;
 
   @media ${device.mobile} {
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    text-align: center;
   }
 `;
+
 const Name = styled.div`
   font-weight: bold;
   margin-bottom: 4px;
@@ -280,8 +292,6 @@ const Name = styled.div`
 const Address = styled.div`
   color: #555;
   font-size: ${({ theme }) => theme.fonts.sizes.smaller};
-  margin-bottom: 8px;
-  margin-left: 5px;
 
   @media ${device.mobile} {
     font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
@@ -308,43 +318,22 @@ const SubmitButton = styled.button`
     font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
   }
 `;
-const ContentBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-`;
-const NameContent = styled.div`
-  display: flex;
-  margin-bottom: 6px;
 
-  @media ${device.mobile} {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    margin-bottom: 10px;
-  }
-`;
-const TagContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 330px;
-  align-items: flex-start;
+const ActionText = styled.button`
+  background: #007aff;
+  color: #fff;
+  border: none;
+  padding: 8px 5px;
+  border-radius: 7px;
+  width: 130px;
 
-  @media ${device.mobile} {
-    align-items: center;
-    text-align: center;
-    width: 100%;
-    margin-bottom: 10px;
-  }
-`;
-const ActionText = styled.div`
   font-size: ${({ theme }) => theme.fonts.sizes.small};
-  font-weight: ${({ theme }) => theme.fonts.weights.medium};
+  cursor: pointer;
   @media ${device.mobile} {
-    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
-
-    margin-bottom: 10px;
-    text-align: center;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
+    width: 180px;
+    margin: 30px auto 0 auto;
+    display: block;
+    padding: 10px 8px;
   }
 `;

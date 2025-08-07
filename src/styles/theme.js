@@ -14,7 +14,7 @@ export const theme = {
     subtext: "#A0A0A0",
   },
   fonts: {
-    family: '"Noto Sans", Arial, sans-serif', // 글씨체
+    family: '"Noto Sans", Arial, sans-', // 글씨체
     sizes: {
       smaller: "12px",
       small: "14px",

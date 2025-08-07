@@ -24,6 +24,7 @@ const TechnicianList = () => {
             engineersByPartner.set(engineer.partner_id, engineer);
           }
         });
+
         const OUR_STAFF_PARTNER_ID = "pozMcVxtmmsXvtMLaItJ";
 
         const partners = partnerSnapshot.docs
@@ -45,8 +46,10 @@ const TechnicianList = () => {
           })
           .filter((p) => p.partner_id !== OUR_STAFF_PARTNER_ID);
 
-        const shuffled = partners.sort(() => 0.5 - Math.random());
-        const selected = shuffled.slice(0, 3);
+        // const shuffled = partners.sort(() => 0.5 - Math.random());
+
+        const sortedByCount = partners.sort((a, b) => b.count - a.count);
+        const selected = sortedByCount.slice(0, 3);
 
         setTechnicians(selected);
       } catch (err) {
@@ -59,8 +62,8 @@ const TechnicianList = () => {
 
   return (
     <Wrapper>
-      <Title>업체 리스트</Title>
-      <SubTitle>업체를 먼저 정해보세요</SubTitle>
+      <Title>협력업체 리스트</Title>
+      <SubTitle>서비스 받고 싶은 업체를 선택해서 의뢰하세요!</SubTitle>
 
       {technicians.map((tech) => (
         <Card
@@ -68,38 +71,34 @@ const TechnicianList = () => {
           selected={tech.id === selectedId}
           onClick={() => setSelectedId(tech.id)}
         >
-          <ProfileImage
-            src={tech.logo_image_url || "/default-profile.png"}
-            alt={tech.name}
-          />
-          <ContentBox>
-            <NameContent>
+          <LeftBox>
+            <ProfileImage
+              src={tech.logo_image_url || "/default-profile.png"}
+              alt={tech.name}
+            />
+            <InfoContent>
               <Name>{tech.name}</Name>
               <Address>{tech.address}</Address>
-            </NameContent>
+              <Tag>경력 : {tech.career}</Tag>
+              <Tag>
+                완료한 건수 : <strong>{tech.count}</strong>
+              </Tag>
+            </InfoContent>
+          </LeftBox>
 
-            <CardContent>
-              <TagContent>
-                <Tag>경력 : {tech.career}</Tag>
-                <Tag>
-                  완료한 건수 : <strong>{tech.count}</strong>
-                </Tag>
-              </TagContent>
-              <ActionText
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate(`/technician-address/${tech.id}`, {
-                    state: {
-                      flowType: "fromTechnician",
-                      selectedTechnician: tech,
-                    },
-                  });
-                }}
-              >
-                [ 이 업체에 의뢰하기 ]
-              </ActionText>
-            </CardContent>
-          </ContentBox>
+          <ActionText
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/technician-address/${tech.id}`, {
+                state: {
+                  flowType: "fromTechnician",
+                  selectedTechnician: tech,
+                },
+              });
+            }}
+          >
+            이 업체에 의뢰하기
+          </ActionText>
         </Card>
       ))}
 
@@ -108,7 +107,7 @@ const TechnicianList = () => {
           navigate("/technician-select");
         }}
       >
-        + 더보기
+        협력업체 더보기 &gt;
       </MoreButton>
     </Wrapper>
   );
@@ -147,19 +146,40 @@ const SubTitle = styled.p`
 
 const Card = styled.div`
   display: flex;
-  width: 87%;
-  margin: auto;
-  margin-bottom: 10px;
+  justify-content: space-between;
   align-items: center;
+  padding: 10px;
   border: 2px solid ${(props) => (props.selected ? "#C2E1FF" : "#eee")};
   border-radius: 8px;
+  margin: 0 auto 10px;
+  width: 87%;
   cursor: pointer;
-  padding: 10px;
+
   @media ${device.mobile} {
-    width: 81%;
-    padding: 10px 10px 0px 10px;
-    display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+`;
+
+const LeftBox = styled.div`
+  display: flex;
+  align-items: center;
+
+  @media ${device.mobile} {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+`;
+const InfoContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-left: 16px;
+  @media ${device.mobile} {
+    margin-left: 5px;
+    margin-right: 5px;
   }
 `;
 
@@ -171,18 +191,9 @@ const ProfileImage = styled.img`
   margin-right: 16px;
   object-fit: cover;
   @media ${device.mobile} {
-    width: 75px;
-    height: 75px;
-  }
-`;
-
-const CardContent = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  @media ${device.mobile} {
-    display: flex;
-    flex-direction: column;
+    width: 85px;
+    height: 85px;
+    margin-right: 0px;
   }
 `;
 
@@ -197,8 +208,6 @@ const Name = styled.div`
 const Address = styled.div`
   color: #555;
   font-size: ${({ theme }) => theme.fonts.sizes.smaller};
-  margin-bottom: 8px;
-  margin-left: 5px;
 
   @media ${device.mobile} {
     font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
@@ -213,45 +222,38 @@ const Tag = styled.div`
   }
 `;
 
-const ActionText = styled.div`
+const ActionText = styled.button`
+  background: #007aff;
+  color: #fff;
+  border: none;
+  padding: 8px 5px;
+  border-radius: 7px;
+  width: 130px;
+
   font-size: ${({ theme }) => theme.fonts.sizes.small};
-  white-space: nowrap;
-  font-weight: ${({ theme }) => theme.fonts.weights.medium};
+  cursor: pointer;
   @media ${device.mobile} {
-    margin-bottom: 10px;
     font-size: ${({ theme }) => theme.fonts.mobilesizes.smallmedium};
+    width: 180px;
+    margin: 30px auto 0 auto;
+    display: block;
+    padding: 10px 8px;
   }
 `;
 
-const MoreButton = styled.div`
-  margin-top: 16px;
+const MoreButton = styled.button`
+  margin: 16px auto 0 auto;
   font-size: 15px;
   cursor: pointer;
-  margin-left: 42px;
-  font-weight: ${({ theme }) => theme.fonts.weights.semibold};
+  font-weight: ${({ theme }) => theme.fonts.weights.regular};
+  text-align: center;
+  display: block;
+  border: none;
+  background-color: white;
 
   @media ${device.mobile} {
-    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
-    margin-left: 50px;
-  }
-`;
-const NameContent = styled.div`
-  display: flex;
-  @media ${device.mobile} {
-    disply: flex;
-    flex-direction: column;
-  }
-`;
-const ContentBox = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-const TagContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 300px;
-  @media ${device.mobile} {
-    width: 190px;
-    margin-bottom: 10px;
+    font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
+    font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
+    margin-top: 30px;
   }
 `;
