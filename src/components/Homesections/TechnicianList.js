@@ -116,7 +116,6 @@ const TechnicianList = () => {
 export default TechnicianList;
 
 const Wrapper = styled.div`
-  padding-top: 22px;
   padding-bottom: 5px;
   margin-bottom: 20px;
 `;
