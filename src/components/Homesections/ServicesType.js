@@ -55,7 +55,6 @@ const ServicesType = () => {
 const TypeCards = styled.section`
   cursor: default;
   background-color: #ffffff;
-  padding-top: 22px;
   margin-bottom: 20px;
 
   @media ${device.mobile} {
@@ -121,7 +120,7 @@ const TypeCard = styled.li`
   }
 
   h3 {
-    font-size: ${({ theme }) => theme.fonts.sizes.medium};
+    font-size: 16px;
     font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
     @media ${device.mobile} {
       font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};

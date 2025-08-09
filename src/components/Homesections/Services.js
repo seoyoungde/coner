@@ -111,19 +111,6 @@ const Services = () => {
           </ServiceItem>
         ))}
       </ServiceList>
-      <LinkBox>
-        <StyledLink to="/pricing">서비스비용이 궁금하신가요?</StyledLink>
-        <ChatBox>
-          <ChatTitle>서비스에 대해 문의하실 사항이 있으신가요?</ChatTitle>
-          <OnlineChat
-            href="https://talk.naver.com/ct/w7a8bh2#nafullscreen"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            온라인상담하기
-          </OnlineChat>
-        </ChatBox>
-      </LinkBox>
     </ServiceContainer>
   );
 };
@@ -132,8 +119,6 @@ const ServiceContainer = styled.section`
   margin-top: 80px;
   background-color: #ffffff;
   padding-top: 22px;
-  padding-bottom: 5px;
-  margin-bottom: 20px;
   h1 {
     margin-left: 42px;
     font-size: ${({ theme }) => theme.fonts.sizes.large};
@@ -152,7 +137,7 @@ const ServiceContainer = styled.section`
     font-size: ${({ theme }) => theme.fonts.sizes.medium};
     font-weight: ${({ theme }) => theme.fonts.weights.medium};
     color: ${({ theme }) => theme.colors.subtext};
-    margin: 5px 0px 32px 42px;
+    margin: 6px 0px 52px 42px;
 
     @media ${device.mobile} {
       font-size: ${({ theme }) => theme.fonts.mobilesizes.medium};
@@ -161,12 +146,13 @@ const ServiceContainer = styled.section`
     }
   }
   p:last-child {
-    font-size: ${({ theme }) => theme.fonts.sizes.medium};
-    font-weight: ${({ theme }) => theme.fonts.weights.medium};
+    font-size: 16px;
+    font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
     color: black;
-
+    margin-top: 7px;
     @media ${device.mobile} {
-      ${({ theme }) => theme.fonts.mobilesizes.large}
+      ${({ theme }) => theme.fonts.mobilesizes.medium}
+      margin-top: 15px;
     }
   }
 `;
@@ -194,7 +180,7 @@ const ServiceItem = styled.li`
   margin-bottom: 20px;
 
   @media ${device.mobile} {
-    flex: 0 0 33%; // 모바일은 2개씩
+    flex: 0 0 33%;
     height: 129px;
     margin-bottom: 0px;
   }
@@ -209,60 +195,6 @@ const ServiceItem = styled.li`
       height: 50px;
     }
   }
-
-  p {
-    margin-top: 5px;
-    font-size: ${({ theme }) => theme.fonts.sizes.medium};
-    font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
-
-    @media ${device.mobile} {
-      ${({ theme }) => theme.fonts.mobilesizes.medium}
-      margin-top: 15px;
-    }
-  }
 `;
 
-const LinkBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-left: 60px;
-  margin-top: 30px;
-`;
-const StyledLink = styled(Link)`
-  margin-bottom: 10px;
-  color: #a0a0a0;
-  font-size: ${({ theme }) => theme.fonts.sizes.small};
-
-  @media ${device.mobile} {
-    font-size: ${({ theme }) => theme.fonts.sizes.medium};
-    font-weight: ${({ theme }) => theme.fonts.weights.smallmedium}
-`;
-const OnlineChat = styled.a`
-  font-size: ${({ theme }) => theme.fonts.sizes.small};
-  border: 1px solid #0080ff;
-
-  padding: 7px;
-  border-radius: 5px;
-  text-decoration: none;
-  color: #0080ff;
-  @media ${device.mobile} {
-    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
-    font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
-    margin-left: 10px;
-  }
-`;
-const ChatTitle = styled.p`
-  text-align: center;
-  padding: 8px 0px 0px 0px;
-  color: #a0a0a0;
-  font-size: ${({ theme }) => theme.fonts.sizes.small};
-  @media ${device.mobile} {
-    font-size: ${({ theme }) => theme.fonts.mobilesizes.small};
-    font-weight: ${({ theme }) => theme.fonts.weights.smallmedium};
-  }
-`;
-const ChatBox = styled.div`
-  display: flex;
-  gap: 10px;
-`;
 export default Services;
